@@ -1,0 +1,7 @@
+export { default as langDict } from './langDict'
+export { default as ResultBox } from './ResultBox'
+export { default as ResultTable } from './ResultTable'
+export { default as ResultButtons } from './ResultButtons'
+export { default as ResultGraph } from './ResultGraph'
+export { default as ResultDefault } from './ResultDefault'
+export { createChartData, createXY4Graph, getTopRecords } from './utilsResult'
