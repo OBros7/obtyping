@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 interface MyTextboxProps {
     state: string
     setState: React.Dispatch<React.SetStateAction<any>>

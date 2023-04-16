@@ -46,14 +46,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
         <div {...headerBox}>
           {session && session.user ? (
-            // <HeaderLink href='/account/register' text='Logout' />
-            <button onClick={() => signOut()}>Sign out: </button>
+            null
           ) : (
-            <button onClick={() => signIn()}>Sign in</button>
-            // <>
-            //   <HeaderLink href='/account/register' text='Login' />
-            //   <HeaderLink href='/account/register' text='Register' addClass='outline outline-white outline-2' />
-            // </>
+            <HeaderLink href='/account/register' text='Register' addClass='outline outline-white outline-2' />
           )}
           <div {...headerBox}>
             <HamburgerMenu />

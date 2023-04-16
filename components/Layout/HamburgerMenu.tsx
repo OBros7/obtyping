@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { GlobalContext } from 'context/GlobalContext'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { useRouter } from 'next/router'
+import { signOut } from 'next-auth/react'
+
 
 export default function HamburgerMenu() {
     const [isOpen, setIsOpen] = useState(false)
@@ -57,8 +59,17 @@ export default function HamburgerMenu() {
                                 {locale === 'ja' ? 'English' : '日本語'}
                             </a>
                         </Link>
-
                     </li>
+                    {session && session.user ? (
+                        <li>
+
+                            <button onClick={() => signOut()}>Sign out: </button>
+                        </li>
+
+                    ) : (
+                        null
+                    )}
+
                 </ul>
             )}
         </div>

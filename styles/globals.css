@@ -35,6 +35,14 @@ body {
   @apply rounded p-1 outline outline-2 outline-blue-100 hover:shadow-md focus:outline focus:outline-[5px] focus:outline-blue-500/20;
 }
 
+.email-input {
+  @apply rounded p-1 outline outline-2 outline-blue-100 hover:shadow-md focus:outline focus:outline-[5px] focus:outline-blue-500/20;
+}
+
+.password-input {
+  @apply rounded p-1 outline outline-2 outline-blue-100 hover:shadow-md focus:outline focus:outline-[5px] focus:outline-blue-500/20;
+}
+
 .number-silder {
   @apply bg-gray-200 rounded-lg appearance-none cursor-pointer content-center;
 }
