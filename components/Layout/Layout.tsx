@@ -2,28 +2,40 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useContext, useEffect } from 'react'
-import { useSession, signIn, signOut } from 'next-auth/react'
-import { GlobalContext } from 'context/GlobalContext'
+import React, { useContext, useEffect, useState } from 'react'
+// import { useSession, signIn, signOut } from 'next-auth/react'
+// import { GlobalContext } from 'context/GlobalContext'
 import { HeaderLink } from './'
 import { HamburgerMenu } from './'
+import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
+
+const siteTitle = 'Obgames'
+const headerAttrs = {
+  className: 'bg-blue-600 text-white flex justify-around',
+}
+const footerAttrs = headerAttrs
+const headerBox = {
+  className: 'flex flex-row items-center',
+}
+
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { locale } = useRouter()
-  // const { data: session } = useSession()
-  const { session, paymentStatus } = useContext(GlobalContext)
-  console.log('paymentStatus', paymentStatus)
-  const siteTitle = 'Obgames'
-  const headerAttrs = {
-    className: 'bg-blue-600 text-white flex justify-around',
-  }
-  const footerAttrs = headerAttrs
-  const headerBox = {
-    className: 'flex flex-row items-center',
-  }
+
+  const { user, signedOut, setSignedOut, signOut } = useAuth();
+
+  useEffect(() => {
+    if (signedOut) {
+      setSignedOut(false);
+    }
+  }, [signedOut, setSignedOut]);
+
+  useEffect(() => {
+    console.log('user', user);
+  }, [user])
 
   return (
-    <div className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
+    <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
       <Head>
         <link rel='icon' href='/favicon.ico' />
         <meta charSet='utf-8' />
@@ -45,20 +57,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
         </div>
         <div {...headerBox}>
-          {session && session.user ? (
+          {user ? (
             null
           ) : (
             <HeaderLink href='/account/signin' text='SignIn' addClass='outline outline-white outline-2' />
           )}
           <div {...headerBox}>
-            <HamburgerMenu />
+            <HamburgerMenu user={user} signOut={signOut} />
           </div>
         </div>
       </header>
       <main>{children}</main>
       <footer {...footerAttrs}>
         <div {...headerBox}>
-          <HeaderLink href='/' text='&copy; 2022 OBros.' />
+          <HeaderLink href='/' text='&copy; 2023 OBros.' />
         </div>
         <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />

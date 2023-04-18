@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useAuth0 } from '@auth0/auth0-react';
 import { MyEmailInput, MyPasswordInput } from '@/Basics';
-
+import { useRouter } from 'next/router';
 const url = process.env.FASTAPI_URL + '/api/users/login';
-
+import jwt_decode from 'jwt-decode';
 interface LoginFormProps {
     btnClass?: string;
 }
@@ -13,13 +12,22 @@ const LoginForm = ({ btnClass = 'btn-second' }: LoginFormProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [serverError, setServerError] = useState('');
-    // const { loginWithRedirect } = useAuth0();
     const [msg, setMsg] = useState('hoge');
-
+    const router = useRouter();
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await axios.post(url, { email, password });
+            const response = await axios.post(url, { email, password });
+            const token = response.data.access_token;
+            const decodedToken = jwt_decode(token);
+
+            console.log(decodedToken);  // You can inspect the token contents here
+
+            // Save the token and user data to your desired state management or storage (e.g., Redux, Context API, localStorage)
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(decodedToken));
+
+            router.push('/'); // Redirect to the home page
         } catch (error) {
             if (
                 error &&

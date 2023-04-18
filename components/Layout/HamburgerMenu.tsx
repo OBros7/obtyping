@@ -3,27 +3,32 @@ import Link from 'next/link'
 import { GlobalContext } from 'context/GlobalContext'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { useRouter } from 'next/router'
-import { signOut } from 'next-auth/react'
+// import { signOut } from 'next-auth/react'
+import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
 
+interface HamburgerMenuProp {
+    user: any
+    signOut: any
+}
 
-export default function HamburgerMenu() {
+export default function HamburgerMenu({ user, signOut }: HamburgerMenuProp) {
     const [isOpen, setIsOpen] = useState(false)
     const { session, paymentStatus } = useContext(GlobalContext)
     const menuRef = useRef<HTMLDivElement>(null)
     const { locale } = useRouter()
-
+    // const { user, signOut } = useAuth();
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setIsOpen(false)
+                setIsOpen(false);
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside)
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [menuRef])
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [menuRef, setIsOpen]); // Add setIsOpen to the dependency array
 
     return (
         <div ref={menuRef} className='relative'>
@@ -60,10 +65,9 @@ export default function HamburgerMenu() {
                             </a>
                         </Link>
                     </li>
-                    {session && session.user ? (
+                    {user ? (
                         <li>
-
-                            <button onClick={() => signOut()}>Sign out: </button>
+                            <button onClick={signOut}>Sign Out</button>
                         </li>
 
                     ) : (
@@ -71,7 +75,8 @@ export default function HamburgerMenu() {
                     )}
 
                 </ul>
-            )}
-        </div>
+            )
+            }
+        </div >
     )
 }
