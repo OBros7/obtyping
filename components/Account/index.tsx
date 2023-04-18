@@ -1,6 +1,6 @@
 export { default as langDict } from './langDict'
-export { default as Register } from './Register'
+export { default as Signin } from './Signin'
 export { default as CheckoutForm } from './CheckoutForm'
 export { default as Setting } from './Setting'
 export { default as LoginForm } from './LoginForm'
-export { default as RegisterForm } from './RegisterForm'
+export { default as SignupForm } from './SignupForm'

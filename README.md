@@ -20,6 +20,10 @@
   - import { langDict } from './' これも import
   - const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]を関数コンポーネント内に追加
 
+# Wording
+
+- singup (new user creation), login (existing user), signin (signup + login)
+
 # Dependencies
 
 ## tailwind
