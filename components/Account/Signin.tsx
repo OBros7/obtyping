@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import React, { useEffect, useState } from 'react';
+// import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { langDict, LoginForm, SignupForm } from '.';
 import { Layout, MainContainer } from '@/Layout';
 import { useTranslation } from '@/MyCustomHooks';
@@ -9,32 +10,38 @@ const signinButtonClass = 'btn-third';
 const switchButtonClass = 'btn-primary';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? ''
+const fastAPIURL = process.env.FASTAPI_URL
 
-interface GoogleLoginError {
-  error: string;
-  details?: string;
+
+
+async function handleGoogleAuthSuccess(response: CredentialResponse) {
+  try {
+    const result = await fetch(fastAPIURL + '/api/auth/google', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id_token: response.credential }),
+    });
+
+    const data = await result.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
+
 
 
 export default function Signin() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string,];
   const [newUser, setNewUser] = useState(false);
 
-  const handleGoogleLoginSuccess = (
-    response: GoogleLoginResponse | GoogleLoginResponseOffline,
-  ) => {
-    if ('tokenId' in response) {
-      console.log(response);
-      // Handle the login success, e.g., send the token to your backend for validation and user creation
-    }
-  };
 
-  const handleGoogleLoginFailure = (error: GoogleLoginError) => {
-    console.log(error);
-    // Handle the login failure, e.g., show an error message
-  };
-
-  console.log('GOOGLE_CLIENT_ID', GOOGLE_CLIENT_ID)
+  useEffect(() => {
+    console.log('GOOGLE_CLIENT_ID', GOOGLE_CLIENT_ID)// empty string
+    console.log('fastAPIURL', fastAPIURL)// properly set
+  }, [])
 
   return (
     <Layout>
@@ -42,12 +49,11 @@ export default function Signin() {
         <div className={boxClass}>
           Recommended: Login with Google account:{' '}
           <GoogleLogin
-            clientId={GOOGLE_CLIENT_ID}
-            buttonText="Log In with Google"
-            onSuccess={handleGoogleLoginSuccess}
-            onFailure={handleGoogleLoginFailure}
-            className={signinButtonClass}
-          />
+            onSuccess={handleGoogleAuthSuccess}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />;
         </div>
         <div className={boxClass}>
           {newUser ? (

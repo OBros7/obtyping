@@ -20,6 +20,10 @@
   - import { langDict } from './' これも import
   - const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]を関数コンポーネント内に追加
 
+# Environment variables
+
+- .env.local に環境変数を書き、next.config.js で読み込む
+
 # Wording
 
 - singup (new user creation), login (existing user), signin (signup + login)
