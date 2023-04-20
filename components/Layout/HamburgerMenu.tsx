@@ -13,7 +13,7 @@ interface HamburgerMenuProp {
 
 export default function HamburgerMenu({ user, signOut }: HamburgerMenuProp) {
     const [isOpen, setIsOpen] = useState(false)
-    const { session, paymentStatus } = useContext(GlobalContext)
+    // const { session, paymentStatus } = useContext(GlobalContext)
     const menuRef = useRef<HTMLDivElement>(null)
     const { locale } = useRouter()
     // const { user, signOut } = useAuth();
@@ -46,13 +46,13 @@ export default function HamburgerMenu({ user, signOut }: HamburgerMenuProp) {
                             <a onClick={() => setIsOpen(false)} className='block p-1'>Settings</a>
                         </Link>
                     </li>
-                    {session && session.user && paymentStatus !== 'paid' && (
+                    {/* {session && session.user && paymentStatus !== 'paid' && (
                         <li className='mb-1'>
                             <Link href='/account/payment'>
                                 <a onClick={() => setIsOpen(false)} className='block p-1'>Payment</a>
                             </Link>
                         </li>
-                    )}
+                    )} */}
                     <li>
                         <Link href='/record'>
                             <a onClick={() => setIsOpen(false)} className='block p-1'>Record</a>

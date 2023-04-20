@@ -2,8 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { MyEmailInput, MyPasswordInput } from '@/Basics';
 import { useRouter } from 'next/router';
-const url = process.env.FASTAPI_URL + '/api/users/login';
 import jwt_decode from 'jwt-decode';
+
+const url = process.env.FASTAPI_URL + '/api/users/login';
+
+
 interface LoginFormProps {
     btnClass?: string;
 }

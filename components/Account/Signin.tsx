@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
-import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import { langDict, LoginForm, SignupForm } from '.';
+import { GoogleLogin, langDict, LoginForm, SignupForm } from '.';
 import { Layout, MainContainer } from '@/Layout';
 import { useTranslation } from '@/MyCustomHooks';
 
@@ -9,51 +7,30 @@ const boxClass = 'outline outline-2 rounded m-4 p-4';
 const signinButtonClass = 'btn-third';
 const switchButtonClass = 'btn-primary';
 
+// import { useSession, signIn, signOut } from 'next-auth/react'
+
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? ''
 const fastAPIURL = process.env.FASTAPI_URL
 
-
-
-async function handleGoogleAuthSuccess(response: CredentialResponse) {
-  try {
-    const result = await fetch(fastAPIURL + '/api/auth/google', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id_token: response.credential }),
-    });
-
-    const data = await result.json();
-    console.log(data);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-
+const url = process.env.FASTAPI_URL + '/api/users/oauth_google';
 
 export default function Signin() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string,];
   const [newUser, setNewUser] = useState(false);
+  // const { data: session } = useSession()
 
-
-  useEffect(() => {
-    console.log('GOOGLE_CLIENT_ID', GOOGLE_CLIENT_ID)// empty string
-    console.log('fastAPIURL', fastAPIURL)// properly set
-  }, [])
+  console.log('url: ', url)
 
   return (
     <Layout>
       <MainContainer>
         <div className={boxClass}>
-          Recommended: Login with Google account:{' '}
-          <GoogleLogin
-            onSuccess={handleGoogleAuthSuccess}
-            onError={() => {
-              console.log('Login Failed');
-            }}
-          />;
+          {/* {session && session.user ? (
+            <button onClick={() => signOut()}>Sign out: </button>
+          ) : (
+            <button onClick={() => signIn('google', { callbackUrl: url })}>Sign in</button>
+          )} */}
+          <GoogleLogin />
         </div>
         <div className={boxClass}>
           {newUser ? (
