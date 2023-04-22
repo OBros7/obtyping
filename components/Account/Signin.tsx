@@ -25,11 +25,6 @@ export default function Signin() {
     <Layout>
       <MainContainer>
         <div className={boxClass}>
-          {/* {session && session.user ? (
-            <button onClick={() => signOut()}>Sign out: </button>
-          ) : (
-            <button onClick={() => signIn('google', { callbackUrl: url })}>Sign in</button>
-          )} */}
           <GoogleLogin />
         </div>
         <div className={boxClass}>

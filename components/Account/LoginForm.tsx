@@ -30,7 +30,7 @@ const LoginForm = ({ btnClass = 'btn-second' }: LoginFormProps) => {
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(decodedToken));
 
-            router.push('/'); // Redirect to the home page
+            router.push('/'); // Redirect to the home pagea
         } catch (error) {
             if (
                 error &&

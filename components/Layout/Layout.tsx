@@ -8,7 +8,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { HeaderLink } from './'
 import { HamburgerMenu } from './'
 import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
-
+import useUserFromCookie from '@/MyCustomHooks/useUserFromCookie';
 const siteTitle = 'Obgames'
 const headerAttrs = {
   className: 'bg-blue-600 text-white flex justify-around',
@@ -21,7 +21,7 @@ const headerBox = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { locale } = useRouter()
-
+  const user2 = useUserFromCookie();
   const { user, signedOut, setSignedOut, signOut } = useAuth();
 
   useEffect(() => {

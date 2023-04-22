@@ -4,38 +4,28 @@ import { useRouter } from 'next/router';
 import jwt_decode from 'jwt-decode';
 
 const url = process.env.FASTAPI_URL + '/api/users/oauth_google';
-const urlCallback = process.env.FASTAPI_URL + '/api/users/oauth_google_callback';
 
 const LoginWithGoogle = () => {
     const router = useRouter();
-    const { code } = router.query;
+    const { access_token } = router.query;
 
     useEffect(() => {
         const handleCallback = async () => {
-            if (code) {
-                try {
-                    const response = await axios.get(urlCallback, {
-                        params: { code },
-                    });
+            if (access_token) {
+                const token = Array.isArray(access_token) ? access_token[0] : access_token;
+                const decodedToken = jwt_decode(token);
 
-                    const token = response.data.access_token;
-                    const decodedToken = jwt_decode(token);
+                console.log('decoded token: ', decodedToken);
 
-                    console.log(decodedToken);  // You can inspect the token contents here
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(decodedToken));
 
-                    // Save the token and user data to your desired state management or storage (e.g., Redux, Context API, localStorage)
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('user', JSON.stringify(decodedToken));
-
-                    router.push('/'); // Redirect to the home page
-                } catch (err) {
-                    console.error(err);
-                }
+                router.push('/');
             }
         };
 
         handleCallback();
-    }, [code, router]);
+    }, [access_token, router]);
 
     const handleLogin = async () => {
         try {
