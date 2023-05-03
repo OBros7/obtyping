@@ -15,7 +15,7 @@ const LoginForm = ({ btnClass = 'btn-second' }: LoginFormProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [serverError, setServerError] = useState('');
-    const [msg, setMsg] = useState('hoge');
+    const [msg, setMsg] = useState('');
     const router = useRouter();
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
