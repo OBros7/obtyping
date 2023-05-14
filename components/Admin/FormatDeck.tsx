@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import { MySelect, MyTextbox } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
+import { checkLanguage } from '@/MyLib/UtilsTyping'
+
 import { set } from 'react-hook-form'
 
 const langOptions = Object.keys(lang2int)
@@ -24,8 +26,8 @@ interface FormatDeckProps {
     setDescription: React.Dispatch<React.SetStateAction<string>>
     category: string
     setCategory: React.Dispatch<React.SetStateAction<string>>
-    isPublic: boolean
-    setIsPublic: React.Dispatch<React.SetStateAction<boolean>>
+    // isPublic: boolean
+    // setIsPublic: React.Dispatch<React.SetStateAction<boolean>>
     classParent?: string
 }
 
@@ -41,8 +43,8 @@ export default function FormatDeck({
     setDescription,
     category,
     setCategory,
-    isPublic,
-    setIsPublic,
+    // isPublic,
+    // setIsPublic,
     classParent = classParDiv,
 }: FormatDeckProps
 ) {
@@ -78,12 +80,20 @@ export default function FormatDeck({
                     optionValues={categoryList}
                 />
             </div>
-            <div className={minibox}>
+            {/* <div className={minibox}>
                 is Public:
                 <MySelect
                     state={isPublic}
                     setState={setIsPublic}
                     optionValues={['true', 'false']}
+                />
+            </div> */}
+            <div className={minibox}>
+                Language 1:
+                <MySelect
+                    state={lang1}
+                    setState={setLang1}
+                    optionValues={langOptions}
                 />
             </div>
             <div className={minibox}>
@@ -95,27 +105,18 @@ export default function FormatDeck({
                 />
             </div>
             {isLangLearn ?
-                <>
-                    <div className={minibox}>
-                        Language 1:
-                        <MySelect
-                            state={lang1}
-                            setState={setLang1}
-                            optionValues={langOptions}
-                        />
-                    </div>
-                    <div className={minibox}>
-                        Language 2:
-                        <MySelect
-                            state={lang2}
-                            setState={setLang2}
-                            optionValues={langOptions}
-                        />
-                    </div>
-                </>
+
+                <div className={minibox}>
+                    Language 2:
+                    <MySelect
+                        state={lang2}
+                        setState={setLang2}
+                        optionValues={langOptions}
+                    />
+                </div>
                 :
 
-                <></>
+                null
             }
 
 

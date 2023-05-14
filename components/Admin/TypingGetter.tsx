@@ -52,7 +52,7 @@ export default function TypingGetter() {
 
     return (
         <>
-            <div className='flex flex-col p-4 m-4 outline outline-blue-200'>
+            <div className='flex flex-col w-full p-4 m-4 outline outline-blue-200'>
                 <div className={minibox}>
                     URL:
                     <MySelect
@@ -106,7 +106,7 @@ export default function TypingGetter() {
                     </button>
                 </div>
             </div>
-            <div className='flex flex-col p-4 outline outline-red-200'>
+            <div className='flex flex-col w-full p-4 outline outline-red-200'>
                 {typingData && Object.keys(typingData).map((key) => {
                     return (
                         <div className={minibox}>

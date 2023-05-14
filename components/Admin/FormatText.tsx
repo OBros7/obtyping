@@ -1,5 +1,5 @@
-import React from 'react'
-import { MySelect, MyTextbox } from '@/Basics'
+import React, { useEffect } from 'react'
+import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 
 const visibilityOptions = Object.keys(visibility2int)
@@ -25,46 +25,55 @@ const deckList = [
 ]
 
 interface FormatTextProps {
-    lang: string
-    setLang: React.Dispatch<React.SetStateAction<string>>
+    lang1: string
+    setLang1: React.Dispatch<React.SetStateAction<string>>
+    lang2: string
+    setLang2: React.Dispatch<React.SetStateAction<string>>
     title: string
     setTitle: React.Dispatch<React.SetStateAction<string>>
-    text: string
-    setText: React.Dispatch<React.SetStateAction<string>>
+    text1: string
+    setText1: React.Dispatch<React.SetStateAction<string>>
+    text2: string
+    setText2: React.Dispatch<React.SetStateAction<string>>
     category: string
     setCategory: React.Dispatch<React.SetStateAction<string>>
     deck: string
     setDeck: React.Dispatch<React.SetStateAction<string>>
-    isPublic: boolean
-    setIsPublic: React.Dispatch<React.SetStateAction<boolean>>
+    // isPublic: boolean
+    // setIsPublic: React.Dispatch<React.SetStateAction<boolean>>
     classParent?: string
 }
 
 export default function FormatText({
-    lang,
-    setLang,
+    lang1,
+    setLang1,
+    lang2,
+    setLang2,
     title,
     setTitle,
-    text,
-    setText,
+    text1,
+    setText1,
+    text2,
+    setText2,
     category,
     setCategory,
     deck,
     setDeck,
-    isPublic,
-    setIsPublic,
+    // isPublic,
+    // setIsPublic,
     classParent = classParDiv,
 }: FormatTextProps) {
+    const [isLangLearn, setIsLangLearn] = React.useState(false)
+
+    useEffect(() => {
+        if (!isLangLearn) {
+            setLang2('None')
+        }
+    }, [isLangLearn])
+
+
     return (
         <div className={classParent}>
-            <div className={minibox}>
-                Language:
-                <MySelect
-                    state={lang}
-                    setState={setLang}
-                    optionValues={langOptions}
-                />
-            </div>
             <div className={minibox}>
                 Title:
                 <MyTextbox
@@ -72,14 +81,7 @@ export default function FormatText({
                     setState={setTitle}
                 />
             </div>
-            <div className={minibox}>
-                Text:
-                <MyTextbox
 
-                    state={text}
-                    setState={setText}
-                />
-            </div>
             <div className={minibox}>
                 category:
                 <MySelect
@@ -96,14 +98,73 @@ export default function FormatText({
                     optionValues={deckList}
                 />
             </div>
+
             <div className={minibox}>
-                Public:
+                Translation?
                 <MySelect
-                    state={isPublic}
-                    setState={setIsPublic}
+                    state={isLangLearn}
+                    setState={setIsLangLearn}
                     optionValues={['true', 'false']}
                 />
             </div>
+
+
+            {isLangLearn ?
+                <>
+                    <div className={minibox}>
+                        Language:
+                        <MySelect
+                            state={lang1}
+                            setState={setLang1}
+                            optionValues={langOptions}
+                        />
+                        Second Language
+                        <MySelect
+                            state={lang2}
+                            setState={setLang2}
+                            optionValues={langOptions}
+                        />
+                    </div>
+                    <div className={minibox}>
+                        Text1:
+                        <MyTextarea
+                            state={text1}
+                            setState={setText1}
+                            textareaClass='text-box h-96 w-full'
+                        />
+                    </div>
+                    <div className={minibox}>
+                        Text2:
+                        <MyTextarea
+                            state={text2}
+                            setState={setText2}
+                            textareaClass='text-box h-96 w-full'
+                        />
+                    </div>
+                </>
+
+                :
+                <>
+                    <div className={minibox}>
+                        Language:
+                        <MySelect
+                            state={lang1}
+                            setState={setLang1}
+                            optionValues={langOptions}
+                        />
+                    </div>
+                    <div className={minibox}>
+                        Text:
+                        <MyTextarea
+                            state={text1}
+                            setState={setText1}
+                            textareaClass='text-box h-96 w-full'
+                        />
+                    </div>
+                </>
+            }
+
+
         </div>
     )
 }
