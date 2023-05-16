@@ -9,8 +9,12 @@ const langOptions = Object.keys(lang2int)
 const minibox = 'flex flex-row  justify-center items-center'
 
 const getTypeList = [
-    'get_text',
-    'get_random_text',
+    'get_textlist/basic',
+    'get_textlist/selective',
+    'get_textlist/private',
+    'get_textlist_by_category',
+    'get_textlist_by_deck',
+    'get_textlist_by_level'
 ]
 
 
@@ -21,7 +25,10 @@ export default function TypingGetter() {
     const [typingData, setTypingData] = useState<{ [key: string]: any }>({});
     const [userID, setUserID] = useState(1)
     const [getType, setGetType] = useState(getTypeList[0])
-
+    const [nSelect, setNSelect] = useState(10)
+    const [category, setCategory] = useState('None')
+    const [subcategory, setSubcategory] = useState('None')
+    const [level, setLevel] = useState(0)
     const getData = async () => {
         if (lang1 === lang2 || lang1 === 'None') {
             console.log(`Invalid: lang1=${lang1}, lang2=${lang2}`)
@@ -31,20 +38,28 @@ export default function TypingGetter() {
         const lang1_int = lang2int[lang1]
         const lang2_int = lang2int[lang2]
 
-        let url = ''
-        if (getType === 'get_text') {
-            url = `${fastAPIURL}/${getType}`
-        } else if (getType === 'get_random_text') {
-            if (lang2_int === -1) {
-                url = `${fastAPIURL}/${getType}/${visibility_int}/${lang1_int}`
-            } else {
-                url = `${fastAPIURL}/${getType}/${visibility_int}/${lang1_int}/${lang2_int}`
-            }
+
+        const url = `${fastAPIURL}/${getType}`
+        const data = {
+            user_id: userID,
+            deck_id: deck_id,
+            n_select: nSelect,
+            lang1_int: lang1_int,
+            lang2_int: lang2_int,
+            visibility_int: visibility_int,
+            category: category,
+            subcategory: subcategory,
+            level: level,
         }
 
-        const res = await fetch(url)
-        const data = await res.json()
-        setTypingData(data)
+        // get requested data
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        })
+        const returnedData = await res.json()
+        setTypingData(returnedData)
     }
 
 
@@ -71,6 +86,17 @@ export default function TypingGetter() {
                         max={100}
                         step={1}
                         defaultState={1}
+                    />
+                </div>
+                <div className={minibox}>
+                    Number of Select:
+                    <MyInputNumber
+                        state={nSelect}
+                        setState={setNSelect}
+                        min={1}
+                        max={100}
+                        step={1}
+                        defaultState={10}
                     />
                 </div>
                 <div className={minibox}>
@@ -104,6 +130,22 @@ export default function TypingGetter() {
                     >
                         Get Data
                     </button>
+                </div>
+                <div className={minibox}>
+                    category:
+                    <MySelect
+                        state={category}
+                        setState={setCategory}
+                        optionValues={categoryList}
+                    />
+                </div>
+                <div className={minibox}>
+                    Deck:
+                    <MySelect
+                        state={deck}
+                        setState={setDeck}
+                        optionValues={deckList}
+                    />
                 </div>
             </div>
             <div className='flex flex-col w-full p-4 outline outline-red-200'>

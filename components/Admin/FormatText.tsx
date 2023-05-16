@@ -1,20 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-
+import {
+    categoryListJa,
+    subcategoryJsonJa,
+    levelListJa,
+    categoryListEn,
+    subcategoryJsonEn,
+    levelListEn,
+    checkLanguage,
+} from '@/MyLib/UtilsTyping'
+import { useRouter } from 'next/router'
 const visibilityOptions = Object.keys(visibility2int)
 const langOptions = Object.keys(lang2int)
 const minibox = 'flex flex-row  justify-center items-center'
 const classParDiv = 'flex flex-col p-4 m-4 outline outline-blue-200'
 
-const categoryList = [
-    'None',
-    'category1',
-    'category2',
-    'category3',
-    'category4',
-    'category5',
-]
+
 const deckList = [
     'None',
     'deck1',
@@ -37,6 +39,10 @@ interface FormatTextProps {
     setText2: React.Dispatch<React.SetStateAction<string>>
     category: string
     setCategory: React.Dispatch<React.SetStateAction<string>>
+    subcategory: string
+    setSubcategory: React.Dispatch<React.SetStateAction<string>>
+    level: string
+    setLevel: React.Dispatch<React.SetStateAction<string>>
     deck: string
     setDeck: React.Dispatch<React.SetStateAction<string>>
     // isPublic: boolean
@@ -57,19 +63,50 @@ export default function FormatText({
     setText2,
     category,
     setCategory,
+    subcategory,
+    setSubcategory,
+    level,
+    setLevel,
     deck,
     setDeck,
     // isPublic,
     // setIsPublic,
     classParent = classParDiv,
 }: FormatTextProps) {
-    const [isLangLearn, setIsLangLearn] = React.useState(false)
+    const [isLangLearn, setIsLangLearn] = useState(false)
+    const { locale } = useRouter()
+    const [categoryList, setCategoryList] = useState<string[]>([])
+    const [subcategoryList, setSubcategoryList] = useState<string[]>([])
+    const [levelList, setLevelList] = useState<string[]>([])
 
+    console.log('locale', locale)
     useEffect(() => {
         if (!isLangLearn) {
             setLang2('None')
         }
     }, [isLangLearn])
+
+    useEffect(() => {
+        if (locale === 'ja') {
+            setCategoryList(categoryListJa)
+            setLevelList(levelListJa)
+        } else {
+            setCategoryList(categoryListEn)
+            setLevelList(levelListEn)
+        }
+    }, [locale])
+
+    useEffect(() => {
+        if (locale === 'ja') {
+            if (category in subcategoryJsonJa) {
+                setSubcategoryList(subcategoryJsonJa[category])
+            }
+        } else {
+            if (category in subcategoryJsonEn) {
+                setSubcategoryList(subcategoryJsonEn[category])
+            }
+        }
+    }, [category])
 
 
     return (
@@ -88,6 +125,22 @@ export default function FormatText({
                     state={category}
                     setState={setCategory}
                     optionValues={categoryList}
+                />
+            </div>
+            <div className={minibox}>
+                subcategory:
+                <MySelect
+                    state={subcategory}
+                    setState={setSubcategory}
+                    optionValues={subcategoryList}
+                />
+            </div>
+            <div className={minibox}>
+                Level:
+                <MySelect
+                    state={level}
+                    setState={setLevel}
+                    optionValues={levelList}
                 />
             </div>
             <div className={minibox}>
