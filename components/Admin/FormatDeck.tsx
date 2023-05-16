@@ -1,19 +1,22 @@
 import React, { useEffect } from 'react'
 import { MySelect, MyTextbox } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { checkLanguage } from '@/MyLib/UtilsTyping'
-
-import { set } from 'react-hook-form'
+import {
+    categoryListJa,
+    subcategoryJsonJa,
+    levelListJa,
+    categoryListEn,
+    subcategoryJsonEn,
+    levelListEn,
+    checkLanguage,
+} from '@/MyLib/UtilsTyping'
+import { FormatCategory } from './'
 
 const langOptions = Object.keys(lang2int)
 const minibox = 'flex flex-row  justify-center items-center'
 const classParDiv = 'flex flex-col p-4 m-4 outline outline-blue-200'
 
-const categoryList = [
-    'None',
-    'category1',
-    'category2',
-]
+
 
 interface FormatDeckProps {
     lang1: string
@@ -26,8 +29,10 @@ interface FormatDeckProps {
     setDescription: React.Dispatch<React.SetStateAction<string>>
     category: string
     setCategory: React.Dispatch<React.SetStateAction<string>>
-    // isPublic: boolean
-    // setIsPublic: React.Dispatch<React.SetStateAction<boolean>>
+    subcategory: string
+    setSubcategory: React.Dispatch<React.SetStateAction<string>>
+    level: string
+    setLevel: React.Dispatch<React.SetStateAction<string>>
     classParent?: string
 }
 
@@ -43,6 +48,10 @@ export default function FormatDeck({
     setDescription,
     category,
     setCategory,
+    subcategory,
+    setSubcategory,
+    level,
+    setLevel,
     // isPublic,
     // setIsPublic,
     classParent = classParDiv,
@@ -72,22 +81,14 @@ export default function FormatDeck({
                     setState={setDescription}
                 />
             </div>
-            <div className={minibox}>
-                Category:
-                <MySelect
-                    state={category}
-                    setState={setCategory}
-                    optionValues={categoryList}
-                />
-            </div>
-            {/* <div className={minibox}>
-                is Public:
-                <MySelect
-                    state={isPublic}
-                    setState={setIsPublic}
-                    optionValues={['true', 'false']}
-                />
-            </div> */}
+            <FormatCategory
+                category={category}
+                setCategory={setCategory}
+                subcategory={subcategory}
+                setSubcategory={setSubcategory}
+                level={level}
+                setLevel={setLevel}
+            />
             <div className={minibox}>
                 Language 1:
                 <MySelect
