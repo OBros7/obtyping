@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
+import { checkLanguage } from '@/MyLib/UtilsTyping'
 
 import { FormatCategory } from './'
 
@@ -15,10 +16,6 @@ interface TextSetterProps {
     setText1: React.Dispatch<React.SetStateAction<string>>
     text2: string
     setText2: React.Dispatch<React.SetStateAction<string>>
-    lang1: string
-    setLang1: React.Dispatch<React.SetStateAction<string>>
-    lang2: string
-    setLang2: React.Dispatch<React.SetStateAction<string>>
     category: string
     setCategory: React.Dispatch<React.SetStateAction<string>>
     subcategory: string
@@ -37,10 +34,6 @@ export default function TextSetter({
     setText1,
     text2,
     setText2,
-    lang1,
-    setLang1,
-    lang2,
-    setLang2,
     category,
     setCategory,
     subcategory,
@@ -52,6 +45,15 @@ export default function TextSetter({
     classParent = classParDiv,
 }: TextSetterProps) {
     const [isLangLearn, setIsLangLearn] = useState(false)
+
+
+    const onClick = () => {
+        const checkLang1 = checkLanguage(text1)
+        const checkLang2 = checkLanguage(text2)
+        console.log(checkLang1, checkLang2)
+    }
+
+
     return (
         <div className={classParent}>
             <div className={minibox}>
@@ -69,14 +71,7 @@ export default function TextSetter({
                 level={level}
                 setLevel={setLevel}
             />
-            <div className={minibox}>
-                Language 1:
-                <MySelect
-                    state={lang1}
-                    setState={setLang1}
-                    optionValues={langOptions}
-                />
-            </div>
+
             <div className={minibox}>
                 Translation ?
                 <MySelect
@@ -87,20 +82,7 @@ export default function TextSetter({
             </div>
             {isLangLearn ?
                 <>
-                    <div className={minibox}>
-                        Language:
-                        <MySelect
-                            state={lang1}
-                            setState={setLang1}
-                            optionValues={langOptions}
-                        />
-                        Second Language
-                        <MySelect
-                            state={lang2}
-                            setState={setLang2}
-                            optionValues={langOptions}
-                        />
-                    </div>
+
                     <div className={minibox}>
                         Text1:
                         <MyTextarea
@@ -121,14 +103,7 @@ export default function TextSetter({
 
                 :
                 <>
-                    <div className={minibox}>
-                        Language:
-                        <MySelect
-                            state={lang1}
-                            setState={setLang1}
-                            optionValues={langOptions}
-                        />
-                    </div>
+
                     <div className={minibox}>
                         Text:
                         <MyTextarea
@@ -139,6 +114,22 @@ export default function TextSetter({
                     </div>
                 </>
             }
+            <div className={minibox}>
+                Deck:
+                <MySelect
+                    state={deck}
+                    setState={setDeck}
+                    optionValues={['1', '2', '3', '4', '5']}
+                />
+            </div>
+            <div className={minibox}>
+                <button
+                    onClick={onClick}
+                    className="btn-primary"
+                >
+                    Submit
+                </button>
+            </div>
 
 
 

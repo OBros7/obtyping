@@ -17,14 +17,12 @@ const getTypeList = [
 
 
 interface DeckGetterProps {
+    title: string
+    setTitle: React.Dispatch<React.SetStateAction<string>>
     lang1: string
     setLang1: React.Dispatch<React.SetStateAction<string>>
     lang2: string
     setLang2: React.Dispatch<React.SetStateAction<string>>
-    title: string
-    setTitle: React.Dispatch<React.SetStateAction<string>>
-    description: string
-    setDescription: React.Dispatch<React.SetStateAction<string>>
     category: string
     setCategory: React.Dispatch<React.SetStateAction<string>>
     subcategory: string
@@ -38,6 +36,8 @@ interface DeckGetterProps {
 
 
 export default function TextGetter({
+    title,
+    setTitle,
     lang1,
     setLang1,
     lang2,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TextGetter, TextSetter, DeckGetter, DeckSetter } from '@/Admin'
 import { Layout, MainContainer } from '@/Layout';
 import { MyInputNumber, MySelect } from '@/Basics'
@@ -18,11 +18,40 @@ const getTypeList = [
     'get_textlist_by_level'
 ]
 
+const urlListGetDeck = [
+    'get_decklist/basic',
+    'get_decklist/selective',
+    'get_decklist/private',
+    'get_decklist_by_category',
+    'get_decklist_by_level',
+]
+
+const urlListGetText = [
+    'get_textlist/basic',
+    'get_textlist/selective',
+    'get_textlist/private',
+    'get_textlist_by_category',
+    'get_textlist_by_deck',
+    'get_textlist_by_level'
+]
+
+const urlListCreateDeck = [
+    'create_deck',
+]
+
+const urlListCreateText = [
+    'create_text',
+]
+
+
+
 export default function TypingData() {
     /////////// Meta Infomation ///////////
     const [isGetter, setIsGetter] = useState(false)
     const [dataType, setDataType] = useState('text')
     const [userID, setUserID] = useState(1)
+    const [url, setUrl] = useState(urlListGetText[0])
+    const [urlList, setUrlList] = useState(urlListGetText)
 
     /////////// Common ///////////
     const [lang1, setLang1] = useState(langOptions[0])
@@ -38,10 +67,9 @@ export default function TypingData() {
     const [title, setTitle] = useState('')
 
     /////////// Text Setter ///////////
-    const [text11, setText11] = useState('')
-    const [text12, setText12] = useState('')
-    const [text21, setText21] = useState('')
-    const [text22, setText22] = useState('')
+    const [text1, setText1] = useState('')
+    const [text2, setText2] = useState('')
+    const [deck, setDeck] = useState('')
 
     /////////// Deck Setter ///////////
     const [description, setDescription] = useState('')
@@ -50,10 +78,17 @@ export default function TypingData() {
 
 
 
+    useEffect(() => {
+        if (dataType === 'text') {
+            setUrlList(isGetter ? urlListGetText : urlListCreateText)
+        } else {
+            setUrlList(isGetter ? urlListGetDeck : urlListCreateDeck)
+        }
+    }, [dataType, isGetter])
+
     return (
         <Layout>
             <MainContainer>
-                {/* put items in center */}
                 <div className='flex flex-col items-center'>
                     <MySelect
                         state={isGetter}
@@ -77,8 +112,32 @@ export default function TypingData() {
                             defaultState={1}
                         />
                     </div>
+                    <div className={minibox}>
+                        URL:
+                        <MySelect
+                            state={url}
+                            setState={setUrl}
+                            optionValues={urlList}
+                        />
+                    </div>
                     {isGetter ?
-                        dataType === 'text' ? <TextGetter />
+                        dataType === 'text' ?
+                            <TextGetter
+                                title={title}
+                                setTitle={setTitle}
+                                lang1={lang1}
+                                setLang1={setLang1}
+                                lang2={lang2}
+                                setLang2={setLang2}
+                                category={category}
+                                setCategory={setCategory}
+                                subcategory={subcategory}
+                                setSubcategory={setSubcategory}
+                                level={level}
+                                setLevel={setLevel}
+                                nSelect={nSelect}
+                                setNSelect={setNSelect}
+                            />
                             :
                             <DeckGetter
                                 title={title}
@@ -98,7 +157,40 @@ export default function TypingData() {
                                 nSelect={nSelect}
                                 setNSelect={setNSelect}
                             /> :
-                        dataType === 'text' ? <TextSetter /> : <DeckSetter />}
+                        dataType === 'text' ?
+                            <TextSetter
+                                title={title}
+                                setTitle={setTitle}
+                                text1={text1}
+                                setText1={setText1}
+                                text2={text2}
+                                setText2={setText2}
+                                category={category}
+                                setCategory={setCategory}
+                                subcategory={subcategory}
+                                setSubcategory={setSubcategory}
+                                level={level}
+                                setLevel={setLevel}
+                                deck={deck}
+                                setDeck={setDeck}
+                            />
+                            :
+                            <DeckSetter
+                                title={title}
+                                setTitle={setTitle}
+                                description={description}
+                                setDescription={setDescription}
+                                lang1={lang1}
+                                setLang1={setLang1}
+                                lang2={lang2}
+                                setLang2={setLang2}
+                                category={category}
+                                setCategory={setCategory}
+                                subcategory={subcategory}
+                                setSubcategory={setSubcategory}
+                                level={level}
+                                setLevel={setLevel}
+                            />}
 
                 </div>
 
