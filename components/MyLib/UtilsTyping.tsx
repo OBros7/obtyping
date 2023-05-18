@@ -5,11 +5,13 @@ function checkLanguage(input: string): string {
         '\u30A0-\u30FF', // Katakana
         '\u4E00-\u9FFF', // Kanji
         '\uFF66-\uFF9F', // Katakana half-width
+        '\uFF01-\uFF5E', // Full-width Alphabets
+        '\u3000',        // Full-width Space
     ];
     const japaneseRegex = new RegExp(`[${ranges.join('')}]`);
 
-    // English alphabets, digits, and standard keyboard symbols
-    const englishRegex = /^[A-Za-z0-9 !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/;
+    // English alphabets, digits, standard keyboard symbols, empty space, and new line
+    const englishRegex = /^[A-Za-z0-9 !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?\n]*$/;
 
     let language = 'English';
 
@@ -108,9 +110,5 @@ const levelListEn = [
     'Middle/High School',
     'University',
 ]
-
-
-
-
 
 export { checkLanguage, categoryListJa, subcategoryJsonJa, levelListJa, categoryListEn, subcategoryJsonEn, levelListEn }

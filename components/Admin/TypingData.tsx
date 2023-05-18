@@ -65,6 +65,7 @@ export default function TypingData() {
 
     /////////// Setter ///////////
     const [title, setTitle] = useState('')
+    const [visibility, setVisibility] = useState(visibilityOptions[0])
 
     /////////// Text Setter ///////////
     const [text1, setText1] = useState('')
@@ -120,6 +121,15 @@ export default function TypingData() {
                             optionValues={urlList}
                         />
                     </div>
+                    <div className={minibox}>
+                        Visibility:
+                        <MySelect
+                            state={visibility}
+                            setState={setVisibility}
+                            optionValues={visibilityOptions}
+                        />
+                    </div>
+
                     {isGetter ?
                         dataType === 'text' ?
                             <TextGetter
@@ -159,6 +169,8 @@ export default function TypingData() {
                             /> :
                         dataType === 'text' ?
                             <TextSetter
+                                userID={userID}
+                                visibilityInt={visibility2int[visibility]}
                                 title={title}
                                 setTitle={setTitle}
                                 text1={text1}
@@ -176,6 +188,8 @@ export default function TypingData() {
                             />
                             :
                             <DeckSetter
+                                userID={userID}
+                                visibilityInt={visibility2int[visibility]}
                                 title={title}
                                 setTitle={setTitle}
                                 description={description}

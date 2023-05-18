@@ -6,14 +6,7 @@ import { FormatCategory } from './'
 const visibilityOptions = Object.keys(visibility2int)
 const langOptions = Object.keys(lang2int)
 const minibox = 'flex flex-row  justify-center items-center'
-const getTypeList = [
-    'get_textlist/basic',
-    'get_textlist/selective',
-    'get_textlist/private',
-    'get_textlist_by_category',
-    'get_textlist_by_deck',
-    'get_textlist_by_level'
-]
+
 
 interface DeckGetterProps {
     lang1: string

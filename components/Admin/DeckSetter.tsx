@@ -1,22 +1,17 @@
 import React, { useState } from 'react'
 import { MySelect, MyTextbox } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import {
-    categoryListJa,
-    subcategoryJsonJa,
-    levelListJa,
-    categoryListEn,
-    subcategoryJsonEn,
-    levelListEn,
-    checkLanguage,
-} from '@/MyLib/UtilsTyping'
 import { FormatCategory } from './'
 
 const langOptions = Object.keys(lang2int)
 const minibox = 'flex flex-row  justify-center items-center'
 const classParDiv = 'flex flex-col p-4 m-4 outline outline-blue-200'
+const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+
 
 interface DeckSetterProps {
+    userID: number
+    visibilityInt: number
     title: string
     setTitle: React.Dispatch<React.SetStateAction<string>>
     description: string
@@ -35,6 +30,8 @@ interface DeckSetterProps {
 }
 
 export default function DeckSetter({
+    userID,
+    visibilityInt,
     title,
     setTitle,
     description,
@@ -52,6 +49,52 @@ export default function DeckSetter({
     classParent = classParDiv,
 }: DeckSetterProps) {
     const [isLangLearn, setIsLangLearn] = useState(false)
+    const [msg, setMsg] = useState('')
+
+    const onClick = async () => {
+        // check if title and text1 are filled
+        if (title === '') {
+            setMsg('Please fill in the title')
+            return
+        }
+
+
+        const lang1_int = lang2int[lang1]
+        let lang2_int: number | null = null
+        if (!isLangLearn) {
+            lang2_int = lang2int[lang2]
+        }
+
+        const data = {
+            user_id: userID,
+            title: title,
+            description: description,
+            category: category,
+            subcategory: subcategory,
+            level: level,
+            lang1_int: lang1_int,
+            lang2_int: lang2_int,
+            visibility_int: visibilityInt,
+        }
+        const url = `${fastAPIURL}create_deck`
+        // post data to url
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+            mode: 'cors',
+        })
+        const json = await res.json()
+        console.log('Returned json: ', json)
+        setMsg(JSON.stringify(json))
+
+    }
+
+
+
+
     return (
         <div className={classParent}>
             <div className={minibox}>
@@ -108,7 +151,14 @@ export default function DeckSetter({
             }
 
 
-
+            <div className={minibox}>
+                <button
+                    onClick={onClick}
+                    className="btn-primary"
+                >
+                    Submit
+                </button>{msg}
+            </div>
 
 
         </div >
