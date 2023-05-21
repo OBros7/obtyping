@@ -9,11 +9,11 @@ const visibility2int: { [key: string]: number } = {
     paid_partial: 5
 };
 
-const lang2int: { [key: string]: number } = {
+const lang2int: { [key: string]: number | null } = {
     English: 1,
     Japanese: 2,
     Others: 0,
-    None: -1
+    None: null
 }
 
 export { visibility2int, lang2int }

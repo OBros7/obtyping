@@ -4,35 +4,34 @@ import { Layout, MainContainer } from '@/Layout';
 import { MyInputNumber, MySelect } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 
+const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 const dataTypeList = ['text', 'deck']
 const minibox = 'flex flex-row  justify-center items-center'
 
 const visibilityOptions = Object.keys(visibility2int)
 const langOptions = Object.keys(lang2int)
-const getTypeList = [
-    'get_textlist/basic',
-    'get_textlist/selective',
-    'get_textlist/private',
-    'get_textlist_by_category',
-    'get_textlist_by_deck',
-    'get_textlist_by_level'
-]
+
 
 const urlListGetDeck = [
-    'get_decklist/basic',
-    'get_decklist/selective',
-    'get_decklist/private',
+    'get_decklist_by_user',
+    'get_decklist_basic',
+    'get_decklist_selective',
+    'get_decklist_private',
     'get_decklist_by_category',
+    'get_decklist_by_subcategory',
     'get_decklist_by_level',
+    'get_decklist_by_search'
 ]
 
 const urlListGetText = [
-    'get_textlist/basic',
-    'get_textlist/selective',
-    'get_textlist/private',
+    'get_textlist_basic',
+    'get_textlist_selective',
+    'get_textlist_private',
+    '/get_textlist_by_decklist',
     'get_textlist_by_category',
-    'get_textlist_by_deck',
-    'get_textlist_by_level'
+    'get_textlist_by_subcategory',
+    'get_textlist_by_level',
+    'get_textlist_by_search',
 ]
 
 const urlListCreateDeck = [
@@ -43,7 +42,11 @@ const urlListCreateText = [
     'create_text',
 ]
 
-
+const orderByList = [
+    'random',
+    'title',
+    'like',
+]
 
 export default function TypingData() {
     /////////// Meta Infomation ///////////
@@ -62,6 +65,7 @@ export default function TypingData() {
 
     /////////// Getter ///////////
     const [nSelect, setNSelect] = useState(10)
+    const [orderBy, setOrderBy] = useState('random')
 
     /////////// Setter ///////////
     const [title, setTitle] = useState('')
@@ -74,9 +78,11 @@ export default function TypingData() {
 
     /////////// Deck Setter ///////////
     const [description, setDescription] = useState('')
-    const [typingData, setTypingData] = useState<{ [key: string]: any }>({});
-    const [getType, setGetType] = useState(getTypeList[0])
+    const [returnedData, setReturnedData] = useState<[{ [key: string]: any }]>([{}]);
 
+    const clearClick = () => {
+        setReturnedData([{}])
+    }
 
 
     useEffect(() => {
@@ -130,81 +136,119 @@ export default function TypingData() {
                         />
                     </div>
 
-                    {isGetter ?
-                        dataType === 'text' ?
-                            <TextGetter
-                                title={title}
-                                setTitle={setTitle}
-                                lang1={lang1}
-                                setLang1={setLang1}
-                                lang2={lang2}
-                                setLang2={setLang2}
-                                category={category}
-                                setCategory={setCategory}
-                                subcategory={subcategory}
-                                setSubcategory={setSubcategory}
-                                level={level}
-                                setLevel={setLevel}
-                                nSelect={nSelect}
-                                setNSelect={setNSelect}
-                            />
-                            :
-                            <DeckGetter
-                                title={title}
-                                setTitle={setTitle}
-                                description={description}
-                                setDescription={setDescription}
-                                lang1={lang1}
-                                setLang1={setLang1}
-                                lang2={lang2}
-                                setLang2={setLang2}
-                                category={category}
-                                setCategory={setCategory}
-                                subcategory={subcategory}
-                                setSubcategory={setSubcategory}
-                                level={level}
-                                setLevel={setLevel}
-                                nSelect={nSelect}
-                                setNSelect={setNSelect}
-                            /> :
-                        dataType === 'text' ?
-                            <TextSetter
-                                userID={userID}
-                                visibilityInt={visibility2int[visibility]}
-                                title={title}
-                                setTitle={setTitle}
-                                text1={text1}
-                                setText1={setText1}
-                                text2={text2}
-                                setText2={setText2}
-                                category={category}
-                                setCategory={setCategory}
-                                subcategory={subcategory}
-                                setSubcategory={setSubcategory}
-                                level={level}
-                                setLevel={setLevel}
-                                deck={deck}
-                                setDeck={setDeck}
-                            />
-                            :
-                            <DeckSetter
-                                userID={userID}
-                                visibilityInt={visibility2int[visibility]}
-                                title={title}
-                                setTitle={setTitle}
-                                description={description}
-                                setDescription={setDescription}
-                                lang1={lang1}
-                                setLang1={setLang1}
-                                lang2={lang2}
-                                setLang2={setLang2}
-                                category={category}
-                                setCategory={setCategory}
-                                subcategory={subcategory}
-                                setSubcategory={setSubcategory}
-                                level={level}
-                                setLevel={setLevel}
-                            />}
+                    {isGetter ? (
+                        <>
+                            <div className={minibox}>
+                                OrderBy:
+                                <MySelect
+                                    state={orderBy}
+                                    setState={setOrderBy}
+                                    optionValues={orderByList}
+                                />
+                            </div>
+
+                            {dataType === 'text' ? (
+                                <TextGetter
+                                    userID={userID}
+                                    url={fastAPIURL + url}
+                                    lang1={lang1}
+                                    setLang1={setLang1}
+                                    lang2={lang2}
+                                    setLang2={setLang2}
+                                    category={category}
+                                    setCategory={setCategory}
+                                    subcategory={subcategory}
+                                    setSubcategory={setSubcategory}
+                                    level={level}
+                                    setLevel={setLevel}
+                                    nSelect={nSelect}
+                                    setNSelect={setNSelect}
+                                    setReturnedData={setReturnedData}
+                                    orderBy={orderBy}
+                                />
+                            ) : (
+                                <DeckGetter
+                                    url={fastAPIURL + url}
+                                    userID={userID}
+                                    title={title}
+                                    setTitle={setTitle}
+                                    description={description}
+                                    setDescription={setDescription}
+                                    lang1={lang1}
+                                    setLang1={setLang1}
+                                    lang2={lang2}
+                                    setLang2={setLang2}
+                                    category={category}
+                                    setCategory={setCategory}
+                                    subcategory={subcategory}
+                                    setSubcategory={setSubcategory}
+                                    level={level}
+                                    setLevel={setLevel}
+                                    nSelect={nSelect}
+                                    setNSelect={setNSelect}
+                                    setReturnedData={setReturnedData}
+                                    orderBy={orderBy}
+                                />
+                            )}
+                        </>
+                    ) : dataType === 'text' ? (
+                        <TextSetter
+                            userID={userID}
+                            visibilityInt={visibility2int[visibility]}
+                            title={title}
+                            setTitle={setTitle}
+                            text1={text1}
+                            setText1={setText1}
+                            text2={text2}
+                            setText2={setText2}
+                            category={category}
+                            setCategory={setCategory}
+                            subcategory={subcategory}
+                            setSubcategory={setSubcategory}
+                            level={level}
+                            setLevel={setLevel}
+                            deck={deck}
+                            setDeck={setDeck}
+                        />
+                    ) : (
+                        <DeckSetter
+                            userID={userID}
+                            visibilityInt={visibility2int[visibility]}
+                            title={title}
+                            setTitle={setTitle}
+                            description={description}
+                            setDescription={setDescription}
+                            lang1={lang1}
+                            setLang1={setLang1}
+                            lang2={lang2}
+                            setLang2={setLang2}
+                            category={category}
+                            setCategory={setCategory}
+                            subcategory={subcategory}
+                            setSubcategory={setSubcategory}
+                            level={level}
+                            setLevel={setLevel}
+                        />
+                    )}
+
+                    <div className='flex flex-col items-center'>
+                        <button onClick={clearClick} className='btn-second'>Clear</button>
+                        {Array.isArray(returnedData) ?
+                            returnedData.map((data, i) => {
+                                return (
+                                    <div key={i}>
+                                        <pre>{JSON.stringify(data, null, 2)}</pre>
+                                    </div>
+                                );
+                            }) :
+                            'detail' in (returnedData as object) ?
+                                <div>Error: {(returnedData as any).detail}</div> :
+                                typeof returnedData === 'object' ?
+                                    <pre>{JSON.stringify(returnedData, null, 2)}</pre> :
+                                    returnedData
+                        }
+                    </div>
+
 
                 </div>
 

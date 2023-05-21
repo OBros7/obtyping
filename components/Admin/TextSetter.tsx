@@ -6,10 +6,10 @@ import { checkLanguage } from '@/MyLib/UtilsTyping'
 import { FormatCategory } from './'
 
 const langOptions = Object.keys(lang2int)
-const minibox = 'flex flex-row  justify-center items-center'
-const classParDiv = 'flex flex-col p-4 m-4 outline outline-blue-200'
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 
+const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const classParDivDefault = 'search-container'
+const classChildDivDefault = 'minibox'
 
 interface TextSetterProps {
     userID: number
@@ -28,7 +28,8 @@ interface TextSetterProps {
     setLevel: React.Dispatch<React.SetStateAction<string>>
     deck: string
     setDeck: React.Dispatch<React.SetStateAction<string>>
-    classParent?: string
+    classParDiv?: string
+    classChildDiv?: string
 }
 
 export default function TextSetter({
@@ -48,7 +49,8 @@ export default function TextSetter({
     setLevel,
     deck,
     setDeck,
-    classParent = classParDiv,
+    classParDiv = classParDivDefault,
+    classChildDiv = classChildDivDefault,
 }: TextSetterProps) {
     const [isLangLearn, setIsLangLearn] = useState(false)
     const [msg, setMsg] = useState('')
@@ -104,8 +106,8 @@ export default function TextSetter({
 
 
     return (
-        <div className={classParent}>
-            <div className={minibox}>
+        <div className={classParDiv}>
+            <div className={classChildDiv}>
                 Title:
                 <MyTextbox
                     state={title}
@@ -121,7 +123,7 @@ export default function TextSetter({
                 setLevel={setLevel}
             />
 
-            <div className={minibox}>
+            <div className={classChildDiv}>
                 Translation ?
                 <MySelect
                     state={isLangLearn}
@@ -132,7 +134,7 @@ export default function TextSetter({
             {isLangLearn ?
                 <>
 
-                    <div className={minibox}>
+                    <div className={classChildDiv}>
                         Text1:
                         <MyTextarea
                             state={text1}
@@ -140,7 +142,7 @@ export default function TextSetter({
                             textareaClass='text-box h-96 w-full'
                         />
                     </div>
-                    <div className={minibox}>
+                    <div className={classChildDiv}>
                         Text2:
                         <MyTextarea
                             state={text2}
@@ -153,7 +155,7 @@ export default function TextSetter({
                 :
                 <>
 
-                    <div className={minibox}>
+                    <div className={classChildDiv}>
                         Text:
                         <MyTextarea
                             state={text1}
@@ -163,7 +165,7 @@ export default function TextSetter({
                     </div>
                 </>
             }
-            <div className={minibox}>
+            <div className={classChildDiv}>
                 Deck:
                 <MySelect
                     state={deck}
@@ -171,7 +173,7 @@ export default function TextSetter({
                     optionValues={['1', '2', '3', '4', '5']}
                 />
             </div>
-            <div className={minibox}>
+            <div className={classChildDiv}>
                 <button
                     onClick={onClick}
                     className="btn-primary"

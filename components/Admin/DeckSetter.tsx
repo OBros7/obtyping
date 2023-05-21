@@ -4,9 +4,11 @@ import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { FormatCategory } from './'
 
 const langOptions = Object.keys(lang2int)
-const minibox = 'flex flex-row  justify-center items-center'
-const classParDiv = 'flex flex-col p-4 m-4 outline outline-blue-200'
+
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+
+const classParDivDefault = 'search-container'
+const classChildDivDefault = 'minibox'
 
 
 interface DeckSetterProps {
@@ -26,7 +28,8 @@ interface DeckSetterProps {
     setSubcategory: React.Dispatch<React.SetStateAction<string>>
     level: string
     setLevel: React.Dispatch<React.SetStateAction<string>>
-    classParent?: string
+    classParDiv?: string
+    classChildDiv?: string
 }
 
 export default function DeckSetter({
@@ -46,7 +49,8 @@ export default function DeckSetter({
     setSubcategory,
     level,
     setLevel,
-    classParent = classParDiv,
+    classParDiv = classParDivDefault,
+    classChildDiv = classChildDivDefault,
 }: DeckSetterProps) {
     const [isLangLearn, setIsLangLearn] = useState(false)
     const [msg, setMsg] = useState('')
@@ -96,15 +100,15 @@ export default function DeckSetter({
 
 
     return (
-        <div className={classParent}>
-            <div className={minibox}>
+        <div className={classParDiv}>
+            <div className={classChildDiv}>
                 Title:
                 <MyTextbox
                     state={title}
                     setState={setTitle}
                 />
             </div>
-            <div className={minibox}>
+            <div className={classChildDiv}>
                 Description:
                 <MyTextbox
                     state={description}
@@ -119,7 +123,7 @@ export default function DeckSetter({
                 level={level}
                 setLevel={setLevel}
             />
-            <div className={minibox}>
+            <div className={classChildDiv}>
                 Language 1:
                 <MySelect
                     state={lang1}
@@ -127,7 +131,7 @@ export default function DeckSetter({
                     optionValues={langOptions}
                 />
             </div>
-            <div className={minibox}>
+            <div className={classChildDiv}>
                 Translation ?
                 <MySelect
                     state={isLangLearn}
@@ -137,7 +141,7 @@ export default function DeckSetter({
             </div>
             {isLangLearn ?
 
-                <div className={minibox}>
+                <div className={classChildDiv}>
                     Language 2:
                     <MySelect
                         state={lang2}
@@ -151,7 +155,7 @@ export default function DeckSetter({
             }
 
 
-            <div className={minibox}>
+            <div className={classChildDiv}>
                 <button
                     onClick={onClick}
                     className="btn-primary"
