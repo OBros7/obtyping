@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { getDeckListByUser, setQueryParams } from '@/MyLib/UtilsAPI'
 import { MyInputNumber, MySelect } from '@/Basics'
@@ -52,12 +52,27 @@ export default function TextGetter({
     classChildDiv = classChildDivDefault,
 }: TextGetterProps) {
     const [msg, setMsg] = useState('')
-    const [deckList, setDeckList] = useState([])
+    const [deckTitle, setDeckTitle] = useState('')
+    const [deckData, setDeckData] = useState([])
+
+    useEffect(() => {
+        const fetchDeckData = async () => {
+            const _deckData = await getDeckListByUser(userID);
+            setDeckData(_deckData);
+            console.log(_deckData)
+        }
+        fetchDeckData();
+    }, [userID]);
+
+
 
 
     const onClick = async () => {
-        // send get request
 
+        // get deckID from deckTitle
+        const deckID = deckData.filter((deck: any) => deck.title === deckTitle)[0].deck_id
+
+        // set query parameters
         const data = setQueryParams(
             url,
             userID,
@@ -68,24 +83,41 @@ export default function TextGetter({
             level,
             nSelect,
             orderBy,
+            [deckID],
         )
 
+        // handle array parameters separately
+        const arrayParams = ['deck_id_list']; // list all array parameters here
+        let arrayQueryString = '';
+        arrayParams.forEach((key) => {
+            if (Array.isArray(data[key])) {
+                arrayQueryString += '&' + data[key].map((item: number | string) => `${encodeURIComponent(key)}=${encodeURIComponent(item)}`).join('&');
+                delete data[key];
+            }
+        });
+
+        // handle non-array parameters as before
         const queryString = Object.keys(data)
             .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
             .join('&');
 
+        // combine both parts of the query string
+        const fullQueryString = `${queryString}${arrayQueryString}`;
+        console.log('URL', url)
+        console.log('Full', fullQueryString)
+
         // send get request
-        console.log(`${url}?${queryString}`)
-        const res = await fetch(`${url}?${queryString}`, {
+        console.log(`${url}?${fullQueryString}`)
+        const res = await fetch(`${url}?${fullQueryString}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         })
-        console.log(res)
         const resJSON = await res.json()
         console.log(resJSON)
         setReturnedData(resJSON)
+
         setMsg('Done')
     }
     return (
@@ -127,6 +159,14 @@ export default function TextGetter({
                 level={level}
                 setLevel={setLevel}
             />
+            <div className={classChildDiv}>
+                Deck:
+                <MySelect
+                    state={deckTitle}
+                    setState={setDeckTitle}
+                    optionValues={deckData.map((deck: any) => deck.title)}
+                />
+            </div>
             <div className={classChildDiv}>
                 <button
                     onClick={onClick}

@@ -27,7 +27,7 @@ const urlListGetText = [
     'get_textlist_basic',
     'get_textlist_selective',
     'get_textlist_private',
-    '/get_textlist_by_decklist',
+    'get_textlist_by_decklist',
     'get_textlist_by_category',
     'get_textlist_by_subcategory',
     'get_textlist_by_level',
@@ -231,7 +231,7 @@ export default function TypingData() {
                         />
                     )}
 
-                    <div className='flex flex-col items-center'>
+                    {/* <div className='flex flex-col items-center'>
                         <button onClick={clearClick} className='btn-second'>Clear</button>
                         {Array.isArray(returnedData) ?
                             returnedData.map((data, i) => {
@@ -243,11 +243,13 @@ export default function TypingData() {
                             }) :
                             'detail' in (returnedData as object) ?
                                 <div>Error: {(returnedData as any).detail}</div> :
-                                typeof returnedData === 'object' ?
-                                    <pre>{JSON.stringify(returnedData, null, 2)}</pre> :
-                                    returnedData
+                                'loc' in (returnedData as object) && 'msg' in (returnedData as object) && 'type' in (returnedData as object) ?
+                                    <div>Error: {`${(returnedData as any).loc}, ${(returnedData as any).msg}, ${(returnedData as any).type}`}</div> :
+                                    typeof returnedData === 'object' ?
+                                        <pre>{JSON.stringify(returnedData, null, 2)}</pre> :
+                                        returnedData
                         }
-                    </div>
+                    </div> */}
 
 
                 </div>

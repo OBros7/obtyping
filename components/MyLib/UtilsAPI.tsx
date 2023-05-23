@@ -2,6 +2,63 @@ import { visibility2int, lang2int } from '@/MyLib/Mapper'
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 
+/////////////////////////////////////// Interface for post request ///////////////////////////////////////
+interface PostText {
+    user_id: number,
+    title: string,
+    text11: string,
+    text12?: string | null,
+    text21?: string | null,
+    text22?: string | null,
+    category?: string | null,
+    subcategory?: string | null,
+    level?: string | null,
+    lang1_int: number,
+    lang2_int?: number | null,
+    visibility_int: number,
+    shuffle: boolean,
+    deck_id?: number,
+}
+
+
+interface PostDeck {
+    user_id: number,
+    title: string,
+    description?: string | null,
+    category?: string | null,
+    subcategory?: string | null,
+    level?: string,
+    lang1_int: number,
+    lang2_int?: number,
+    visibility_int: number,
+    shuffle: boolean,
+}
+
+
+interface ReceivedText {
+    text_id: number,
+    title: string,
+    text11: string,
+    text12?: string,
+    text21?: string,
+    text22?: string,
+    category?: string,
+    subcategory?: string,
+    level?: string,
+    lang1_int: number,
+    lang2_int?: number,
+    visibility_int: number,
+    shuffle: boolean,
+    deck_id?: number,
+}
+
+interface ReceivedDeck {
+    deck_id: number,
+    title: string,
+    description?: string,
+}
+
+/////////////////////////////////////// Util function ///////////////////////////////////////
 const getContents = async (
     url: string,
     userID: number | null,
@@ -20,9 +77,10 @@ const getDeckListByUser = async (
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
+    const url = fastAPIURL + 'get_decklist_by_user'
 
     const data = setQueryParams(
-        '',//url
+        url,//url
         userID,
         'None',//lang1
         'None',//lang2
@@ -31,8 +89,6 @@ const getDeckListByUser = async (
         '',//level
         nSelect,
         orderBy)
-
-    const url = fastAPIURL + 'get_decklist_by_user'
     const queryString = Object.keys(data)
         .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
         .join('&');
@@ -59,6 +115,7 @@ const setQueryParams = (
     level: string,
     nSelect: number,
     orderBy: string,
+    deckIDList: [number] | null = null,
 ) => {
     // common queries
     let data: { [index: string]: any } = {
@@ -99,9 +156,8 @@ const setQueryParams = (
     } else if (url.includes('get_textlist_private')) {
         console.log('get_textlist_private')
         data['user_id'] = userID
-    } else if (url.includes('/get_textlist_by_decklist')) {
-        console.log('/get_textlist_by_decklist')
-        data['deck_id'] = ''
+    } else if (url.includes('get_textlist_by_decklist')) {
+        data['deck_id_list'] = deckIDList
     } else if (url.includes('get_textlist_by_category')) {
         console.log('get_textlist_by_category')
     } else if (url.includes('get_textlist_by_subcategory')) {
@@ -117,4 +173,13 @@ const setQueryParams = (
 
 
 
-export { getDeckListByUser, setQueryParams }
+export type {
+    PostText,
+    PostDeck,
+    ReceivedText,
+    ReceivedDeck
+}
+export {
+    getDeckListByUser,
+    setQueryParams
+}

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
+import { PostText, getDeckListByUser } from '@/MyLib/UtilsAPI'
 import { checkLanguage } from '@/MyLib/UtilsTyping'
 
 import { FormatCategory } from './'
@@ -54,6 +55,20 @@ export default function TextSetter({
 }: TextSetterProps) {
     const [isLangLearn, setIsLangLearn] = useState(false)
     const [msg, setMsg] = useState('')
+    const [deckTitle, setDeckTitle] = useState('')
+    const [deckData, setDeckData] = useState([])
+
+    useEffect(() => {
+        const fetchDeckData = async () => {
+            let _deckData = await getDeckListByUser(userID);
+            const nullDeck = { deck_id: -1, title: 'Select a deck', description: '' }
+            _deckData.unshift(nullDeck)
+            setDeckData(_deckData);
+            console.log(_deckData)
+        }
+        fetchDeckData();
+    }, [userID]);
+
 
     const onClick = async () => {
         // check if title and text1 are filled
@@ -64,14 +79,14 @@ export default function TextSetter({
 
         // set language
         const lang1 = checkLanguage(text1)
-        const lang1_int = lang2int[lang1]
+        const lang1_int = lang2int[lang1] as number
         let lang2_int: number | null = null
         if (text2 !== '') {
             const lang2 = checkLanguage(text2)
             lang2_int = lang2int[lang2]
         }
 
-        const data = {
+        const data: PostText = {
             user_id: userID,
             title: title,
             text11: text1,
@@ -85,6 +100,10 @@ export default function TextSetter({
             lang2_int: lang2_int,
             visibility_int: visibilityInt,
             shuffle: false,
+        }
+
+        if (deckTitle != 'Select a deck') {
+            data['deck_id'] = deckData.filter((deck: any) => deck.title === deckTitle)[0]['deck_id']
         }
         const url = `${fastAPIURL}create_text`
         // post data to url
@@ -168,9 +187,9 @@ export default function TextSetter({
             <div className={classChildDiv}>
                 Deck:
                 <MySelect
-                    state={deck}
-                    setState={setDeck}
-                    optionValues={['1', '2', '3', '4', '5']}
+                    state={deckTitle}
+                    setState={setDeckTitle}
+                    optionValues={deckData.map((deck: any) => deck.title)}
                 />
             </div>
             <div className={classChildDiv}>
