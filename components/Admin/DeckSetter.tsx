@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { MySelect, MyTextbox } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { FormatCategory } from './'
-
+import { createDeck } from '@/MyLib/UtilsAPI'
 const langOptions = Object.keys(lang2int)
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
@@ -63,7 +63,7 @@ export default function DeckSetter({
         }
 
 
-        const lang1_int = lang2int[lang1]
+        const lang1_int = lang2int[lang1] as number
         let lang2_int: number | null = null
         if (!isLangLearn) {
             lang2_int = lang2int[lang2]
@@ -80,19 +80,22 @@ export default function DeckSetter({
             lang2_int: lang2_int,
             visibility_int: visibilityInt,
         }
-        const url = `${fastAPIURL}create_deck`
-        // post data to url
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-            mode: 'cors',
-        })
-        const json = await res.json()
+        const json = await createDeck(data)
         console.log('Returned json: ', json)
         setMsg(JSON.stringify(json))
+        // const url = `${fastAPIURL}create_deck`
+        // // post data to url
+        // const res = await fetch(url, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(data),
+        //     mode: 'cors',
+        // })
+        // const json = await res.json()
+        // console.log('Returned json: ', json)
+        // setMsg(JSON.stringify(json))
 
     }
 

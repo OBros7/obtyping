@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { PostText, getDeckListByUser } from '@/MyLib/UtilsAPI'
+import { PostText, getDeckListByUser, createText } from '@/MyLib/UtilsAPI'
 import { checkLanguage } from '@/MyLib/UtilsTyping'
 
 import { FormatCategory } from './'
@@ -105,19 +105,25 @@ export default function TextSetter({
         if (deckTitle != 'Select a deck') {
             data['deck_id'] = deckData.filter((deck: any) => deck.title === deckTitle)[0]['deck_id']
         }
-        const url = `${fastAPIURL}create_text`
-        // post data to url
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-            mode: 'cors',
-        })
-        const json = await res.json()
+
+
+        const json = await createText(data)
         console.log('Returned json: ', json)
         setMsg(JSON.stringify(json))
+
+        // const url = `${fastAPIURL}create_text`
+        // // post data to url
+        // const res = await fetch(url, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(data),
+        //     mode: 'cors',
+        // })
+        // const json = await res.json()
+        // console.log('Returned json: ', json)
+        // setMsg(JSON.stringify(json))
 
     }
 

@@ -83,18 +83,10 @@ export default function TextGetter({
             level,
             nSelect,
             orderBy,
-            [deckID],
+            deckID,
         )
 
-        // handle array parameters separately
-        const arrayParams = ['deck_id_list']; // list all array parameters here
         let arrayQueryString = '';
-        arrayParams.forEach((key) => {
-            if (Array.isArray(data[key])) {
-                arrayQueryString += '&' + data[key].map((item: number | string) => `${encodeURIComponent(key)}=${encodeURIComponent(item)}`).join('&');
-                delete data[key];
-            }
-        });
 
         // handle non-array parameters as before
         const queryString = Object.keys(data)

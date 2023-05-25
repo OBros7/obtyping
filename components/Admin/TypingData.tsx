@@ -18,8 +18,6 @@ const urlListGetDeck = [
     'get_decklist_selective',
     'get_decklist_private',
     'get_decklist_by_category',
-    'get_decklist_by_subcategory',
-    'get_decklist_by_level',
     'get_decklist_by_search'
 ]
 
@@ -27,11 +25,10 @@ const urlListGetText = [
     'get_textlist_basic',
     'get_textlist_selective',
     'get_textlist_private',
-    'get_textlist_by_decklist',
-    'get_textlist_by_category',
-    'get_textlist_by_subcategory',
-    'get_textlist_by_level',
-    'get_textlist_by_search',
+    'get_textlist_by_deck',
+    // 'get_textlist_by_decklist',
+    // 'get_textlist_by_category',
+    // 'get_textlist_by_search',
 ]
 
 const urlListCreateDeck = [
