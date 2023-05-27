@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { MySelect, MyTextbox } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { FormatCategory } from './'
-import { createDeck } from '@/MyLib/UtilsAPI'
+import { createDeck } from '@/MyLib/UtilsAPITyping'
 const langOptions = Object.keys(lang2int)
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'

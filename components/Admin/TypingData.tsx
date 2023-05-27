@@ -22,9 +22,9 @@ const urlListGetDeck = [
 ]
 
 const urlListGetText = [
-    'get_textlist_basic',
-    'get_textlist_selective',
-    'get_textlist_private',
+    // 'get_textlist_basic',
+    // 'get_textlist_selective',
+    // 'get_textlist_private',
     'get_textlist_by_deck',
     // 'get_textlist_by_decklist',
     // 'get_textlist_by_category',

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { getDeckListByUser, setQueryParams } from '@/MyLib/UtilsAPI'
+import { getDeckListByUser, getTextListByDeck } from '@/MyLib/UtilsAPITyping'
 import { MyInputNumber, MySelect } from '@/Basics'
 import { FormatCategory } from './'
+import { get } from 'http'
 
 const visibilityOptions = Object.keys(visibility2int)
 const langOptions = Object.keys(lang2int)
@@ -68,45 +69,14 @@ export default function TextGetter({
 
 
     const onClick = async () => {
-
         // get deckID from deckTitle
         const deckID = deckData.filter((deck: any) => deck.title === deckTitle)[0].deck_id
-
-        // set query parameters
-        const data = setQueryParams(
-            url,
-            userID,
-            lang1,
-            lang2,
-            category,
-            subcategory,
-            level,
+        const resJSON = await getTextListByDeck(
+            deckID,
             nSelect,
             orderBy,
-            deckID,
         )
 
-        let arrayQueryString = '';
-
-        // handle non-array parameters as before
-        const queryString = Object.keys(data)
-            .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-            .join('&');
-
-        // combine both parts of the query string
-        const fullQueryString = `${queryString}${arrayQueryString}`;
-        console.log('URL', url)
-        console.log('Full', fullQueryString)
-
-        // send get request
-        console.log(`${url}?${fullQueryString}`)
-        const res = await fetch(`${url}?${fullQueryString}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        const resJSON = await res.json()
         console.log(resJSON)
         setReturnedData(resJSON)
 

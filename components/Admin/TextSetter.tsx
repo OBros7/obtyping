@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { PostText, getDeckListByUser, createText } from '@/MyLib/UtilsAPI'
+import { PostText, getDeckListByUser, createText } from '@/MyLib/UtilsAPITyping'
 import { checkLanguage } from '@/MyLib/UtilsTyping'
 
 import { FormatCategory } from './'

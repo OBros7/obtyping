@@ -2,7 +2,14 @@ import React, { useState } from 'react'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { MyInputNumber, MySelect } from '@/Basics'
 import { FormatCategory } from './'
-import { getDeckListByUser, setQueryParams } from '@/MyLib/UtilsAPI'
+import {
+    getDeckListByUser,
+    getDeckListBasic,
+    getDeckListSelective,
+    getDeckListPrivate,
+    getDeckListByCategory,
+    getDeckListBySearch,
+} from '@/MyLib/UtilsAPITyping'
 
 const visibilityOptions = Object.keys(visibility2int)
 const langOptions = Object.keys(lang2int)
@@ -59,32 +66,54 @@ export default function DeckGetter(
 ) {
     const [msg, setMsg] = useState('')
     const onClick = async () => {
+        console.log(url)
         // send get request
+        let resJSON
+        if (url.includes('get_decklist_by_user')) {
+            resJSON = await getDeckListByUser(userID)
+        } else if (url.includes('get_decklist_basic')) {
+            resJSON = await getDeckListBasic(
+                lang1,
+                lang2,
+                nSelect,
+                orderBy,
+            )
+        } else if (url.includes('get_decklist_selective')) {
+            resJSON = await getDeckListSelective(
+                userID,
+                lang1,
+                nSelect,
+                orderBy,
+            )
+        } else if (url.includes('get_decklist_private')) {
+            resJSON = await getDeckListPrivate(
+                userID,
+                nSelect,
+                orderBy,
+            )
+        } else if (url.includes('get_decklist_by_category')) {
+            resJSON = await getDeckListByCategory(
+                userID,
+                category,
+                subcategory,
+                level,
+                nSelect,
+                orderBy,
+            )
+        } else if (url.includes('get_decklist_by_search')) {
+            resJSON = await getDeckListBySearch(
+                userID,
+                'search_text',
+                nSelect,
+                orderBy,
+            )
+        } else {
+            console.log('url not found')
+            return
+        }
 
-        const data = setQueryParams(
-            url,
-            userID,
-            lang1,
-            lang2,
-            category,
-            subcategory,
-            level,
-            nSelect,
-            orderBy)
 
-        const queryString = Object.keys(data)
-            .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-            .join('&');
 
-        // send get request
-        console.log(`${url}?${queryString}`)
-        const res = await fetch(`${url}?${queryString}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-        const resJSON = await res.json()
         console.log(resJSON)
         setReturnedData(resJSON)
         setMsg('Done')
