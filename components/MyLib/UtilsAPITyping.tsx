@@ -263,6 +263,8 @@ interface PostText {
     visibility_int: number,
     shuffle: boolean,
     deck_id?: number,
+    deck_title?: string,
+    deck_description?: string,
 }
 
 

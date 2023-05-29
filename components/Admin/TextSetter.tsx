@@ -55,13 +55,15 @@ export default function TextSetter({
 }: TextSetterProps) {
     const [isLangLearn, setIsLangLearn] = useState(false)
     const [msg, setMsg] = useState('')
+    const [deckID, setDeckID] = useState(-1)
     const [deckTitle, setDeckTitle] = useState('')
+    const [deckDescription, setDeckDescription] = useState('')
     const [deckData, setDeckData] = useState([])
 
     useEffect(() => {
         const fetchDeckData = async () => {
             let _deckData = await getDeckListByUser(userID);
-            const nullDeck = { deck_id: -1, title: 'Select a deck', description: '' }
+            const nullDeck = { deck_id: -1, title: 'New Deck', description: '' }
             _deckData.unshift(nullDeck)
             setDeckData(_deckData);
             console.log(_deckData)
@@ -74,6 +76,11 @@ export default function TextSetter({
         // check if title and text1 are filled
         if (title === '' || text1 === '') {
             setMsg('Please fill in the title and text1')
+            return
+        }
+
+        if (deckID === -1 && deckTitle === '') {
+            setMsg('Please fill in the deck title')
             return
         }
 
@@ -100,10 +107,13 @@ export default function TextSetter({
             lang2_int: lang2_int,
             visibility_int: visibilityInt,
             shuffle: false,
+            deck_id: deckID,
+
         }
 
-        if (deckTitle != 'Select a deck') {
-            data['deck_id'] = deckData.filter((deck: any) => deck.title === deckTitle)[0]['deck_id']
+        if (deckID === -1) {// create a new deck
+            data['deck_title'] = deckTitle
+            data['deck_description'] = deckDescription
         }
 
 
@@ -193,11 +203,33 @@ export default function TextSetter({
             <div className={classChildDiv}>
                 Deck:
                 <MySelect
-                    state={deckTitle}
-                    setState={setDeckTitle}
-                    optionValues={deckData.map((deck: any) => deck.title)}
+                    state={deckID}
+                    setState={setDeckID}
+                    optionValues={deckData.map((deck: any) => deck.deck_id)}
+                    optionTexts={deckData.map((deck: any) => deck.title)}
+
                 />
             </div>
+            {deckID === -1 ?
+                <>
+                    <div className={classChildDiv}>
+                        Deck Title:
+                        <MyTextbox
+                            state={deckTitle}
+                            setState={setDeckTitle}
+                        />
+                    </div>
+                    <div className={classChildDiv}>
+                        Deck Description:
+                        <MyTextbox
+                            state={deckDescription}
+                            setState={setDeckDescription}
+                        />
+                    </div>
+                </>
+                :
+                null
+            }
             <div className={classChildDiv}>
                 <button
                     onClick={onClick}
