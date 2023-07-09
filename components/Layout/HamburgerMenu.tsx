@@ -3,25 +3,32 @@ import Link from 'next/link'
 import { GlobalContext } from 'context/GlobalContext'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { useRouter } from 'next/router'
+// import { signOut } from 'next-auth/react'
+import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
 
-export default function HamburgerMenu() {
+interface HamburgerMenuProp {
+    user: any
+    signOut: any
+}
+
+export default function HamburgerMenu({ user, signOut }: HamburgerMenuProp) {
     const [isOpen, setIsOpen] = useState(false)
-    const { session, paymentStatus } = useContext(GlobalContext)
+    // const { session, paymentStatus } = useContext(GlobalContext)
     const menuRef = useRef<HTMLDivElement>(null)
     const { locale } = useRouter()
-
+    // const { user, signOut } = useAuth();
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-                setIsOpen(false)
+                setIsOpen(false);
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside)
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [menuRef])
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [menuRef, setIsOpen]); // Add setIsOpen to the dependency array
 
     return (
         <div ref={menuRef} className='relative'>
@@ -39,13 +46,13 @@ export default function HamburgerMenu() {
                             <a onClick={() => setIsOpen(false)} className='block p-1'>Settings</a>
                         </Link>
                     </li>
-                    {session && session.user && paymentStatus !== 'paid' && (
+                    {/* {session && session.user && paymentStatus !== 'paid' && (
                         <li className='mb-1'>
                             <Link href='/account/payment'>
                                 <a onClick={() => setIsOpen(false)} className='block p-1'>Payment</a>
                             </Link>
                         </li>
-                    )}
+                    )} */}
                     <li>
                         <Link href='/record'>
                             <a onClick={() => setIsOpen(false)} className='block p-1'>Record</a>
@@ -57,10 +64,19 @@ export default function HamburgerMenu() {
                                 {locale === 'ja' ? 'English' : '日本語'}
                             </a>
                         </Link>
-
                     </li>
+                    {user ? (
+                        <li>
+                            <button onClick={signOut}>Sign Out</button>
+                        </li>
+
+                    ) : (
+                        null
+                    )}
+
                 </ul>
-            )}
-        </div>
+            )
+            }
+        </div >
     )
 }

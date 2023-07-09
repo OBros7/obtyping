@@ -35,10 +35,26 @@ body {
   @apply rounded p-1 outline outline-2 outline-blue-100 hover:shadow-md focus:outline focus:outline-[5px] focus:outline-blue-500/20;
 }
 
+.email-input {
+  @apply rounded p-1 outline outline-2 outline-blue-100 hover:shadow-md focus:outline focus:outline-[5px] focus:outline-blue-500/20;
+}
+
+.password-input {
+  @apply rounded p-1 outline outline-2 outline-blue-100 hover:shadow-md focus:outline focus:outline-[5px] focus:outline-blue-500/20;
+}
+
 .number-silder {
   @apply bg-gray-200 rounded-lg appearance-none cursor-pointer content-center;
 }
 
 .main-container {
   @apply h-full bg-white rounded content-center m-auto w-11/12 sm:w-9/12 md:w-7/12;
+}
+
+.search-container {
+  @apply flex flex-col p-4 m-4 outline outline-blue-100 bg-blue-50 w-11/12;
+}
+
+.minibox {
+  @apply flex flex-row justify-center items-center;
 }
