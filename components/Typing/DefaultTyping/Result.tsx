@@ -6,8 +6,8 @@ import { ResultDefault } from '@/CommonPage/Result'
 
 interface resultProps {
   status: 'setting' | 'running' | 'result'
-  setStatus: React.Dispatch<React.SetStateAction<'setting' | 'running' | 'result'>>
-  languageType: 'not selected' | 'hiragana' | 'english' | 'kanji'
+  setStatus: React.Dispatch<React.SetStateAction<'menu select' | 'setting' | 'running' | 'result'>>
+  languageType: 'not selected' | 'hiragana' | 'english' | 'kanji' | "free"
   score: number
   setScore: React.Dispatch<React.SetStateAction<number>>
   mistake: number
@@ -38,10 +38,10 @@ export default function Result({
     languageType === 'hiragana'
       ? translater.hiragana
       : languageType === 'english'
-      ? translater.english
-      : languageType === 'kanji'
-      ? translater.japanese
-      : 'ERROR!'
+        ? translater.english
+        : languageType === 'kanji'
+          ? translater.japanese
+          : 'ERROR!'
 
   const handlePlayAgain = () => {
     setStatus('running')
