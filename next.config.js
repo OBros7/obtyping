@@ -9,6 +9,7 @@ const nextConfig = {
   env: {
     // define global variables here
     FASTAPI_URL: process.env.FASTAPI_URL,
+    GOOGLE_CLIENT_ID: process.env.REACT_APP_GOOGLE_CLIENT_ID,
   },
 }
 

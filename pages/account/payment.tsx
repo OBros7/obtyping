@@ -1,9 +1,9 @@
 import React from 'react'
-import { CheckoutForm } from '@/Account'
+import { PaymentStatus } from '@/Payment'
 
 
 export default function payment() {
     return (
-        <CheckoutForm />
+        <PaymentStatus />
     )
 }

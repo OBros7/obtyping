@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+// Helper function to infer the type
+function inferType(state: any): 'string' | 'number' | 'boolean' | '' {
+  const type = typeof state;
+  return type === 'string' || type === 'number' || type === 'boolean' ? type : '';
+}
 
 interface MySelectProps {
   state: any
   setState: React.Dispatch<React.SetStateAction<any>>
-  stateIndex?: number // this is used only if the state is an array of numbers
+  stateIndex?: number
   optionValues: Array<any>
   optionTexts?: Array<string> | string
   attrs?: object
   stateType?: 'string' | 'number' | 'boolean' | ''
 }
-/* Note: set state values are always string */
+
 export default function MySelect({
   state,
   setState,
@@ -19,19 +24,22 @@ export default function MySelect({
   attrs = { className: 'select m-2' },
   stateType = '',
 }: MySelectProps) {
-  if (optionTexts === '') {
-    optionTexts = optionValues.map((ov) => String(ov))
-  }
+  const [selectedTexts, setSelectedTexts] = useState<Array<string>>([])
 
-  if (stateType === '') {
-    if (typeof state === 'number') {
-      stateType = 'number'
-    } else if (typeof state === 'boolean') {
-      stateType = 'boolean'
+  // Auto-detect stateType based on initial state value
+  stateType = inferType(state);
+
+  useEffect(() => {
+    if (optionTexts === '') {
+      setSelectedTexts(optionValues.map((ov) => String(ov)))
     } else {
-      stateType = 'string'
+      setSelectedTexts(Array.isArray(optionTexts) ? optionTexts : [optionTexts])
     }
-  }
+
+    if (!optionValues.includes(state)) {
+      setState(optionValues[0])
+    }
+  }, [state, setState, optionValues, optionTexts])
 
   const updateState = (value: any) => {
     if (Array.isArray(state)) {
@@ -42,13 +50,15 @@ export default function MySelect({
   }
 
   const changeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    let value;
     if (stateType === 'number') {
-      updateState(Number(event.target.value))
+      value = Number(event.target.value)
     } else if (stateType === 'boolean') {
-      updateState(event.target.value === 'true')
+      value = event.target.value === 'true'
     } else {
-      updateState(event.target.value)
+      value = event.target.value
     }
+    updateState(value)
   }
 
   return (
@@ -56,10 +66,11 @@ export default function MySelect({
       {optionValues.map((o, i) => {
         return (
           <option key={i} value={o}>
-            {optionTexts[i]}
+            {selectedTexts[i]}
           </option>
         )
       })}
     </select>
   )
 }
+
