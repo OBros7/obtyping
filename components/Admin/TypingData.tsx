@@ -12,6 +12,7 @@ const visibilityOptions = Object.keys(visibility2int)
 const langOptions = Object.keys(lang2int)
 
 
+
 const urlListGetDeck = [
     'get_decklist_by_user',
     'get_decklist_basic',
@@ -250,6 +251,8 @@ export default function TypingData() {
 
 
                 </div>
+
+
 
             </MainContainer>
         </Layout>
