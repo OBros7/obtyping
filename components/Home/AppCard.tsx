@@ -12,7 +12,7 @@ interface AppCardProps {
 export default function AppCard({ href = '/#', title, description, thumbnail }: AppCardProps) {
   const commonClass = ' w-60'
   const classParent =
-    'transition duration-300 h-64 flex flex-col justify-center rounded-lg mx-2 my-4 shadow-lg overflow-hidden outline outline-blue-500/20 hover:ring-8 hover:ring-blue-500/50' +
+    'mx-4 transition duration-300 h-64 flex flex-col justify-center rounded-lg mx-2 my-4 shadow-lg overflow-hidden outline outline-blue-500/20 hover:ring-8 hover:ring-blue-500/50' +
     commonClass
   const classImg = 'basis-[50%] rounded-t-lg p-4 border-b border-blue-500/50' + commonClass
   const classTitle =
