@@ -1,5 +1,6 @@
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { findCategoryAndSubcategoryIds } from './UtilsTyping'
+import { create } from 'domain';
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 
@@ -47,6 +48,23 @@ interface getDeckTextParams {
 
 
 /////////////////////////////////////// API GET function ///////////////////////////////////////
+const createQueryString = (data: getDeckTextParams) => {
+    const queryString = Object.keys(data)
+        .filter((key) => data[key as keyof typeof data] !== undefined)  // Filter out undefined values
+        .map((key) => {
+            const value = data[key as keyof typeof data]
+            if (value !== undefined) { // Check to ensure value is not undefined
+                return `${encodeURIComponent(key)}=${encodeURIComponent(value as string | number | boolean)}`
+            }
+        })
+        .join('&');
+    return queryString
+
+    // const queryString = Object.keys(data)
+    // .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
+    // .join('&');
+}
+
 
 const getDeckListByUser = async (
     userID: number | null,
@@ -61,9 +79,9 @@ const getDeckListByUser = async (
         order_by: orderBy,
     }
 
-    const queryString = Object.keys(data)
-        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-        .join('&');
+
+    const queryString = createQueryString(data)
+
 
     // send get request
     console.log(`${url}?${queryString}`)
@@ -79,21 +97,16 @@ const getDeckListByUser = async (
 
 const getDeckListBasic = async (
     lang1: string,
-    lang2: string,
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
     const url = fastAPIURL + 'get_decklist_basic'
     let data: getDeckTextParams = {
-        lang1_int: lang2int[lang1],
+        lang1_int: lang2int(lang1),
         n_select: nSelect,
         order_by: orderBy,
     }
-    if (lang2int[lang2]) data['lang2_int'] = lang2int[lang2]
-
-    const queryString = Object.keys(data)
-        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-        .join('&');
+    const queryString = createQueryString(data)
 
     // send get request
     const res = await fetch(`${url}?${queryString}`, {
@@ -116,13 +129,12 @@ const getDeckListSelective = async (
     const url = fastAPIURL + 'get_decklist_selective'
     let data: getDeckTextParams = {
         user_id: userID,
-        lang1_int: lang2int[lang1],
+        lang1_int: lang2int(lang1),
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = Object.keys(data)
-        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-        .join('&');
+    const queryString = createQueryString(data)
+
 
     // send get request
     const res = await fetch(`${url}?${queryString}`, {
@@ -147,9 +159,8 @@ const getDeckListPrivate = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = Object.keys(data)
-        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-        .join('&');
+    const queryString = createQueryString(data)
+
 
     // send get request
     const res = await fetch(`${url}?${queryString}`, {
@@ -178,9 +189,8 @@ const getDeckListByCategory = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = Object.keys(data)
-        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-        .join('&');
+    const queryString = createQueryString(data)
+
 
     // send get request
     const res = await fetch(`${url}?${queryString}`, {
@@ -206,9 +216,9 @@ const getDeckListBySearch = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = Object.keys(data)
-        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-        .join('&');
+    const queryString = createQueryString(data)
+
+
     // send get request
     const res = await fetch(`${url}?${queryString}`, {
         method: 'GET',
@@ -231,9 +241,8 @@ const getTextListByDeck = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = Object.keys(data)
-        .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-        .join('&');
+    const queryString = createQueryString(data)
+
 
     // send get request
     const res = await fetch(`${url}?${queryString}`, {
@@ -320,7 +329,8 @@ export type {
     PostText,
     PostDeck,
     ReceivedText,
-    ReceivedDeck
+    ReceivedDeck,
+    getDeckTextParams,
 }
 export {
     createDeck,

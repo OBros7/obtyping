@@ -74,7 +74,6 @@ export default function DeckGetter(
         } else if (url.includes('get_decklist_basic')) {
             resJSON = await getDeckListBasic(
                 lang1,
-                lang2,
                 nSelect,
                 orderBy,
             )

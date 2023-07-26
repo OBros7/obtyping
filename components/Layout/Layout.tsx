@@ -5,8 +5,7 @@ import { useRouter } from 'next/router'
 import React, { useContext, useEffect, useState } from 'react'
 // import { useSession, signIn, signOut } from 'next-auth/react'
 // import { GlobalContext } from 'context/GlobalContext'
-import { HeaderLink } from './'
-import { HamburgerMenu } from './'
+import { HeaderLink, HamburgerMenu } from './'
 import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
 import useUserFromCookie from '@/MyCustomHooks/useUserFromCookie';
 const siteTitle = 'Obgames'
@@ -57,7 +56,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
         </div>
         <div {...headerBox}>
-          <HeaderLink href='/admin/typingdata' text='Admin' addClass='outline outline-white outline-2' />
+          <HeaderLink href='/admin' text='Admin' addClass='outline outline-white outline-2' />
         </div>
         <div {...headerBox}>
           {user ? (

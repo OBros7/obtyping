@@ -1,56 +1,41 @@
 let langDict = {
-  BrainGames: {
-    ja: '脳トレ',
-    en: 'Brain Games',
+  startNow: {
+    ja: '今すぐタイピングレベルを計測！',
+    en: 'Start typing test now!',
   },
-  ReactionTime: {
-    ja: '反射神経測定',
-    en: 'Reaction Time Test',
-  },
-  ReactionTimeDes: {
-    ja: '画面の変化にどれだけ早く反応できるかを測定する。反射神経を鍛えるのに使える。',
-    en: 'Measures how quickly you can react to changes in the screen. Can be used to train reflexes.',
-  },
-  SimpleArithmetic: {
-    ja: 'スピード暗算',
-    en: 'Metal Arithmetic Drills',
-  },
-  SimpleArithmeticDes: {
-    ja: '暗算力を鍛えろ！',
-    en: 'Solve as many simple arithmetic problems as you can!',
+  selectTyping: {
+    ja: 'タイピングテキストの種類を選択',
+    en: 'Select typing text type',
   },
   Typing: {
     ja: 'タイピング',
     en: 'Typing',
   },
-  Tools: {
-    ja: '便利ツール',
-    en: 'Tools',
+  basicTypingTitle: {
+    ja: '基本タイピング',
+    en: 'Basic typing',
   },
-  RandomTimer: {
-    ja: 'ランダムタイマー',
-    en: 'Random Timer',
+  basicTypingDescription: {
+    ja: '基本的なタイピング練習です。基礎力を鍛えるのに最適です。',
+    en: 'This is a basic typing practice. It is best for training your basic skills.',
   },
-  RandomTimerDes: {
-    ja: 'ランダムなタイミングで音を鳴らしたり円を画面に表示。反射神経を鍛えるのに使える。',
-    en: 'Randomly generate sound or visual effect to train your reflex',
+  customTypingTitle: {
+    ja: 'カスタムタイピング',
+    en: 'Custom typing',
   },
-  CustomTimer: {
-    ja: 'カスタムタイマー',
-    en: 'Custom Timer',
+  customTypingDescription: {
+    ja: '自分で作成したテキストを使ってタイピング練習ができます。',
+    en: 'You can practice typing with the text you created.',
   },
-  CustomTimerDes: {
-    ja: '自由にカスタマイズできるタイマー。',
-    en: 'Flexibly customizable timer.',
+  categoryTypingTitle: {
+    ja: 'カテゴリータイピング',
+    en: 'Category typing',
   },
-  FlashCard: {
-    ja: 'フラッシュカード',
-    en: 'Flash Card',
+  categoryTypingDescription: {
+    ja: '様々なカテゴリからテキストを選ぶことができます。勉強をしながらタイピングを鍛えよう！',
+    en: 'You can choose text from various categories. Let\'s train your typing while studying!',
   },
-  FlashCardDes: {
-    ja: '自分で作った単語帳を使って単語を覚えよう！',
-    en: 'Use your own flash card to memorize words!',
-  },
+
 }
 
 export default langDict
