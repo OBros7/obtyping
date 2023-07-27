@@ -5,7 +5,6 @@ import { InitialSetting, Typing, langDict, Result } from '.'
 import { useTranslation } from '@/MyCustomHooks'
 import { hiraganaSentense, englishSentense, kanjisentence } from './FixedContent'
 import * as wanakana from 'wanakana';
-import Keyboard from './Keyboard'
 
 export enum AppStatus {
   SETTINGS = 'settings',
@@ -21,8 +20,8 @@ export default function DefaultTyping() {
   const [mode, setMode] = useState<'time-attack' | '1-minute-challenge'>('time-attack')
   const [status, setStatus] = useState<'menu select' | 'setting' | 'running' | 'result'>('menu select')
   const [languageType, setLanguageType] = useState<'not selected' | 'hiragana' | 'english' | 'kanji' | 'free'>('not selected')
-  const [original, setOriginal] = useState<string>('こんにちは。こんばんは。')
-  const [sentence, setSentence] = useState<string>('こんにちは。こんばんは。')
+  const [translatedSentence, setTranslatedSentence] = useState<string>('')
+  const [sentence, setSentence] = useState<string>('しんかんせんにのって、とうきょうからおおさかまでいくことにしました。はじめてのしんかんせんは、とてもはやくて、どきどきしました。でも、きれいなけしきをみながらのんびりとたびをたのしめました。')
 
   const [score, setScore] = useState(0)
   const [mistake, setMistake] = useState(0)
@@ -42,11 +41,11 @@ export default function DefaultTyping() {
   };
 
 
-  if (isJapaneseText(sentence)) {
-    setSentence(wanakana.toRomaji(sentence))
-    console.log('Romaji: ', sentence);
-    console.log('Japanese: ', original);
-  }
+  useEffect(() => {
+    if (isJapaneseText(sentence)) {
+      setTranslatedSentence(wanakana.toRomaji(sentence))
+    }
+  }, [sentence]);
 
   useEffect(() => {
     if (isJapaneseText(sentence)) {
@@ -74,8 +73,8 @@ export default function DefaultTyping() {
         ) : status === 'running' && (languageType === "english" || languageType === "hiragana" || languageType === "kanji" || languageType === "free") ? (
           <div className='flex flex-col'>
             <Typing
-              original={original}
-              setOriginal={setOriginal}
+              translatedSentence={translatedSentence}
+              setTranslatedSentence={setTranslatedSentence}
               sentence={sentence}
               setSentence={setSentence}
               status={status}
