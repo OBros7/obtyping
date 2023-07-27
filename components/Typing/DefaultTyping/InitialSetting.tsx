@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, MainContainer } from '@/Layout'
 import { langDict } from '.'
+import TextMenu from './TextMenu'
 
 interface InitialSettingProps {
   menu: string
@@ -8,6 +9,8 @@ interface InitialSettingProps {
   setStatus: React.Dispatch<React.SetStateAction<'menu select' | 'setting' | 'running' | 'result'>>
   languageType: 'not selected' | 'hiragana' | 'english' | 'kanji' | 'free'
   setLanguageType: React.Dispatch<React.SetStateAction<'not selected' | 'hiragana' | 'english' | 'kanji' | 'free'>>
+  timerSetting: '30 seconds' | '1 minute' | '2 minute' | '3 minutes' | '5 minutes'
+  setTimerSetting: React.Dispatch<React.SetStateAction<'30 seconds' | '1 minute' | '2 minute' | '3 minutes' | '5 minutes'>>
 }
 
 export interface Settings {
@@ -16,7 +19,7 @@ export interface Settings {
   practiceText: string
 }
 
-export default function InitialSetting({ menu, status, setStatus, languageType, setLanguageType }: InitialSettingProps) {
+export default function InitialSetting({ menu, status, setStatus, languageType, setLanguageType, timerSetting, setTimerSetting }: InitialSettingProps) {
   const [mode, setMode] = useState<Settings['mode']>('time-attack')
   const [tag, setTag] = useState('')
   const [practiceText, setPracticeText] = useState('')
@@ -28,15 +31,6 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
   return (
     <>
       <h2 className='text-4xl mb-20'>Typing Test Settings</h2>
-
-      {/* Mode */}
-      <div className='mb-10'>
-        <label htmlFor="mode">Mode:</label>
-        <select id="mode" value={mode} onChange={(e) => setMode(e.target.value as Settings['mode'])}>
-          <option value="time-attack">Time Attack</option>
-          <option value="1-minute-challenge">1 Minute Challenge</option>
-        </select>
-      </div>
 
       {/* Language */}
       <div className='mb-10'>
@@ -50,26 +44,7 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
         </select>
       </div>
 
-      {/* Tag */}
-      <div className='mb-10'>
-        <label htmlFor="tag">Tag:</label>
-        <input
-          id="tag"
-          type="text"
-          value={tag}
-          onChange={(e) => setTag(e.target.value)}
-        />
-      </div>
-
-      {/* Practice Text */}
-      <div className='mb-10'>
-        <label htmlFor="practiceText">Text to Practice:</label>
-        <textarea
-          id="practiceText"
-          value={practiceText}
-          onChange={(e) => setPracticeText(e.target.value)}
-        />
-      </div>
+      <TextMenu text="Your text here" />
 
       {/* Submit */}
       <div className="flex justify-center mt-4">
