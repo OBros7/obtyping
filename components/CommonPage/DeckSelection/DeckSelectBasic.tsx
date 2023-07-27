@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
-import { langDict } from './'
+import { langDict, DeckList, DeckCard } from './'
 import { useAuth, useTranslation } from '@/MyCustomHooks'
 import {
     getDeckListBasic,
@@ -32,7 +32,7 @@ export default function DeckSelectBasic() {
             setDeckList(resJSON)
             // return resJSON; // or set it in a state variable.
         }
-        const resJSON = fetchDeckList()
+        fetchDeckList()
 
 
         // setDeckList(resJSON)
@@ -42,14 +42,8 @@ export default function DeckSelectBasic() {
     return (
         <Layout>
             <MainContainer addClass='p-4'>
-                {/* show all deckList using loop*/}
 
-                {deckList.map(deck => (
-                    <div key={deck.deck_id}>
-                        <h2>{deck.title}</h2>
-                        <p>{deck.description}</p>
-                    </div>
-                ))}
+                <DeckList deckList={deckList} />
 
             </MainContainer>
         </Layout>

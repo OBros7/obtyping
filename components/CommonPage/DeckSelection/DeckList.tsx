@@ -1,21 +1,25 @@
 import React from 'react'
 import { langDict, DeckCard } from './'
+import {
+    ReceivedDeck,
+} from '@/MyLib/UtilsAPITyping'
 
 
-interface DeckCardProps {
-    deckTitle: string
-    deckDescription: string
-}
 
 interface DeckListProps {
-    deckList: DeckCardProps[]
+    deckList: ReceivedDeck[]
 }
 
 
-export default function DeckList() {
-    return (
-        <div>
 
-        </div>
+
+export default function DeckList({ deckList }: DeckListProps) {
+    return (
+        <>
+            {deckList.map(deck => (
+                <DeckCard deck={deck} />
+
+            ))}
+        </>
     )
 }
