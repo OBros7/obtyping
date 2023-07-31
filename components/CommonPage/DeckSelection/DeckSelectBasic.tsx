@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
-import { langDict, DeckList, DeckCard } from './'
+import { langDict, DeckListButton } from './'
 import { useAuth, useTranslation } from '@/MyCustomHooks'
 import {
     getDeckListBasic,
@@ -18,6 +18,8 @@ export default function DeckSelectBasic() {
     const [nSelect, setNSelect] = useState(10)
     const [orderBy, setOrderBy] = useState('title')
     const [deckList, setDeckList] = useState<ReceivedDeck[]>([])
+
+    const [selectedDeckId, setSelectedDeckId] = useState('' as string)
 
 
 
@@ -42,8 +44,7 @@ export default function DeckSelectBasic() {
     return (
         <Layout>
             <MainContainer addClass='p-4'>
-
-                <DeckList deckList={deckList} />
+                <DeckListButton deckList={deckList} setSelectedDeckId={setSelectedDeckId} />
 
             </MainContainer>
         </Layout>
