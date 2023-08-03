@@ -19,11 +19,6 @@ export default function DeckSelectBasic() {
     const [orderBy, setOrderBy] = useState('title')
     const [deckList, setDeckList] = useState<ReceivedDeck[]>([])
 
-    const [selectedDeckId, setSelectedDeckId] = useState('' as string)
-
-
-
-
     useEffect(() => {
         const fetchDeckList = async () => {
             let resJSON = await getDeckListBasic(
@@ -44,7 +39,7 @@ export default function DeckSelectBasic() {
     return (
         <Layout>
             <MainContainer addClass='p-4'>
-                <DeckListButton deckList={deckList} setSelectedDeckId={setSelectedDeckId} />
+                <DeckListButton deckList={deckList} />
 
             </MainContainer>
         </Layout>

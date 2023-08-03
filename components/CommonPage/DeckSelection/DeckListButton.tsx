@@ -7,17 +7,17 @@ import {
 
 interface DeckListProps {
     deckList: ReceivedDeck[]
-    setSelectedDeckId: React.Dispatch<React.SetStateAction<string>>
+    // setSelectedDeckId: React.Dispatch<React.SetStateAction<string>>
 }
 
 
 
 
-export default function DeckList({ deckList, setSelectedDeckId }: DeckListProps) {
+export default function DeckList({ deckList }: DeckListProps) {
     return (
         <>
             {deckList.map(deck => (
-                <DeckCardButton deck={deck} setSelectedDeckId={setSelectedDeckId} />
+                <DeckCardButton deck={deck} />
             ))}
         </>
     )

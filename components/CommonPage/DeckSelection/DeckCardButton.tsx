@@ -4,7 +4,7 @@ import {
 } from '@/MyLib/UtilsAPITyping'
 interface DeckCardButtonProps {
     deck: ReceivedDeck
-    setSelectedDeckId: React.Dispatch<React.SetStateAction<string>>
+    // setSelectedDeckId: React.Dispatch<React.SetStateAction<string>>
 }
 import { MySelect } from '@/Basics'
 
@@ -12,11 +12,12 @@ import { MySelect } from '@/Basics'
 const mainDivClass = 'flex flex-row items-center flex-wrap justify-center w-full rounded-xl p-4 m-4'
 const divClass = 'flex flex-col flex-wrap justify-center w-8/12 bg-blue-200 rounded-xl p-4 m-4'
 const buttonClass = 'bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-fit w-fit'
-export default function DeckCardButton({ deck, setSelectedDeckId }: DeckCardButtonProps) {
+export default function DeckCardButton({ deck }: DeckCardButtonProps) {
     const [modeTime, setModeTime] = useState<1 | 2 | 3 | 5>(1)
 
     const handleClick = () => {
-        setSelectedDeckId(deck.deck_id)
+        const url = `/typing/typing?deckid=${deck.deck_id}&minutes=${modeTime}`;
+        window.location.href = url;
     }
 
     return (
