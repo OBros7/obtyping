@@ -71,6 +71,7 @@ export default function TextGetter({
     const onClick = async () => {
         // get deckID from deckTitle
         const deckID = deckData.filter((deck: any) => deck.title === deckTitle)[0].deck_id
+        console.log(deckID)
         const resJSON = await getTextListByDeck(
             deckID,
             nSelect,

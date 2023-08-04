@@ -9,11 +9,22 @@ const visibility2int: { [key: string]: number } = {
     paid_partial: 5
 };
 
-const lang2int: { [key: string]: number | null } = {
-    English: 1,
-    Japanese: 2,
-    Others: 0,
-    None: null
+
+
+const _lang2int: { [key: string]: number | null } = {
+    english: 1,
+    eg: 1,
+    en: 1,
+    eng: 1,
+    japanese: 2,
+    jp: 2,
+    jpn: 2,
+    others: 0,
+    none: null
+}
+
+const lang2int = (lang: string): number | null => {
+    return _lang2int[lang.toLowerCase()]
 }
 
 export { visibility2int, lang2int }
