@@ -21,7 +21,7 @@ export default function DefaultTyping() {
   const [status, setStatus] = useState<'menu select' | 'setting' | 'running' | 'result'>('menu select')
   const [languageType, setLanguageType] = useState<'not selected' | 'hiragana' | 'english' | 'kanji' | 'free'>('not selected')
   const [translatedSentence, setTranslatedSentence] = useState<string>('')
-  const [sentence, setSentence] = useState<string>('しんかんせんにのって、とうきょうからおおさかまでいくことにしました。はじめてのしんかんせんは、とてもはやくて、どきどきしました。でも、きれいなけしきをみながらのんびりとたびをたのしめました。')
+  const [sentence, setSentence] = useState<string>('しょうかい')
 
   const [score, setScore] = useState(0)
   const [mistake, setMistake] = useState(0)
