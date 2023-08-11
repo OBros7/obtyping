@@ -32,6 +32,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
     "react-icons": "^4.4.0",
+    "wanakana": "^5.1.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

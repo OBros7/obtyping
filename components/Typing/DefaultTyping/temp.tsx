@@ -8,10 +8,11 @@ import { ok } from 'assert'
 import Keyboard from './Keyboard'
 import Fingers from './Fingers';
 import romajiDict from './Romaji.json';
+import { copyFileSync } from 'fs'
 
 interface TypingProps {
-  translatedSentence: string
-  setTranslatedSentence: React.Dispatch<React.SetStateAction<string>>
+  original: string
+  setOriginal: React.Dispatch<React.SetStateAction<string>>
   sentence: string
   setSentence: React.Dispatch<React.SetStateAction<string>>
   status: 'setting' | 'running' | 'result'
@@ -33,8 +34,8 @@ let numSentences: number
 let shortage: number = 0
 
 export default function Typing({
-  translatedSentence,
-  setTranslatedSentence,
+  original,
+  setOriginal,
   sentence = '変更前。デバッグ中。',
   setSentence,
   status,
@@ -58,19 +59,16 @@ export default function Typing({
   const isCorrects = useRef<boolean[]>([])
   const [judgeArrayUpdated, setJudgeArrayUpdated] = useState<boolean[]>([])
   const [japaneseIndex, setJapaneseIndex] = useState<number>(0)
-  const [currentInputLength, setCurrentInputLength] = useState<number>(0) // ひらがな1文字内のローマ字の位置?不要？
-  const [currentInputText, setCurrentInputText] = useState<string>('') // 今打ち込んでいるローマ字群?不用？
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextKey, setNextKey] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(60);
   const [isInputBlocked, setIsInputBlocked] = useState(false);
   const [withinCharacterIndex, setWithinCharacterIndex] = useState<number>(0); // ひらがな1文字内のローマ字の位置
-  // const [withinCharacterText, setWithinCharacterText] = useState<string>(''); // ひらがな1文字内のローマ字
   const withinCharacterText = useRef<string>(''); // ひらがな1文字内のローマ字
   const [isMatched, setIsMatched] = useState(false);
   const isJapaneseCorrects = useRef<boolean[]>([])
   const [prevText, setPrevText] = useState('');
-  const [inputValue, setInputValue] = useState('')
+
 
 
   const lang = languageType === 'english' ? 'en' : languageType === 'hiragana' || languageType === 'kanji' ? 'ja' : 'und';
@@ -138,23 +136,6 @@ export default function Typing({
     return convertTable[character] || ''; // Return the Romaji value from the romajiDict object or an empty string if not found
   }
 
-  function hasMultipleRomajiRepresentations(currentTargetJapaneseChar: string) {
-    const romajiValue = convertTable[currentTargetJapaneseChar];
-    if (romajiValue) {
-      const representations = romajiValue.split(', ').map(str => str.trim());
-      return representations.length >= 2;
-    }
-    return false;
-  }
-
-  function getRomajiRepresentations(hiraganaKey: string) {
-    const romajiValue = convertTable[hiraganaKey];
-    if (romajiValue) {
-      return romajiValue.split(', ').map(str => str.trim());
-    }
-    return []; // Return an empty array if the Hiragana key is not found
-  }
-
   function findMatchingString(array: string[], searchString: string) {
     for (let i = 0; i < array.length; i++) {
       const currentString = array[i];
@@ -165,7 +146,10 @@ export default function Typing({
     return false;
   }
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const key = event.key;
+    const targetChar = targetText[newLineItems]?.charAt(currentIndex);
+
     event.preventDefault();
     // Check if the key is a printable character
     if (event.ctrlKey || event.altKey || event.metaKey) {
@@ -178,26 +162,14 @@ export default function Typing({
     const isPrintable = /^[ -~]+$/
     if (!isPrintable.test(event.key)) return;
 
-    function extractTwoCharacters(centence: string, position: number) {
-      return centence.substring(position, position + 2);
-    }
-
     const currentKey = event.key;
-
-    const currentTargetChar = targetText[newLineItems].charAt(currentIndex);
-    const currentTargetJapaneseChar = japaneseText[newLineItems].charAt(japaneseIndex);
-    const currentTargetJapaneseCharSecond = extractTwoCharacters(japaneseText[newLineItems], japaneseIndex)
-
+    const currentTargetChar = targetText[newLineItems].charAt(currentIndex); // 打ち込むべき1文字(不要？)
+    const currentTargetJapaneseChar = japaneseText[newLineItems].charAt(japaneseIndex); //対象のひらがな1文字
     const tempTargetRomaji = convertToRomaji(currentTargetJapaneseChar);
-    const tempTargetRomajiSecond = convertToRomaji(currentTargetJapaneseCharSecond);
-
-    const currentTargetRomaji = tempTargetRomaji.split(', ')
-    const targetCharLength: number = getLongestString(currentTargetRomaji);
-    const currentInputtext = eventTarget.slice(-1 * targetCharLength);
+    const currentTargetRomaji = tempTargetRomaji.split(', ')  // 打ち込むべきローマ字群
+    const targetCharLength: number = getLongestString(currentTargetRomaji); // 打ち込むべきローマ字の最大の長さ
+    const currentInputtext = eventTarget.slice(-1 * targetCharLength); //今打ち込んでいるローマ字群 (不要？)
     const newWithinCharacterText = isInputBlocked ? prevText.slice(0, -1) + currentKey : prevText + currentKey;
-    setInputValue(event.currentTarget.value);
-    // 正解のローマ字を全て配列にする
-    const targetRomajies = [...currentTargetJapaneseChar, ...currentTargetJapaneseCharSecond]
 
     function prgressTargetSentence() {
       newLineItems += 1;
@@ -235,9 +207,12 @@ export default function Typing({
       return maxLength
     }
 
+    // Check if the key is a 'Backspace'
     if (event.key === 'Backspace' && withinCharacterText.current.length > 0) {
+      // Remove the last character from the current text input
       withinCharacterText.current = withinCharacterText.current.slice(0, -1);
       setText((prevText) => prevText.slice(0, -1));
+      // isCorrects.current = isCorrects.current.slice(0, -1);
       isCorrects.current.pop();
       setCurrentIndex((prevIndex) => prevIndex - 1);
       setWithinCharacterIndex((prevIndex) => prevIndex - 1)
@@ -253,38 +228,25 @@ export default function Typing({
       setWithinCharacterIndex((prevIndex) => prevIndex + 1)
       withinCharacterText.current = withinCharacterText.current + currentKey
       setCurrentIndex((prevIndex) => prevIndex + 1)
-      setText((prevText) => prevText + currentKey) //textareaが無いから不要？
-      isCorrects.current.push(currentKey === currentTargetChar)
+      setText((prevText) => prevText + currentKey)
+      console.log('check1')
+      // const isCorrect = currentTargetChar === currentKey;
+      isCorrects.current.push(currentTargetChar === currentKey);
     } else {
       withinCharacterText.current = withinCharacterText.current.slice(0, -1) + currentKey
-      setText((prevText) => prevText.slice(0, -1) + currentKey) //textareaが無いから不要？
-
+      setText((prevText) => prevText.slice(0, -1) + currentKey)
     }
+
 
     const matched = findMatchingString(currentTargetRomaji, withinCharacterText.current);
 
-    if (hasMultipleRomajiRepresentations(currentTargetJapaneseChar)) {
-      const romajiCandidate = getRomajiRepresentations(currentTargetJapaneseChar)
-      const startOfOtherRomaji = currentTargetRomaji.find((romaji: string) => romaji.startsWith(withinCharacterText.current));
-      if (startOfOtherRomaji) {
-        if (currentTargetRomaji.length > 1) {
-          // The current Romaji segment the user is typing
-          const currentSegment = targetText[newLineItems].substring(0, currentIndex + 1);
-
-          // Find the Romaji that starts with the text the user has typed
-          const startOfOtherRomaji = currentTargetRomaji.find((romaji: string) => romaji.startsWith(withinCharacterText.current));
-
-          if (startOfOtherRomaji) {
-            // Replace the current segment with the matching Romaji
-            targetText[newLineItems] = startOfOtherRomaji + targetText[newLineItems].substring(currentIndex + 1);
-          }
-        }
-
-        console.log('startOfOtherRomaji: ', startOfOtherRomaji);
-        console.log('currentTargetJapaneseChar: ', currentTargetJapaneseChar);
-        console.log('currentTargetJapaneseCharSecond: ', currentTargetJapaneseCharSecond);
-      }
-    }
+    console.log('currentTargetRomaji:' + currentTargetRomaji);
+    console.log('withinCharacterText:' + withinCharacterText.current);
+    console.log('curentIndex:' + currentIndex);
+    console.log('targetCharLength:' + targetCharLength);
+    console.log('currentTargetChar:' + currentTargetChar);
+    console.log('currentKey:' + currentKey);
+    console.log('isCorrect.current:' + isCorrects.current);
 
     if (matched) {
       if (currentIndex === targetLength - 1) {
@@ -292,13 +254,21 @@ export default function Typing({
       } else {
         progressJapaneseChar()
       }
+      // setCurrentIndex((prevIndex) => prevIndex + 1);
       setIsInputBlocked(false);
+
     } else if (targetCharLength > withinCharacterText.current.length) {
+
+      // isCorrects.current[currentIndex] = findMatchingString(currentTargetRomaji, withinCharacterText.current)
       setIsInputBlocked(false);
+
     } else if (targetCharLength === withinCharacterText.current.length) {
       setIsInputBlocked(true);
       setMistake((prevMistake) => prevMistake + 1)
+
     }
+    console.log('matched:' + matched);
+
   }
 
   const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
@@ -333,8 +303,8 @@ export default function Typing({
     let tempSentence: string[] = []
     let tempOriginal: string[] = []
     let typingtext: string[] = []
-    tempSentence = translatedSentence.split(/(?<=[。、.,!?])/)
-    tempOriginal = sentence.split(/(?<=[。、.,!?])/)
+    tempSentence = sentence.split(/(?<=[。、.,!?])/)
+    tempOriginal = original.split(/(?<=[。、.,!?])/)
     numSentences = tempSentence.length
     tempSentence.forEach((e, i) => {
       if (e.charAt(0) === ' ') {
@@ -379,9 +349,14 @@ export default function Typing({
         <div className="w-full flex flex-col items-start my-10 relative">
           <div className="absolute top-0 right-0 text-xl">
             <span>Typed: {score}</span>
-            <span className="ml-4">Mistakes: {mistake}</span>
+            <span>miss: {mistake}</span>
           </div>
-          <div className="targetText text-4xl mt-8 text-left w-full">
+          {/* <div className="japaneseText text-4xl mt-8 text-left w-full"> */}
+          <div
+            onKeyDown={handleKeyDown}
+            className="typedText flex flex-col text-4xl text-left mt-4 w-full"
+            tabIndex={0}
+          >
             {japaneseText[newLineItems] && japaneseText[newLineItems].split("").map((char, index) => {
               let className;
               if (index < japaneseIndex) {
@@ -398,7 +373,7 @@ export default function Typing({
               );
             })}
           </div>
-          <div className="targetText text-4xl mt-8 text-left w-full">
+          <div className="romajiText text-4xl mt-8 text-left w-full max-w-2xl whitespace-normal"> {/*koko*/}
             {targetText[newLineItems] &&
               targetText[newLineItems].split("").map((char, index) => {
                 let className;
@@ -416,17 +391,8 @@ export default function Typing({
                 );
               })}
           </div>
-          <input
-            autoFocus
-            type="text"
-            style={{ opacity: 0, position: 'absolute' }}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-
         </div>
-        <div className="text-sm text-gray-400 mt-5 mb-4 text-left">{japaneseText[newLineItems + 1]}</div>
+        <div className="text-sm text-gray-400 mt-5 mb-4 text-left">{targetText[newLineItems + 1]}</div>
         <Keyboard nextKey={nextKey} />
         <div className="container flex flex-col justify-end">
           <Fingers nextKey={nextKey} />
