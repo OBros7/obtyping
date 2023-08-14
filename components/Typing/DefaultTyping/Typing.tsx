@@ -197,7 +197,7 @@ export default function Typing({
     const newWithinCharacterText = isInputBlocked ? prevText.slice(0, -1) + currentKey : prevText + currentKey;
     setInputValue(event.currentTarget.value);
     // 正解のローマ字を全て配列にする
-    const targetRomajies = [...currentTargetJapaneseChar, ...currentTargetJapaneseCharSecond]
+    const targetRomajies = [currentTargetJapaneseChar, currentTargetJapaneseCharSecond]
 
     function prgressTargetSentence() {
       newLineItems += 1;
@@ -283,6 +283,7 @@ export default function Typing({
         console.log('startOfOtherRomaji: ', startOfOtherRomaji);
         console.log('currentTargetJapaneseChar: ', currentTargetJapaneseChar);
         console.log('currentTargetJapaneseCharSecond: ', currentTargetJapaneseCharSecond);
+        console.log('targetRomajies: ', targetRomajies);
       }
     }
 
