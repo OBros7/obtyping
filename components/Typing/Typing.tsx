@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Layout, MainContainer } from '@/Layout'
 import {
     ReceivedText,
     getTextListByDeck,
@@ -23,17 +24,23 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     }, [])
 
     useEffect(() => {
-        console.log(textList)
+        console.log('textlist', textList)
     }, [textList])
 
     return (
-        <div>
-            {/* Show text.text11 inside of textList */}
-            <p>Minutes: {minutes}</p>
-            <p>Text List: </p>
-            {textList.map((text, index) => (
-                <p key={index}>{text.text11}</p>
-            ))}
-        </div>
+        <Layout>
+            <MainContainer addClass='p-4'>
+                <div>
+                    {/* Show text.text11 inside of textList */}
+                    <p>Minutes: {minutes}</p>
+                    <p>Text List: </p>
+                    {textList.map((text, index) => (
+                        <p key={index}>{text.text11}</p>
+                    ))}
+                </div>
+
+            </MainContainer>
+        </Layout>
+
     )
 }

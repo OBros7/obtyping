@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { FormatCategory } from './'
 import { MySelect, MyTextbox } from '@/Basics'
 
-const searchBoxClass = 'flex flex-col items-center justify-center p-4 bg-blue-100 rounded-md'
-const buttonClass = 'btn-second rounded-md m-4 mt-8'
+const searchBoxClass = 'flex flex-col items-center justify-center p-4 bg-blue-100 rounded-md w-5/6'
 interface SearchBoxProps {
     category: string
     setCategory: React.Dispatch<React.SetStateAction<string>>
@@ -27,9 +26,7 @@ export default function SearchBox(
     const [searchType, setSearchType] = useState<'category' | 'text'>('category')
     const [searchText, setSearchText] = useState('')
 
-    const searchOnClick = () => {
-        console.log('search')
-    }
+
 
     return (
         <div className={searchBoxClass}>
@@ -54,7 +51,7 @@ export default function SearchBox(
                 />
             }
 
-            <button className={buttonClass} onClick={searchOnClick}> Search </button>
+
         </div>
     )
 }
