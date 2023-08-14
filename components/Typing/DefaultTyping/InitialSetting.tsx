@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, MainContainer } from '@/Layout'
 import { langDict } from '.'
 import TextMenu from './TextMenu'
+import Toggle from './ToggleSwitch';
 
 interface InitialSettingProps {
   menu: string
@@ -23,10 +24,27 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
   const [mode, setMode] = useState<Settings['mode']>('time-attack')
   const [tag, setTag] = useState('')
   const [practiceText, setPracticeText] = useState('')
+  const [isKeyboardAndHands, setIsKeyboardAndHands] = useState<boolean>(true)
 
   const settinReflection = () => {
     setStatus('running')
   }
+
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('isKeyboardAndHands')
+    if (savedSettings) {
+      setIsKeyboardAndHands(savedSettings === 'true' ? true : false)
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem('isKeyboardAndHands', JSON.stringify(isKeyboardAndHands))
+  }, [isKeyboardAndHands])
+
+  const handleClick = () => {
+    setIsKeyboardAndHands(!isKeyboardAndHands); // Switch the state between true and false
+    localStorage.setItem('isKeyboardAndHands', JSON.stringify(!isKeyboardAndHands))
+  };
 
   return (
     <>
@@ -45,6 +63,14 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
       </div>
 
       <TextMenu text="Your text here" />
+
+      <div className='m-5 flex flex-row justify-center'>
+        <div className='text-2xl mb-5'>Keyboard&Hands</div>
+        <button className={isKeyboardAndHands ? "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2" : "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full mr-2"} onClick={handleClick}>{isKeyboardAndHands ? "ON" : "OFF"}</button>
+      </div>
+
+
+
 
       {/* Submit */}
       <div className="flex justify-center mt-4">
