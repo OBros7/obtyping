@@ -1,5 +1,5 @@
 export { default as langDict } from './langDict'
-export { default as DeckSelection } from './DeckSelection'
+// export { default as DeckSelection } from './DeckSelection'
 export { default as DeckCard } from './DeckCard'
 export { default as DeckList } from './DeckList'
 export { default as DeckCardButton } from './DeckCardButton'

@@ -31,18 +31,19 @@ export default function HomeMain() {
 
         <div className={appBoxClass}>
           <AppCard
-            href='./typing/defaulttyping'
+            href='./admin/test/basicdeckselection'
             title={translater.basicTypingTitle}
             description={translater.basicTypingDescription}
             thumbnail={tbDefault}
           ></AppCard>
           <AppCard
-            href='./typing/customtyping'
+            href='./admin/test/customdeckselection'
             title={translater.customTypingTitle}
             description={translater.customTypingDescription}
             thumbnail={tbDefault}
           ></AppCard>
           <AppCard
+            href='./admin/test/categorydeckselection'
             title={translater.categoryTypingTitle}
             description={translater.categoryTypingDescription}
             thumbnail={tbDefault}

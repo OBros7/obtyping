@@ -26,26 +26,30 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
   const [practiceText, setPracticeText] = useState('')
   const [isKeyboardAndHands, setIsKeyboardAndHands] = useState<boolean>(true)
 
-  const settinReflection = () => {
-    setStatus('running')
-  }
+  console.log("InitialSetting component rendered");
+
+  // const settinReflection = () => {
+  //   setStatus('running')
+  // }
 
   useEffect(() => {
     const savedSettings = localStorage.getItem('isKeyboardAndHands')
     console.log('savedSettings_A: ', savedSettings)
     if (savedSettings) {
+      // setIsKeyboardAndHands(savedSettings === 'true' ? true : false)
       setIsKeyboardAndHands(savedSettings === 'true' ? true : false)
       console.log('savedSettings_B: ', savedSettings)
     }
   }, [])
 
   useEffect(() => {
+    console.log('isKeyboardAndHands', isKeyboardAndHands)
     localStorage.setItem('isKeyboardAndHands', JSON.stringify(isKeyboardAndHands))
   }, [isKeyboardAndHands])
 
   const handleClick = () => {
     setIsKeyboardAndHands(!isKeyboardAndHands); // Switch the state between true and false
-    // localStorage.setItem('isKeyboardAndHands', JSON.stringify(isKeyboardAndHands))
+    localStorage.setItem('isKeyboardAndHands', JSON.stringify(!isKeyboardAndHands))
   };
 
   return (
@@ -72,9 +76,9 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
       </div>
 
       {/* Submit */}
-      <div className="flex justify-center mt-4">
+      {/* <div className="flex justify-center mt-4">
         <button type="submit" onClick={() => settinReflection()} className='btn-second  flex-1 px-4'>Submit</button>
-      </div>
+      </div> */}
     </>
   )
 }

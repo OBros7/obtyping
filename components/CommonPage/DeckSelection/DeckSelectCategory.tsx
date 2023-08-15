@@ -10,6 +10,10 @@ import {
 } from '@/MyLib/UtilsAPITyping'
 
 
+const parentClass = 'flex flex-col items-center justify-center p-4 rounded-md'
+
+const buttonClass = 'btn-second rounded-md m-4 mt-8'
+
 export default function DeckSelectCategory() {
     const [searchType, setSearchType] = useState<'category' | 'text'>('category')
     const [category, setCategory] = useState('')
@@ -19,7 +23,7 @@ export default function DeckSelectCategory() {
     const [orderBy, setOrderBy] = useState('title')
     const [deckList, setDeckList] = useState<ReceivedDeck[]>([])
 
-    const onClick = async () => {
+    const searchOnClick = async () => {
         // send get request
         let resJSON
         let userID = 1
@@ -45,21 +49,25 @@ export default function DeckSelectCategory() {
         }
 
         setDeckList(resJSON)
+        console.log(resJSON)
     }
 
 
     return (
         <Layout>
             <MainContainer addClass='p-4'>
-                <SearchBox
-                    category={category}
-                    setCategory={setCategory}
-                    subcategory={subcategory}
-                    setSubcategory={setSubcategory}
-                    level={level}
-                    setLevel={setLevel}
-                />
-                <DeckListButton deckList={deckList} />
+                <div className={parentClass}>
+                    <SearchBox
+                        category={category}
+                        setCategory={setCategory}
+                        subcategory={subcategory}
+                        setSubcategory={setSubcategory}
+                        level={level}
+                        setLevel={setLevel}
+                    />
+                    <button className={buttonClass} onClick={searchOnClick}> Search </button>
+                    <DeckListButton deckList={deckList} />
+                </div>
             </MainContainer>
         </Layout>
     )

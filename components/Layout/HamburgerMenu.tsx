@@ -42,7 +42,7 @@ export default function HamburgerMenu({ user, signOut }: HamburgerMenuProp) {
             {isOpen && (
                 <ul className='absolute right-0 mt-2 bg-white text-black p-2 rounded shadow-md'>
                     <li className='mb-1'>
-                        <Link href='account/setting'>
+                        <Link href='/account/setting'>
                             <a onClick={() => setIsOpen(false)} className='block p-1'>Settings</a>
                         </Link>
                     </li>
