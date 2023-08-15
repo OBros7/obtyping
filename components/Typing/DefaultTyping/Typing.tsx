@@ -53,13 +53,13 @@ export default function Typing({
 
   const [japaneseText, setjapaneseText] = useState<string[]>([])
   const [targetText, setTargetText] = useState<string[]>([])
-  const refTextBox = useRef<HTMLTextAreaElement>(null)
-  const [text, setText] = useState('')
+  // const refTextBox = useRef<HTMLTextAreaElement>(null)
+  const [text, setText] = useState('')  //textareaが無いから不要そう
   const isCorrects = useRef<boolean[]>([])
   const [judgeArrayUpdated, setJudgeArrayUpdated] = useState<boolean[]>([])
   const [japaneseIndex, setJapaneseIndex] = useState<number>(0)
-  const [currentInputLength, setCurrentInputLength] = useState<number>(0) // ひらがな1文字内のローマ字の位置?不要？
-  const [currentInputText, setCurrentInputText] = useState<string>('') // 今打ち込んでいるローマ字群?不用？
+  // const [currentInputLength, setCurrentInputLength] = useState<number>(0) // ひらがな1文字内のローマ字の位置?不要そう
+  // const [currentInputText, setCurrentInputText] = useState<string>('') // 今打ち込んでいるローマ字群?不用そう
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextKey, setNextKey] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(60);
@@ -71,7 +71,6 @@ export default function Typing({
   const isJapaneseCorrects = useRef<boolean[]>([])
   const [prevText, setPrevText] = useState('');
   const [inputValue, setInputValue] = useState('')
-
 
   const lang = languageType === 'english' ? 'en' : languageType === 'hiragana' || languageType === 'kanji' ? 'ja' : 'und';
   let finishTime: number
@@ -126,7 +125,7 @@ export default function Typing({
     setFinished(false)
     setTicking(false)
     newLineItems = 0
-    setText('')
+    // setText('')
     isCorrects.current = []
   }
 
@@ -196,8 +195,9 @@ export default function Typing({
     const currentInputtext = eventTarget.slice(-1 * targetCharLength);
     const newWithinCharacterText = isInputBlocked ? prevText.slice(0, -1) + currentKey : prevText + currentKey;
     setInputValue(event.currentTarget.value);
-    // 正解のローマ字を全て配列にする
-    const targetRomajies = [currentTargetJapaneseChar, currentTargetJapaneseCharSecond]
+    // ”しょ”などの2文字目小文字の場合を考慮する
+    const targetJapaneseChars = [currentTargetJapaneseChar, currentTargetJapaneseCharSecond]
+
 
     function prgressTargetSentence() {
       newLineItems += 1;
@@ -253,18 +253,18 @@ export default function Typing({
       setWithinCharacterIndex((prevIndex) => prevIndex + 1)
       withinCharacterText.current = withinCharacterText.current + currentKey
       setCurrentIndex((prevIndex) => prevIndex + 1)
-      setText((prevText) => prevText + currentKey) //textareaが無いから不要？
+      setText((prevText) => prevText + currentKey) //textareaが無いから不要そう
       isCorrects.current.push(currentKey === currentTargetChar)
     } else {
       withinCharacterText.current = withinCharacterText.current.slice(0, -1) + currentKey
-      setText((prevText) => prevText.slice(0, -1) + currentKey) //textareaが無いから不要？
+      setText((prevText) => prevText.slice(0, -1) + currentKey) //textareaが無いから不要そう
 
     }
 
     const matched = findMatchingString(currentTargetRomaji, withinCharacterText.current);
 
+    //ここを編集中
     if (hasMultipleRomajiRepresentations(currentTargetJapaneseChar)) {
-      const romajiCandidate = getRomajiRepresentations(currentTargetJapaneseChar)
       const startOfOtherRomaji = currentTargetRomaji.find((romaji: string) => romaji.startsWith(withinCharacterText.current));
       if (startOfOtherRomaji) {
         if (currentTargetRomaji.length > 1) {
@@ -283,7 +283,9 @@ export default function Typing({
         console.log('startOfOtherRomaji: ', startOfOtherRomaji);
         console.log('currentTargetJapaneseChar: ', currentTargetJapaneseChar);
         console.log('currentTargetJapaneseCharSecond: ', currentTargetJapaneseCharSecond);
-        console.log('targetRomajies: ', targetRomajies);
+        console.log('targetJapaneseChars: ', targetJapaneseChars);
+        console.log('currentTargetRomaji: ', currentTargetRomaji);
+
       }
     }
 

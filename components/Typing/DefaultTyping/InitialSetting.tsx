@@ -32,8 +32,10 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
 
   useEffect(() => {
     const savedSettings = localStorage.getItem('isKeyboardAndHands')
+    console.log('savedSettings_A: ', savedSettings)
     if (savedSettings) {
       setIsKeyboardAndHands(savedSettings === 'true' ? true : false)
+      console.log('savedSettings_B: ', savedSettings)
     }
   }, [])
 
@@ -43,7 +45,7 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
 
   const handleClick = () => {
     setIsKeyboardAndHands(!isKeyboardAndHands); // Switch the state between true and false
-    localStorage.setItem('isKeyboardAndHands', JSON.stringify(!isKeyboardAndHands))
+    // localStorage.setItem('isKeyboardAndHands', JSON.stringify(isKeyboardAndHands))
   };
 
   return (
@@ -68,9 +70,6 @@ export default function InitialSetting({ menu, status, setStatus, languageType, 
         <div className='text-2xl mb-5'>Keyboard&Hands</div>
         <button className={isKeyboardAndHands ? "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mr-2" : "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-full mr-2"} onClick={handleClick}>{isKeyboardAndHands ? "ON" : "OFF"}</button>
       </div>
-
-
-
 
       {/* Submit */}
       <div className="flex justify-center mt-4">
