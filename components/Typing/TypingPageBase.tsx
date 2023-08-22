@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Layout, MainContainer } from '@/Layout'
 import {
     TypingEnglish,
     TypingJapanese,
