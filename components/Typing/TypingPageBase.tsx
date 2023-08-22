@@ -71,7 +71,16 @@ export default function TypingPageBase({
                 />
             </div>
             {languageType === 'eg' ? (
-                <TypingEnglish />
+                <TypingEnglish
+                    textList={textList}
+                    setStatus={setStatus}
+                    score={score}
+                    setScore={setScore}
+                    mistake={mistake}
+                    setMistake={setMistake}
+                    languageType={languageType}
+                    mode={mode}
+                />
             )
                 : languageType === 'jp' ? (
                     <TypingJapanese />

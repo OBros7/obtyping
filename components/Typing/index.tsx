@@ -6,4 +6,4 @@ export { default as TypingPageBase } from './TypingPageBase'
 export { default as TypingEnglish } from './TypingEnglish'
 export { default as TypingJapanese } from './TypingJapanese'
 export { default as TypingFree } from './TypingFree'
-
+export { default as WordsEG } from './WordsEG'

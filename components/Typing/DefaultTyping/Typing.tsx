@@ -75,10 +75,9 @@ export default function Typing({
   languageType
 }: TypingProps) {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
-
+  // text
   const [japaneseText, setjapaneseText] = useState<string[]>([])
   const [targetText, setTargetText] = useState<string[]>([])
-  const refTextBox = useRef<HTMLTextAreaElement>(null)
   const [text, setText] = useState('')
   const isCorrects = useRef<boolean[]>([])
   const [judgeArrayUpdated, setJudgeArrayUpdated] = useState<boolean[]>([])
