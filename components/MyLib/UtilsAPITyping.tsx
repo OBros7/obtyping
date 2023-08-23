@@ -13,13 +13,13 @@ interface ReceivedText {
     text12?: string | null,
     text21?: string | null,
     text22?: string | null,
-    category?: string,
-    subcategory?: string,
-    level?: string,
-    lang1_int: number,
-    lang2_int?: number,
-    visibility_int: number,
-    shuffle: boolean,
+    // category?: string,
+    // subcategory?: string,
+    // level?: string,
+    // lang1_int: number,
+    // lang2_int?: number,
+    visibility_int?: number,
+    // shuffle: boolean,
     deck_id?: number,
 }
 
@@ -27,6 +27,13 @@ interface ReceivedDeck {
     deck_id: number,
     title: string,
     description?: string,
+    visibility_int?: number,
+    shuffle?: boolean,
+    category?: string,
+    subcategory?: string,
+    level?: string,
+    lang1_int: number,
+    lang2_int?: number,
 }
 
 /////////////////////////////////////// Util function ///////////////////////////////////////
