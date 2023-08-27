@@ -75,17 +75,14 @@ export default function Typing({
   languageType
 }: TypingProps) {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
-  // text
+
   const [japaneseText, setjapaneseText] = useState<string[]>([])
   const [targetText, setTargetText] = useState<string[]>([])
-
-  // const refTextBox = useRef<HTMLTextAreaElement>(null)
-  const [text, setText] = useState('')  //textareaが無いから不要そう
+  const refTextBox = useRef<HTMLTextAreaElement>(null)
+  const [text, setText] = useState('')
   const isCorrects = useRef<boolean[]>([])
   const [judgeArrayUpdated, setJudgeArrayUpdated] = useState<boolean[]>([])
   const [japaneseIndex, setJapaneseIndex] = useState<number>(0)
-  // const [currentInputLength, setCurrentInputLength] = useState<number>(0) // ひらがな1文字内のローマ字の位置?不要そう
-  // const [currentInputText, setCurrentInputText] = useState<string>('') // 今打ち込んでいるローマ字群?不用そう
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextKey, setNextKey] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(60);
@@ -97,6 +94,7 @@ export default function Typing({
   const isJapaneseCorrects = useRef<boolean[]>([])
   const [prevText, setPrevText] = useState('');
   const [inputValue, setInputValue] = useState('')
+
 
   const lang = languageType === 'english' ? 'en' : languageType === 'hiragana' || languageType === 'kanji' ? 'ja' : 'und';
   let finishTime: number
@@ -111,6 +109,14 @@ export default function Typing({
 
 
   const convertTable: romajiDict = romajiDict
+
+  useEffect(() => {
+    console.log('loaded Typing.tsx')
+    console.log('japaneseText: ', japaneseText);
+    console.log('targetText: ', targetText);
+    console.log('translatedSentence: ', translatedSentence);
+    console.log('sentence: ', sentence); s
+  }, [])
 
   useEffect(() => {
     if (status === "running" && countdown > 0) {
@@ -132,7 +138,7 @@ export default function Typing({
     setFinished(false)
     setTicking(false)
     newLineItems = 0
-    // setText('')
+    setText('')
     isCorrects.current = []
   }
 
@@ -144,8 +150,8 @@ export default function Typing({
     return convertTable[character] || ''; // Return the Romaji value from the romajiDict object or an empty string if not found
   }
 
-  function hasMultipleRomajiRepresentations(currentHiraganaChar: string) {
-    const romajiValue = convertTable[currentHiraganaChar];
+  function hasMultipleRomajiRepresentations(currentTargetJapaneseChar: string) {
+    const romajiValue = convertTable[currentTargetJapaneseChar];
     if (romajiValue) {
       const representations = romajiValue.split(', ').map(str => str.trim());
       return representations.length >= 2;
@@ -170,10 +176,7 @@ export default function Typing({
     }
     return false;
   }
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     event.preventDefault();
@@ -192,25 +195,22 @@ export default function Typing({
       return centence.substring(position, position + 2);
     }
 
-
-
-    const typedKey = event.key;
+    const currentKey = event.key;
 
     const currentTargetChar = targetText[newLineItems].charAt(currentIndex);
-    const currentHiraganaChar = japaneseText[newLineItems].charAt(japaneseIndex);
-    const nextHiraganaChar = extractTwoCharacters(japaneseText[newLineItems], japaneseIndex)
+    const currentTargetJapaneseChar = japaneseText[newLineItems].charAt(japaneseIndex);
+    const currentTargetJapaneseCharSecond = extractTwoCharacters(japaneseText[newLineItems], japaneseIndex)
 
-    const tempTargetRomaji = convertToRomaji(currentHiraganaChar);
-    const tempTargetRomajiSecond = convertToRomaji(nextHiraganaChar);
+    const tempTargetRomaji = convertToRomaji(currentTargetJapaneseChar);
+    const tempTargetRomajiSecond = convertToRomaji(currentTargetJapaneseCharSecond);
 
     const currentTargetRomaji = tempTargetRomaji.split(', ')
     const targetCharLength: number = getLongestString(currentTargetRomaji);
     const currentInputtext = eventTarget.slice(-1 * targetCharLength);
-    const newWithinCharacterText = isInputBlocked ? prevText.slice(0, -1) + typedKey : prevText + typedKey;
+    const newWithinCharacterText = isInputBlocked ? prevText.slice(0, -1) + currentKey : prevText + currentKey;
     setInputValue(event.currentTarget.value);
-    // ”しょ”などの2文字目小文字の場合を考慮する
-    const targetJapaneseChars = [currentTargetJapaneseChar, currentTargetJapaneseCharSecond]
-
+    // 正解のローマ字を全て配列にする
+    const targetRomajies = [...currentTargetJapaneseChar, ...currentTargetJapaneseCharSecond]
 
     function prgressTargetSentence() {
       newLineItems += 1;
@@ -264,20 +264,17 @@ export default function Typing({
 
     if (!isInputBlocked) {
       setWithinCharacterIndex((prevIndex) => prevIndex + 1)
-      withinCharacterText.current = withinCharacterText.current + typedKey
+      withinCharacterText.current = withinCharacterText.current + currentKey
       setCurrentIndex((prevIndex) => prevIndex + 1)
-      setText((prevText) => prevText + currentKey) //textareaが無いから不要そう
       isCorrects.current.push(currentKey === currentTargetChar)
     } else {
       withinCharacterText.current = withinCharacterText.current.slice(0, -1) + currentKey
-      setText((prevText) => prevText.slice(0, -1) + currentKey) //textareaが無いから不要そう
-
     }
 
     const matched = findMatchingString(currentTargetRomaji, withinCharacterText.current);
 
-    //ここを編集中
     if (hasMultipleRomajiRepresentations(currentTargetJapaneseChar)) {
+      const romajiCandidate = getRomajiRepresentations(currentTargetJapaneseChar)
       const startOfOtherRomaji = currentTargetRomaji.find((romaji: string) => romaji.startsWith(withinCharacterText.current));
       if (startOfOtherRomaji) {
         if (currentTargetRomaji.length > 1) {
@@ -296,17 +293,8 @@ export default function Typing({
         console.log('startOfOtherRomaji: ', startOfOtherRomaji);
         console.log('currentTargetJapaneseChar: ', currentTargetJapaneseChar);
         console.log('currentTargetJapaneseCharSecond: ', currentTargetJapaneseCharSecond);
-        console.log('targetJapaneseChars: ', targetJapaneseChars);
-        console.log('currentTargetRomaji: ', currentTargetRomaji);
-
       }
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     if (matched) {
       if (currentIndex === targetLength - 1) {
@@ -322,6 +310,7 @@ export default function Typing({
       setMistake((prevMistake) => prevMistake + 1)
     }
   }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   const handlePaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
     event.preventDefault()
@@ -358,7 +347,7 @@ export default function Typing({
     tempSentence = translatedSentence.split(/(?<=[。、.,!?])/)
     tempOriginal = sentence.split(/(?<=[。、.,!?])/)
     numSentences = tempSentence.length
-    tempSentence.forEach((e, i) => {
+    temp.forEach((e, i) => {
       if (e.charAt(0) === ' ') {
         typingtext[i] = e.slice(1)
       } else {

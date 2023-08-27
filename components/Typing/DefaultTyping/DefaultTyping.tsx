@@ -19,7 +19,7 @@ export default function DefaultTyping() {
   const [menu, setMenu] = useState<string>('custom')
   const [mode, setMode] = useState<'time-attack' | '1-minute-challenge'>('time-attack')
   const [status, setStatus] = useState<'menu select' | 'setting' | 'running' | 'result'>('menu select')
-  const [languageType, setLanguageType] = useState<'not selected' | 'hiragana' | 'english' | 'kanji' | 'free'>('not selected')
+  const [languageType, setLanguageType] = useState<'not selected' | 'hiragana' | 'english' | 'kanji' | 'free'>('hiragana')
   const [translatedSentence, setTranslatedSentence] = useState<string>('')
   const [sentence, setSentence] = useState<string>('しょうかい')
 
@@ -42,6 +42,7 @@ export default function DefaultTyping() {
 
 
   useEffect(() => {
+
     if (isJapaneseText(sentence)) {
       setTranslatedSentence(wanakana.toRomaji(sentence))
     }
@@ -51,10 +52,10 @@ export default function DefaultTyping() {
     if (isJapaneseText(sentence)) {
       //x If the text is Japanese, convert it to romaji using Wanakana
       const romajiText = wanakana.toRomaji(sentence);
-      console.log('Romaji: ', romajiText);
+      // console.log('Romaji: ', romajiText);
     } else {
       // If the text is not Japanese, process it as English or any other language
-      console.log('English: ', sentence);
+      // console.log('English: ', sentence);
     }
   }, [sentence])
 
