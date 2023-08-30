@@ -3,13 +3,23 @@ import { WordsEG } from './';
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helper function to shuffle an array
+function shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+
 const creteRandomDeck = (randomID: number, minutes: number) => {
     // -1: random Characters
     // -2: random Numbers
     // -3: random Characters and Numbers
     // -4: random Words
 
-    const randomDeck: ReceivedText[] = [
+    let randomDeck: ReceivedText[] = [
         {
             text_id: -1,
             title: "",
@@ -17,9 +27,8 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
             text12: null,
             text21: null,
             text22: null,
-            lang1_int: 1,
+            // lang1_int: 1,
             visibility_int: 1,
-            shuffle: true,
         },
     ];
     let text = '';
@@ -29,38 +38,44 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
     if (randomID === -1) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         for (let i = 0; i < length; i++) {
-            text += characters.charAt(Math.floor(Math.random() * characters.length));
+            randomDeck[0].text11 += characters.charAt(Math.floor(Math.random() * characters.length));
         }
     } else if (randomID === -2) {
         for (let i = 0; i < length; i++) {
-            text += Math.floor(Math.random() * 10).toString();
+            randomDeck[0].text11 += Math.floor(Math.random() * 10).toString();
         }
     } else if (randomID === -3) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         for (let i = 0; i < length; i++) {
-            text += characters.charAt(Math.floor(Math.random() * characters.length));
+            randomDeck[0].text11 += characters.charAt(Math.floor(Math.random() * characters.length));
         }
     } else if (randomID === -4) {
-        text = shuffleArray(WordsEG).slice(0, length).join(' ');
+        randomDeck[0].text11 = shuffleArray(WordsEG).slice(0, length).join(' ');
     }
-    else if (randomID === -5) {
+    else if (randomID === -100) {
+        randomDeck[0].text11 = shuffleArray(WordsEG).slice(0, 5).join(' ');
+        for (let i = 0; i < 5; i++) {
+            let _text = shuffleArray(WordsEG).slice(0, 5).join(' ');
+            let text = {
+                text_id: -i - 2,
+                title: "",
+                text11: _text,
+                text12: null,
+                text21: null,
+                text22: null,
+                // lang1_int: 1,
+                visibility_int: 1,
+            }
+            randomDeck.push(text);
+        }
 
     } else {
         text = 'Error: randomID is not valid';
     }
 
-    randomDeck[0].text11 = text;
     return randomDeck;
 }
 
-// Helper function to shuffle an array
-function shuffleArray(array: any[]) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

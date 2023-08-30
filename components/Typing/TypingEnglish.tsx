@@ -47,6 +47,7 @@ export default function TypingEnglish(
   }, [nextKey, countCharWithin, currentTextLength, currentText]);
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    console.log('nextKey', nextKey, 'event.key', event.key)
     event.preventDefault();
     const inputKey = event.key;
     const isPrintable = /^[ -~]+$/;
@@ -58,7 +59,6 @@ export default function TypingEnglish(
       if (currentTextLength - 1 === countCharWithin) {
         setCountTextIndex((prevIndex) => prevIndex + 1);
         setCountCharWithin(0); // Reset character counter for the new text
-        setNextKey(currentText[0]); // Set the next key for the new text
       } else {
         setCountCharWithin((prevIndex) => prevIndex + 1);
         setNextKey(currentText[countCharWithin + 1]); // Set the next key for the next character
@@ -73,6 +73,13 @@ export default function TypingEnglish(
     setCurrentText(textList[countTextIndex % textListLength].text11);
     setNextText(textList[(countTextIndex + 1) % textListLength].text11);
   }, [countTextIndex]);
+
+  useEffect(() => {
+    setNextKey(currentText[0]); // Set the next key for the next character
+    setCurrentTextLength(currentText.length);
+    isCorrects.current = [];
+  }, [currentText]);
+
 
   return (
     <>
