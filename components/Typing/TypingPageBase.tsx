@@ -50,7 +50,23 @@ export default function TypingPageBase({
     const attrsParentTimer = { className: 'flex flex-col items-center justify-center text-5xl' }
 
 
-
+    // useEffect(() => {// shuffle
+    //     console.log('textList', textList, textList[0].text11)
+    //     if (textListLength === 0) {
+    //       setStatus('menu select')
+    //     } else {
+    //       // shuffle the list of text and create a list of random sentences
+    //       // create a list of random numbers from 1 to textListLength
+    //       const randomList = Array.from({ length: textListLength }, (_, i) => i);
+    //       // shuffle the list
+    //       for (let i = randomList.length - 1; i > 0; i--) {
+    //         const j = Math.floor(Math.random() * (i + 1));
+    //         [randomList[i], randomList[j]] = [randomList[j], randomList[i]];
+    //       }
+    //       setOrderList(randomList)
+    //       setCurrentTextIndex(randomList[0])
+    //     }
+    //   }, [])
 
 
 
