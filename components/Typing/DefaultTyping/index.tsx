@@ -1,5 +1,0 @@
-export { default as Typing } from './Typing'
-export { default as langDict } from './langDict'
-export { default as InitialSetting } from './InitialSetting'
-export { default as DefaultTyping } from './DefaultTyping'
-export { default as Result } from './Result'

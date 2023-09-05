@@ -9,6 +9,8 @@ export default function Setting() {
     const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
 
     const [isKeyboardAndHands, setIsKeyboardAndHands] = useState<boolean>();
+    const [isHardMode, setIsHardMode] = useState<boolean>();
+    const [isEnglishDisplay, setIsEnglishDisplay] = useState<boolean>();
 
     useEffect(() => {
         if (localStorage.getItem('isKeyboardAndHands')) {
@@ -17,12 +19,26 @@ export default function Setting() {
             localStorage.setItem('isKeyboardAndHands', JSON.stringify(true))
             setIsKeyboardAndHands(true)
         }
+
+        if (localStorage.getItem('isHardMode')) {
+            setIsHardMode(localStorage.getItem('isHardMode') === 'true' ? true : false)
+        } else {
+            localStorage.setItem('isHardMode', JSON.stringify(true))
+            setIsHardMode(true)
+        }
+
+        if (localStorage.getItem('isEnglishDisplay')) {
+            setIsEnglishDisplay(localStorage.getItem('isEnglishDisplay') === 'true' ? true : false)
+        } else {
+            localStorage.setItem('isEnglishDisplay', JSON.stringify(true))
+            setIsEnglishDisplay(true)
+        }
     }, [])
 
-    const handleClick = () => {
-        setIsKeyboardAndHands(!isKeyboardAndHands); // Switch the state between true and false
-        localStorage.setItem('isKeyboardAndHands', JSON.stringify(!isKeyboardAndHands))
-    };
+    // const handleClick = () => {
+    //     setIsKeyboardAndHands(!isKeyboardAndHands); // Switch the state between true and false
+    //     localStorage.setItem('isKeyboardAndHands', JSON.stringify(!isKeyboardAndHands))
+    // };
 
     return (
         <Layout>
@@ -36,14 +52,34 @@ export default function Setting() {
                 </div>
                 <div className="headline p-4 pl-8 text-3xl font-bold">{translater.typingSetting}</div>
                 <div className="pl-16 pu-2 text-2xl flex flex-col">
-                    <div className='py-4'>{translater.degreeOfDifficulty} : normal</div>
+                    <div className='py-4'>{translater.degreeOfDifficulty}
+                        <ToggleButton
+                            flag={isHardMode}
+                            text1="HARD"
+                            text2="NORMAL"
+                            color="red"
+                            localStorageKey='isHardMode'
+                            setFlag={setIsHardMode}
+                        />
+                    </div>
                     <div className='py-4 pr-4'>{translater.keyboardDisplay}
                         <ToggleButton
                             flag={isKeyboardAndHands}
                             text1="ON"
                             text2="OFF"
                             color="blue"
-                            toggleFlag={handleClick}
+                            localStorageKey='isKeyboardAndHands'
+                            setFlag={setIsKeyboardAndHands}
+                        />
+                    </div>
+                    <div className='py-4 pr-4'>{translater.englishDisplay}
+                        <ToggleButton
+                            flag={isEnglishDisplay}
+                            text1="English"
+                            text2="Japanese"
+                            color="blue"
+                            localStorageKey='isEnglishDisplay'
+                            setFlag={setIsEnglishDisplay}
                         />
                     </div>
                 </div>

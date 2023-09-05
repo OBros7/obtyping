@@ -35,7 +35,10 @@ const langDict = {
     en: 'Keyboard Display',
     ja: 'キーボード表示',
   },
-
+  englishDisplay: {
+    en: 'English Display',
+    ja: '英語表示',
+  },
 
 }
 

@@ -3,14 +3,14 @@ import { AppCard, langDict } from './'
 import { Layout, MainContainer } from '@/Layout'
 import { useTranslation } from '@/MyCustomHooks'
 import Image from 'next/image'
-import manImage from './man.png'
-import womanImage from './woman.png'
-import background from './background.png'
+// import manImage from './man.png'
+// import womanImage from './woman.png'
+// import background from './background.png'
 import { CSSProperties } from 'react'
 
-const cssProperties = {
-  '--image-url': `url(${background})`
-}
+// const cssProperties = {
+//   '--image-url': `url(${background})`
+// }
 
 export default function HomeMain() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
@@ -25,14 +25,15 @@ export default function HomeMain() {
       <MainContainer addClass='p-4'>
 
         {/* <div className={appBoxClass}> */}
-        <AppCard
+        {/* <AppCard
           href='./typing/defaulttyping'
           title={translater.startNow}
           description='大地へ：あとで大きめのボタンに変更'
           thumbnail={tbDefault}
-        ></AppCard>
-        <Image src={background} alt="woan" width={300} height={300} />
-        <div className="flex flex-row flex-wrap justify-center" style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover' }}>
+        ></AppCard> */}
+        {/* <Image src={background} alt="woan" width={300} height={300} /> */}
+        {/* <div className="flex flex-row flex-wrap justify-center" style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover' }}></div> */}
+        <div className="flex flex-row flex-wrap justify-center">
           <button
             className="m-20 bg-blue-500 hover:bg-blue-700 text-white text-4xl font-bold py-4 px-16 my-16 rounded bg-center bg-cover"
           >

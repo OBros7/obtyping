@@ -40,7 +40,6 @@ export default function DeckSelectBasic() {
         <Layout>
             <MainContainer addClass='p-4'>
                 <DeckListButton deckList={deckList} />
-
             </MainContainer>
         </Layout>
     )
