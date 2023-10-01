@@ -34,7 +34,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [user])
 
   return (
-    <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
+    // <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
+    <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen flex flex-col'>
       <Head>
         <link rel='icon' href='/favicon.ico' />
         <meta charSet='utf-8' />
@@ -70,7 +71,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </header>
-      <main>{children}</main>
+      <main className="flex-grow">{children}</main>
       <footer {...footerAttrs}>
         <div {...headerBox}>
           <HeaderLink href='/' text='&copy; 2023 OBros.' />
