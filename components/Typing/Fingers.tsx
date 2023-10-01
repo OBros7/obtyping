@@ -28,16 +28,16 @@ const Fingers: React.FC<FingersProps> = ({ nextKey }) => {
 
   const getFingerIndexForKey = (key: string | null): number => {
     if (!key) return -1;
-    if (key.match(/[1qaz!QA\~Z0=\\\[\]';,.\/?_+<>\{\}|"]/)) return 0;
+    if (key.match(/[1qaz!QA\~Z0=\\\[\]';,.\/?_<>\{\}|"]/)) return 0;
     if (key.match(/[2wsxWSX`]/)) return 1;
     if (key.match(/[3edcEDC@#]/)) return 2;
-    if (key.match(/[4rfvRFV$%]/)) return 3;
-    if (key.match(/[5tgbTGB^%]/)) return 4;
-    if (key.match(/[6yhnYHN&\^]/)) return 5;
-    if (key.match(/[7ujmUJM\*(&]/)) return 6;
+    if (key.match(/[4rfvRFV$%5tgbTGB^%]/)) return 3;
+    if (key.match(/[ ]/)) return 4;
+    if (key.match(/[ ]/)) return 5;
+    if (key.match(/[6yhnYHN&\^7ujmUJM\*(&]/)) return 6;
     if (key.match(/[8ik,IK<\*\)]/)) return 7;
     if (key.match(/[9ol\.\(OL>)]/)) return 8;
-    if (key.match(/[0pP\)?]/)) return 9;
+    if (key.match(/[0pP\)+?]/)) return 9;
     return -1;
   };
 

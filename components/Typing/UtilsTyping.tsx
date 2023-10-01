@@ -53,9 +53,12 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
         randomDeck[0].text11 = shuffleArray(WordsEG).slice(0, length).join(' ');
     }
     else if (randomID === -100) {
-        randomDeck[0].text11 = shuffleArray(WordsEG).slice(0, 5).join(' ');
-        for (let i = 0; i < 5; i++) {
-            let _text = shuffleArray(WordsEG).slice(0, 5).join(' ');
+        const nTexts = Math.floor(Math.random() * (10 - 5 + 1) + 5)
+        let nWords = Math.floor(Math.random() * (300 - 5 + 1) + 5)
+        randomDeck[0].text11 = shuffleArray(WordsEG).slice(0, nWords).join(' ');
+        for (let i = 0; i < nTexts; i++) {
+            let nWords = Math.floor(Math.random() * (300 - 5 + 1) + 5)
+            let _text = shuffleArray(WordsEG).slice(0, nWords).join(' ');
             let text = {
                 text_id: -i - 2,
                 title: "",

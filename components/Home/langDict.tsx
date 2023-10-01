@@ -3,9 +3,17 @@ let langDict = {
     ja: '今すぐタイピング速度を測定する',
     en: 'Start typing test now!',
   },
+  catchCopy: {
+    ja: 'タイピング練習 ✖️ 学習',
+    en: 'Typing practice ✖️ Learning',
+  },
+  conceptExplanation: {
+    ja: '素早いタイピングにも学習にも大事なのは反復練習！勉強したい文章をセットしてタイピング練習と同時に覚えよう！',
+    en: 'The most important thing for fast typing and learning is repetition! Set the text you want to study and learn while practicing typing!',
+  },
   selectTyping: {
-    ja: 'タイピングテキストの種類を選択',
-    en: 'Select typing text type',
+    ja: 'タイピングモードの種類を選択',
+    en: 'Select typing mode',
   },
   Typing: {
     ja: 'タイピング',
