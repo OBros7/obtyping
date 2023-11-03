@@ -19,8 +19,8 @@ const headerBox = {
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { locale } = useRouter()
-  const user2 = useUserFromCookie();
+  // const { locale } = useRouter()
+  // const user2 = useUserFromCookie();
   const { user, signedOut, setSignedOut, signOut } = useAuth();
 
   useEffect(() => {
