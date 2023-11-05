@@ -3,14 +3,6 @@ import { AppCard, langDict, MenuCard } from './'
 import { Layout, MainContainer } from '@/Layout'
 import { useTranslation } from '@/MyCustomHooks'
 import Image from 'next/image'
-// import manImage from './man.png'
-// import womanImage from './woman.png'
-// import background from './background.png'
-// import { CSSProperties } from 'react'
-
-// const cssProperties = {
-//   '--image-url': `url(${background})`
-// }
 
 export default function HomeMain() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
@@ -41,27 +33,6 @@ export default function HomeMain() {
         <div className={categoryBoxClass} >
           <h1 className={categoryTitleClass}>{translater.selectTyping}</h1>
         </div>
-
-        {/* <div className='flex flex-col mb-8'>
-          <MenuCard
-            title="My Title"
-            introduction="This is the introduction."
-            description="This is the full description."
-            color="green"
-          />
-          <MenuCard
-            title="My Title"
-            introduction="This is the introduction."
-            description="This is the full description."
-            color="red"
-          />
-          <MenuCard
-            title="My Title"
-            introduction="This is the introduction."
-            description="This is the full description."
-            color="blue"
-          />
-        </div> */}
 
         <div className={appBoxClass}>
 
