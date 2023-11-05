@@ -14,21 +14,6 @@ interface TypingEnglishProps {
   mode?: '1m' | '2m' | '3m' | '5m'
 }
 
-// const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
-//   // const potentialEndIndex = startIndex + charsPerLine;
-//   // const remainingStr = str.slice(potentialEndIndex);
-//   // const spaceIndex = remainingStr.indexOf(" ");
-
-//   // // If we find a space within the next 10 characters, split there. Otherwise, split at charsPerLine.
-//   // // The number 10 is arbitrary and can be adjusted.
-//   // if (spaceIndex !== -1 && spaceIndex < 10) {
-//   //   return potentialEndIndex + spaceIndex;
-//   // } else {
-//   //   return potentialEndIndex;
-//   // }
-//   return startIndex + charsPerLine;
-// };
-
 const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
   let potentialEndIndex = startIndex + charsPerLine;
 
@@ -65,7 +50,8 @@ export default function TypingEnglish(
     mode = '1m',
   }: TypingEnglishProps
 ) {
-  const [nextKey, setNextKey] = useState<string | null>(textList[0]?.text11[0]);
+  const [nextKey, setNextKey] = useState<string | null>(textList[0]?.text11[0].toUpperCase());
+  const [pressKey, setPressKey] = useState<string | null>(nextKey ? nextKey.toUpperCase() : null);
   const [textListLength, setTextListLength] = useState<number>(textList.length)
   const [countTextIndex, setCountTextIndex] = useState<number>(0)
   const [countCharWithin, setCountCharWithin] = useState<number>(0)// count text within a text
@@ -75,9 +61,16 @@ export default function TypingEnglish(
   const isCorrects = useRef<boolean[]>([])
   const [charsPerLine, setCharsPerLine] = useState<number>(80); // Starting default
   const [currentLine, setCurrentLine] = useState<number>(0);
-  const [numberOfRows, setNumberOfRows] = useState<number>(3); // Default to 1 row.
+  const [numberOfRows, setNumberOfRows] = useState<number>(5); // Default to 1 row.
+  const [endIndicesOfLines, setEndIndicesOfLines] = useState<number[]>([]);
 
-
+  const twoXlScrenWordNum = 75;
+  const xlScrenWordNum = 60;
+  const lgScrenWordNum = 45;
+  const mdScrenWordNum = 30;
+  const smScrenWordNum = 15;
+  const verySmallScrenWordNum = 10;
+  const missSound = new Audio('/sounds/beep-03.mp3');
 
   useEffect(() => {
     // Attach the event listener to the window to handle key press globally
@@ -88,17 +81,32 @@ export default function TypingEnglish(
     };
   }, [nextKey, countCharWithin, currentTextLength, currentText]);
 
+  const calculateEndIndices = () => {
+    const localEndIndices = [];
+    let startIdx = 0;
+    while (startIdx < currentText.length) {
+      const endDisplayIndex = getEndOfLineIndex(currentText, startIdx, charsPerLine);
+      localEndIndices.push(endDisplayIndex);
+      startIdx = endDisplayIndex;
+    }
+    return localEndIndices;
+  };
+
   const handleKeyDown = (event: KeyboardEvent) => {
-    console.log('nextKey', nextKey, 'event.key', event.key);
     event.preventDefault();
     const inputKey = event.key;
     const isPrintable = /^[ -~]+$/;
-    const endIndexOfCurrentLine = (currentLine + 1) * charsPerLine;
+
     if (!isPrintable.test(inputKey)) return;
+
+    if (inputKey === "Shift") {
+      return;
+    }
 
     if (inputKey === nextKey) {
       isCorrects.current[countCharWithin] = true;
       setScore((prevScore) => prevScore + 1);
+
       if (currentTextLength - 1 === countCharWithin) {
         setCountTextIndex((prevIndex) => prevIndex + 1);
         setCountCharWithin(0); // Reset character counter for the new text
@@ -106,27 +114,25 @@ export default function TypingEnglish(
       } else {
         setCountCharWithin((prevIndex) => prevIndex + 1);
         setNextKey(currentText[countCharWithin + 1]);
-        if (countCharWithin + 1 === endIndexOfCurrentLine) {
+        setPressKey(currentText[countCharWithin + 1]?.toUpperCase());
+
+        // If we're at a space AND this is the last space on the line, advance to next line
+        if (inputKey === " " && countCharWithin + 1 > endIndicesOfLines[currentLine]) {
           setCurrentLine((prevLine) => prevLine + 1);  // Update the line when the current line is completed
         }
       }
     } else {
       isCorrects.current[countCharWithin] = false;
       setMistake((prevMistake) => prevMistake + 1);
+      missSound.currentTime = 0
+      missSound.play();
     }
   };
-
 
   useEffect(() => {
     setCurrentText(textList[countTextIndex % textListLength].text11);
     setNextText(textList[(countTextIndex + 1) % textListLength].text11);
   }, [countTextIndex]);
-
-  // useEffect(() => {
-  //   setNextKey(currentText[0]); // Set the next key for the next character
-  //   setCurrentTextLength(currentText.length);
-  //   isCorrects.current = [];
-  // }, [currentText]);
 
   useEffect(() => {
     setCurrentLine(0);  // Reset the current line
@@ -139,14 +145,18 @@ export default function TypingEnglish(
     const handleResize = () => {
       const width = window.innerWidth;
 
-      if (width > 1200) {
-        setCharsPerLine(30);
-      } else if (width > 992) {
-        setCharsPerLine(90);
-      } else if (width > 768) {
-        setCharsPerLine(80);
+      if (width >= 1536) {
+        setCharsPerLine(twoXlScrenWordNum); //75
+      } else if (width >= 1280 && width < 1536) {
+        setCharsPerLine(xlScrenWordNum); //
+      } else if (width >= 1024 && width < 1280) {
+        setCharsPerLine(lgScrenWordNum);
+      } else if (width >= 768 && width < 1024) {
+        setCharsPerLine(mdScrenWordNum);
+      } else if (width >= 640 && width < 768) {
+        setCharsPerLine(smScrenWordNum);
       } else {
-        setCharsPerLine(70);
+        setCharsPerLine(verySmallScrenWordNum);
       }
     };
 
@@ -156,47 +166,59 @@ export default function TypingEnglish(
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const newEndIndices = calculateEndIndices();
+    setEndIndicesOfLines(newEndIndices);
+  }, [currentText, charsPerLine]);
+
 
   return (
     <>
       <div className="w-full flex flex-col items-start my-10 relative">
-        {/* ... (rest of the div remains the same) */}
-
+        <div className="absolute top-0 right-0 text-xl">
+          <span>Score: {score}</span>
+          <span className="ml-4">Mistakes: {mistake}</span>
+        </div>
         <div className="text-4xl mt-8 text-left w-full p-4 outline rounded-lg">
-          {currentText && (() => {
-            return Array.from({ length: numberOfRows }).map((_, rowIndex) => {
-              const startDisplayIndex = (currentLine + rowIndex) * charsPerLine;
-              const endDisplayIndex = getEndOfLineIndex(currentText, startDisplayIndex, charsPerLine);
-              let displayText = currentText.slice(startDisplayIndex, endDisplayIndex);
+          {currentText && endIndicesOfLines.map((endIdx, rowIndex) => {
+            if (rowIndex < currentLine) {
+              return null;
+            }
 
-              return (
-                <div key={rowIndex}>
-                  {displayText.split("").map((char, charIndex) => {
-                    let className;
-                    const relativeIndex = charIndex + (currentLine + rowIndex) * charsPerLine;
+            if (rowIndex >= currentLine + numberOfRows) {
+              return null;
+            }
 
-                    if (relativeIndex < countCharWithin) {
-                      className = isCorrects.current[relativeIndex] ? "text-green-500" : "text-red-500";
-                    } else if (relativeIndex === countCharWithin) {
-                      className = "text-blue-500 underline";
-                    } else {
-                      className = "text-black";
-                    }
+            const startIdx = rowIndex === 0 ? 0 : endIndicesOfLines[rowIndex - 1];
+            const displayText = currentText.slice(startIdx, endIdx);
 
-                    return (
-                      <span key={charIndex} className={className}>
-                        {char}
-                      </span>
-                    );
-                  })}
-                </div>
-              );
-            });
-          })()}
+            return (
+              <div key={rowIndex}>
+                {displayText.split("").map((char, charIndex) => {
+                  let className;
+                  const relativeIndex = startIdx + charIndex;
+
+                  if (relativeIndex < countCharWithin) {
+                    className = isCorrects.current[relativeIndex] ? "text-green-500" : "text-red-500 underline";
+                  } else if (relativeIndex === countCharWithin) {
+                    className = isCorrects.current[relativeIndex] !== false ? "text-blue-500 underline" : "text-red-500 underline";
+                  } else {
+                    className = "text-black";
+                  }
+
+                  return (
+                    <span key={charIndex} className={className}>
+                      {char}
+                    </span>
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      <Keyboard nextKey={nextKey} />
+      <Keyboard nextKey={pressKey} />
       <div className="container flex flex-col justify-end">
         <Fingers nextKey={nextKey} />
       </div>

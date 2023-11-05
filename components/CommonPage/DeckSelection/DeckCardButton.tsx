@@ -9,7 +9,7 @@ interface DeckCardButtonProps {
 import { MySelect } from '@/Basics'
 
 
-const mainDivClass = 'flex flex-row items-center flex-wrap justify-center w-full rounded-xl p-4 m-4'
+const mainDivClass = 'flex flex-row items-center flex-wrap justify-center w-full rounded-xl p-1 m-1'
 const divClass = 'flex flex-col flex-wrap justify-center w-8/12 bg-blue-200 rounded-xl p-4 m-4'
 const buttonClass = 'bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-fit w-fit'
 export default function DeckCardButton({ deck }: DeckCardButtonProps) {
@@ -24,6 +24,7 @@ export default function DeckCardButton({ deck }: DeckCardButtonProps) {
         <div className={mainDivClass}>
             <div key={deck.deck_id} className={divClass}>
                 <p>{deck.title}</p>
+                <hr className="my-0.5 border-t border-white" />
                 <p>{deck.description}</p>
             </div>
             <MySelect
