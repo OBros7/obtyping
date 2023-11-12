@@ -62,7 +62,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div {...headerBox}>
           {user ? (
             // if paid user show nothing, else show payment link
-            <HeaderLink href='/account/payment' text='Subscribe' addClass='outline outline-white outline-2' />
+            <HeaderLink href='/payment/payment_page' text='Subscribe' addClass='outline outline-white outline-2' />
           ) : (
             <HeaderLink href='/account/signin' text='SignIn' addClass='outline outline-white outline-2' />
           )}

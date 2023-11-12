@@ -1,47 +1,56 @@
-// hooks/useAuth.tsx
-import { useState, useEffect } from 'react';
-import jwt_decode from 'jwt-decode';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
-// this should be the same as the interface in the backend (see app/User/utils.py: create_access_token)
-interface DecodedUser {
+interface User {
     user_id: number;
     user_name?: string;
     is_paid_user?: boolean;
     exp?: number;
     iat?: number;
 }
-
+const backendURL = process.env.FASTAPI_URL + '/api/users/session'
 const useAuth = () => {
-
-    const [user, setUser] = useState<DecodedUser | null>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [signedOut, setSignedOut] = useState(true);
     const router = useRouter();
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            try {
-                const decodedUser = jwt_decode(token) as DecodedUser; // Cast decoded user to DecodedUser type
-                setUser(decodedUser);
-            } catch (error) {
-                console.error('Error decoding token:', error);
+
+    const fetchUser = async () => {
+        try {
+            console.log('fetchUser....');
+            const response = await axios.get(backendURL, { withCredentials: true });
+            console.log('response', response);
+            if (response.data && response.data.user) {
+                setUser(response.data.user);
+                setSignedOut(false);
+                router.push('/');
+
+            } else {
+                throw new Error('User not authenticated');
             }
+        } catch (error) {
+            console.error('Error fetching user:', error);
+            setUser(null);
+            setSignedOut(true);
         }
+    };
+    useEffect(() => {
+        fetchUser();
     }, []);
 
-    const [signedOut, setSignedOut] = useState(false);
-
-    const signOut = () => {
-        localStorage.removeItem('token');
-        setUser(null);
-        router.push('/');
-        setSignedOut(true);
+    const refreshUserSession = async () => {
+        await fetchUser();
     };
 
-    useEffect(() => {
-        setSignedOut(false);
-    }, [user]);
+    const signOut = useCallback(() => {
+        // Add logic to send a request to your backend to destroy the session/cookie
+        // After that, update the user state on the client side.
+        setUser(null);
+        setSignedOut(true);
+        router.push('/account/signin');
+    }, [router]);
 
-    return { user, signOut, signedOut, setSignedOut };
+    return { user, signOut, signedOut, setSignedOut, setUser, refreshUserSession };
 };
 
 export default useAuth;
