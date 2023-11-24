@@ -17,7 +17,6 @@ const url = process.env.FASTAPI_URL + '/api/users/oauth_google';
 export default function Signin() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string,];
   const [newUser, setNewUser] = useState(false);
-  // const { data: session } = useSession()
 
   console.log('url: ', url)
 
