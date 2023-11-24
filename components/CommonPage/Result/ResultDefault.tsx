@@ -10,7 +10,7 @@ import {
   createXY4Graph,
   getTopRecords,
 } from './'
-import { GlobalContext } from 'context/GlobalContext'
+import { GlobalContext } from '@contexts/GlobalContext'
 import { signIn } from 'next-auth/react'
 import type { ChartData, ChartOptions } from 'chart.js'
 

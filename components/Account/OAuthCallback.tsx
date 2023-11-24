@@ -1,42 +1,23 @@
+// OAuthCallback.tsx
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import jwt_decode from 'jwt-decode';
 import useAuth from '@/MyCustomHooks/useAuth';
 
 const OAuthCallback = () => {
     const router = useRouter();
     const { provider } = router.query;
-    const { setSignedOut } = useAuth();
-
-    const getAccessTokenFromCookie = () => {
-        if (!provider) return;
-        console.log('document.cookie: ', document.cookie)
-        const token = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith(`access_token=`))
-            ?.split('=')[1];
-
-        console.log('provider: ', provider);
-        console.log('token: ', token);
-
-        if (token) {
-            const decodedToken = jwt_decode(token);
-
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(decodedToken));
-
-            setSignedOut(false);
-            router.push('/');
-        } else {
-            setTimeout(getAccessTokenFromCookie, 5000);
-        }
-    };
+    const { signedOut } = useAuth();
 
     useEffect(() => {
         if (provider) {
-            getAccessTokenFromCookie();
+            // If signed out, redirect to signin page. Otherwise, redirect to the home page or a dashboard.
+            if (signedOut) {
+                router.push('/account/signin');
+            } else {
+                router.push('/');
+            }
         }
-    }, [router, provider, setSignedOut]);
+    }, [provider, router, signedOut]);
 
     return (
         <div>

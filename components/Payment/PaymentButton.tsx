@@ -28,13 +28,13 @@ export default function PaymentButton({ priceId, text, className = 'btn-primary'
             price_id: priceId
         }
 
-        const response = await fetch(url, {
+        const response = await fetch(`${url}?price_id=${encodeURIComponent(priceId)}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
         });
+
 
         if (response.ok) {
             const session = await response.json();

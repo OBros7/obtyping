@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { GlobalContext } from 'context/GlobalContext'
+import { GlobalContext } from '@contexts/GlobalContext'
 
 interface ResultButtonsProps {
   handleSave: () => void
