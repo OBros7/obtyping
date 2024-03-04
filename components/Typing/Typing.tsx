@@ -14,10 +14,10 @@ interface TypingProps {
 
 export default function Typing({ deckId, minutes }: TypingProps) {
     const [textList, setTextList] = useState<ReceivedText[]>([])
-    const [status, setStatus] = useState<'menu select' | 'setting' | 'running' | 'result'>('menu select')
+    const [status, setStatus] = useState<'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'>('waiting')
     const [score, setScore] = useState(0)
     const [mistake, setMistake] = useState(0)
-    const [languageType, setLanguageType] = useState<'eg' | 'jp' | 'free'>('eg')
+    const [languageType, setLanguageType] = useState<'eg' | 'jp' | 'free'>('free')
     const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m')
 
     useEffect(() => {
@@ -31,6 +31,9 @@ export default function Typing({ deckId, minutes }: TypingProps) {
             }
 
             setTextList(receivedTexts);
+            if (receivedTexts.length > 0) {
+                setStatus('waiting');
+            }
         }
 
         console.log('deckId', deckId, 'minutes', minutes);
@@ -45,16 +48,17 @@ export default function Typing({ deckId, minutes }: TypingProps) {
         <Layout>
             <MainContainer addClass='p-4'>
                 <div>
-                    <p>Minutes: {minutes}</p>
-                    <p>Text List: </p>
+                    {/* <p>Minutes: {minutes}</p>
+                    <p>Text List: </p> */}
                     {/* Check if textList is not empty before mapping */}
-                    {textList && textList.length > 0 && textList.map((text, index) => (
+                    {/* {textList && textList.length > 0 && textList.map((text, index) => (
                         <p key={index}>{text.text11}</p>
-                    ))}
+                    ))} */}
                 </div>
                 {textList && textList.length > 0 && (
                     <TypingPageBase
                         textList={textList}
+                        status={status}
                         setStatus={setStatus}
                         score={score}
                         setScore={setScore}

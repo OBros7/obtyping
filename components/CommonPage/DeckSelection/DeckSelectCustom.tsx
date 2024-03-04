@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
+import langDict from './langDict'
+import { useTranslation } from '@/MyCustomHooks'
 import { MySelect } from '@/Basics'
 import {
     DeckListButton,
@@ -19,6 +21,9 @@ const saveButtonClass = 'btn-second '
 export default function DeckSelectCustom() {
     const [deckList, setDeckList] = useState<ReceivedDeck[]>([])
     const [pageType, setPageType] = useState<'NewDeck' | 'YourDeck'>('YourDeck')
+    const [deckName, setDeckName] = useState('');
+    const [description, setDescription] = useState('');
+    const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
 
 
     useEffect(() => {
@@ -46,8 +51,30 @@ export default function DeckSelectCustom() {
                         pageType === 'NewDeck' ?
                             deckList.length === 0 ? <p> You have not created your own decks yet. </p> :
                                 <>
-                                    <p>Text Creation: 大地が作ったテキスト入力するボックス</p>
-                                    <button className={saveButtonClass}>保存する</button>
+                                    <div className="flex items-center space-x-2">
+                                        <p>{translater.newDecName}</p>
+                                        <input
+                                            type="text"
+                                            value={deckName}
+                                            onChange={(e) => setDeckName(e.target.value)}
+                                            className="input-text border-2 border-black w-48"
+                                        />
+                                    </div>
+                                    <p>{translater.descriptionTextArea}</p>
+                                    <textarea
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        className="w-96 h-48 border-2 border-black"
+                                        style={{ width: '600px' }}
+                                    />
+                                    <div className="flex flex-col items-center space-y-2">
+                                        <button
+                                            disabled={!deckName || !description}
+                                            className={`${saveButtonClass} ${!deckName || !description ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        >
+                                            {translater.save}
+                                        </button>
+                                    </div>
                                 </>
                             :
                             pageType === 'YourDeck' ?

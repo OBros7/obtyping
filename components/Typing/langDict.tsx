@@ -15,6 +15,10 @@ const langDict = {
     en: 'Japanese(containg kanji)',
     ja: '日本語(漢字を含む)',
   },
+  pleasePressSpace: {
+    en: 'Please press the space key when you are ready',
+    ja: '準備ができたらスペースキーを押してください',
+  },
   description: {
     en: 'Enter the first sentence and you will see the following scores',
     ja: '最初の文を入力すると以下のスコアが表示されます',
