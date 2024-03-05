@@ -13,7 +13,8 @@ import { ReceivedText } from '@/MyLib/UtilsAPITyping'
 
 interface TypingPageBaseProps {
     textList: ReceivedText[]
-    setStatus: React.Dispatch<React.SetStateAction<'menu select' | 'setting' | 'running' | 'result'>>
+    status: 'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'
+    setStatus: React.Dispatch<React.SetStateAction<'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'>>
     score: number
     setScore: React.Dispatch<React.SetStateAction<number>>
     mistake: number
@@ -22,13 +23,9 @@ interface TypingPageBaseProps {
     mode?: '1m' | '2m' | '3m' | '5m'
 }
 
-
-
-
-
-
 export default function TypingPageBase({
     textList,
+    status,
     setStatus,
     score,
     setScore,
@@ -44,8 +41,9 @@ export default function TypingPageBase({
 
     // for timer base
     const totalTime = hms2ms(0, 10, 0, 0)
+    const wataingTime = hms2ms(999, 3, 0, 0)
     const [finished, setFinished] = useState(false)
-    const [ticking, setTicking] = useState(false)
+    const [ticking, setTicking] = useState(true)
     const [reset, setReset] = useState(true)
     const attrsParentTimer = { className: 'flex flex-col items-center justify-center text-5xl' }
 
@@ -67,43 +65,92 @@ export default function TypingPageBase({
     //       setCurrentTextIndex(randomList[0])
     //     }
     //   }, [])
+    useEffect(() => {
+        const handleSpacePress = (event: KeyboardEvent) => {
+            if (event.code === "Space" && status === 'waiting') {
+                setStatus('ready');
+            }
+        };
 
+        window.addEventListener('keydown', handleSpacePress);
 
+        return () => {
+            window.removeEventListener('keydown', handleSpacePress);
+        };
+    }, [status, setStatus]);
 
+    useEffect(() => {
+        if (timePassed > 3000 && status === 'ready') {
+            // statusを'running'に変更
+            setStatus('running');
+            setReset(!reset); // タイマーをリセット
+        }
+    }, [finished, timePassed, status, setStatus, setReset, setTimePassed, reset]);
 
     return (
         <>
-            <div className="w-full text-center text-5xl mt-8 mb-0">
-                <TimerBase
-                    totalTime={totalTime}
-                    timePassed={timePassed}
-                    setTimePassed={setTimePassed}
-                    ticking={ticking}
-                    reset={reset}
-                    finished={finished}
-                    setFinished={setFinished}
-                    attrsParent={attrsParentTimer}
-                />
-            </div>
-            {languageType === 'eg' ? (
-                <TypingEnglish
-                    textList={textList}
-                    setStatus={setStatus}
-                    score={score}
-                    setScore={setScore}
-                    mistake={mistake}
-                    setMistake={setMistake}
-                    languageType={languageType}
-                    mode={mode}
-                />
-            )
-                : languageType === 'jp' ? (
-                    <TypingJapanese />
-                ) : (
-                    <TypingFree />
-                )
+            {
+                status === 'waiting' ? (
+                    <div className="w-full text-center text-5xl mt-48 mb-48">
+                        {translater.pleasePressSpace}
+                    </div>
+                ) : status === 'ready' ? (
+                    <div className="w-full text-center text-5xl mt-48 mb-48">
+                        <TimerBase
+                            totalTime={wataingTime}
+                            timePassed={timePassed}
+                            setTimePassed={setTimePassed}
+                            ticking={ticking}
+                            reset={reset}
+                            finished={finished}
+                            setFinished={setFinished}
+                            attrsParent={attrsParentTimer}
+                            digit={0}
+                        />
+                    </div>
+                ) : status === 'running' ? (
+                    <>
+                        <div className="w-full text-center text-5xl mt-8 mb-0">
+                            <TimerBase
+                                totalTime={totalTime}
+                                timePassed={timePassed}
+                                setTimePassed={setTimePassed}
+                                ticking={ticking}
+                                reset={reset}
+                                finished={finished}
+                                setFinished={setFinished}
+                                attrsParent={attrsParentTimer}
+                            />
+                        </div>
+                        {languageType === 'eg' ? (
+                            <TypingEnglish
+                                textList={textList}
+                                setStatus={setStatus}
+                                score={score}
+                                setScore={setScore}
+                                mistake={mistake}
+                                setMistake={setMistake}
+                                languageType={languageType}
+                                mode={mode}
+                            />
+                        )
+                            : languageType === 'jp' ? (
+                                <TypingJapanese />
+                            ) : (
+                                <TypingFree
+                                    textList={textList}
+                                    setStatus={setStatus}
+                                    score={score}
+                                    setScore={setScore}
+                                    mistake={mistake}
+                                    setMistake={setMistake}
+                                    languageType={languageType}
+                                    mode={mode} />
+                            )
+                        }
+                    </>
+                ) : null
             }
-
         </>
     )
 }

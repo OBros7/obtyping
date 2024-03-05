@@ -12,7 +12,7 @@ export default function DeckCard({ deck }: DeckCardProps) {
     return (
         <div className="flex flex-row flex-wrap justify-center w-full rounded-xl p-4 m-4">
             <div key={deck.deck_id} className={divClass}>
-                <p>{deck.title}</p>
+                <div>{deck.title}</div>
                 <p>{deck.description}</p>
                 <p>Mode: 1m, 2m 3m 5m</p>
             </div>

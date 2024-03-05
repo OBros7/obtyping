@@ -77,15 +77,22 @@ const SignupForm = ({ btnClass = 'btn-second' }: SignupFormProps) => {
 
     return (
         <div>
-            <h1>Sign Up</h1>
-            <form onSubmit={onSubmit}>
-                <p>Email: <MyEmailInput state={email} setState={setEmail} /></p>
-                <p>Password: <MyPasswordInput state={password} setState={setPassword} /> </p>
-                <p>Confirm Password: <MyPasswordInput state={confirmPassword} setState={setConfirmPassword} /></p>
-                <p>{msg}</p>
-                <button type="submit" className={btnClass} disabled={disabledSubmission}>Sign Up</button>
+            <form onSubmit={onSubmit} className="flex flex-col space-y-2">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <MyEmailInput state={email} setState={setEmail} inputClass="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Password</label>
+                    <MyPasswordInput state={password} setState={setPassword} inputClass="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                    <MyPasswordInput state={confirmPassword} setState={setConfirmPassword} inputClass="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                </div>
+                {msg && <p className="text-sm text-red-500">{msg}</p>}
+                <button type="submit" className={`${btnClass} mt-2`} disabled={disabledSubmission}>Sign Up</button>
             </form>
-            {/* <button onClick={() => loginWithRedirect({})}>Sign Up with Google</button> */}
         </div>
     );
 };

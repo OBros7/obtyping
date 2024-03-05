@@ -9,9 +9,11 @@ interface DeckCardButtonProps {
 import { MySelect } from '@/Basics'
 
 
-const mainDivClass = 'flex flex-row items-center flex-wrap justify-center w-full rounded-xl p-1 m-1'
-const divClass = 'flex flex-col flex-wrap justify-center w-8/12 bg-blue-200 rounded-xl p-4 m-4'
-const buttonClass = 'bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded h-fit w-fit'
+const mainDivClass = 'flex flex-row items-center flex-wrap justify-center w-5/6 rounded-xl m-1 my-4 border-solid border-4 border-blue-200 '
+const divClass = 'flex flex-col flex-wrap justify-center w-8/12 rounded-xl p-8'
+const buttonClass = 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded h-fit w-fit'
+const titleClass = 'text-2xl font-bold'
+const descriptionClass = 'text-sm text-gray-500 pt-4'
 export default function DeckCardButton({ deck }: DeckCardButtonProps) {
     const [modeTime, setModeTime] = useState<1 | 2 | 3 | 5>(1)
 
@@ -23,9 +25,9 @@ export default function DeckCardButton({ deck }: DeckCardButtonProps) {
     return (
         <div className={mainDivClass}>
             <div key={deck.deck_id} className={divClass}>
-                <p>{deck.title}</p>
-                <hr className="my-0.5 border-t border-white" />
-                <p>{deck.description}</p>
+                <div className={titleClass}>{deck.title}</div>
+                {/* <hr className="my-0.5 border-t border-white" /> */}
+                <div className={descriptionClass}>{deck.description}</div>
             </div>
             <MySelect
                 state={modeTime}

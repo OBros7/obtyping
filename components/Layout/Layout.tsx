@@ -51,7 +51,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </Head>
       <header {...headerAttrs}>
         <div {...headerBox}>
-          <HeaderLink href='/' text='Home' />
+          <Image src='/images/logoIcon.png' height={32} width={32} alt='img' />
+          <HeaderLink href='/' text='TypingNLearning' addClass='text-xl font-bold mr-4' />
         </div>
         <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
