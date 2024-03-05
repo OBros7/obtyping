@@ -3,9 +3,9 @@ import type { ChartData, ChartOptions } from 'chart.js'
 // process data from server
 const getTopRecords = (records: any, k: number, higherBetter: boolean) => {
   if (higherBetter) {
-    records.sort((a: any, b: any) => b.record - a.record)
+    records.sort((a: any, b: any) => b.score - a.score)
   } else {
-    records.sort((a: any, b: any) => a.record - b.record)
+    records.sort((a: any, b: any) => a.score - b.score)
   }
   const topRecords = records.slice(0, k)
   return topRecords
@@ -15,7 +15,7 @@ const createXY4Graph = (records: any, recentK: number) => {
   const recentRecords = records.slice(-recentK)
   // const x = recentRecords.map((d: any) => d.timestamp.slice(0, 10))
   const x = recentRecords.map((d: any) => '')
-  const y = recentRecords.map((d: any) => d.record)
+  const y = recentRecords.map((d: any) => d.score)
   return { x, y }
 }
 
