@@ -37,7 +37,7 @@ export default function HomeMain() {
         <div className={appBoxClass}>
 
           <AppCard
-            href='./admin/test/basicdeckselection'
+            href='./typing/basic_typing'
             title={translater.basicTypingTitle}
             description={translater.basicTypingDescription}
             thumbnail={tbDefault}
@@ -45,7 +45,7 @@ export default function HomeMain() {
             recomendedFor={translater.recomendedFixedPhrase}
           ></AppCard>
           <AppCard
-            href='./admin/test/customdeckselection'
+            href='./typing/custom_typing'
             title={translater.customTypingTitle}
             description={translater.customTypingDescription}
             thumbnail={tbDefault}
@@ -53,7 +53,7 @@ export default function HomeMain() {
             recomendedFor={translater.recomendedFixedPhrase}
           ></AppCard>
           <AppCard
-            href='./admin/test/categorydeckselection'
+            href='./typing/category_typing'
             title={translater.categoryTypingTitle}
             description={translater.categoryTypingDescription}
             thumbnail={tbDefault}

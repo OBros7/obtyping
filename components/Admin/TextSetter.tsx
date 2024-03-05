@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { PostText, getDeckListByUser, createText } from '@/MyLib/UtilsAPITyping'
+import {
+    PostTextOnly,
+    PostTextDeck,
+    getDeckListByUser,
+    createTextOnly,
+    createTextDeck,
+} from '@/MyLib/UtilsAPITyping'
 import { checkLanguage } from '@/MyLib/UtilsTyping'
 
-import { FormatCategory } from './'
+import { FormatCategory } from '@/CommonPage/DeckSelection'
 
 const langOptions = Object.keys(lang2int)
 
@@ -93,48 +99,44 @@ export default function TextSetter({
             lang2_int = lang2int[lang2]
         }
 
-        const data: PostText = {
-            user_id: userID,
-            title: title,
-            text11: text1,
-            text12: null,
-            text21: text2,
-            text22: null,
-            category: category,
-            subcategory: subcategory,
-            level: level,
-            lang1_int: lang1_int,
-            lang2_int: lang2_int,
-            visibility_int: visibilityInt,
-            shuffle: false,
-            deck_id: deckID,
 
+        let json: any
+        if (deckID === -1) {// create new deck and text
+            const data: PostTextDeck = {
+                user_id: userID,
+                title: title,
+                text11: text1,
+                text12: null,
+                text21: text2,
+                text22: null,
+                category: category,
+                subcategory: subcategory,
+                level: level,
+                lang1_int: lang1_int,
+                lang2_int: lang2_int,
+                visibility_int: visibilityInt,
+                shuffle: false,
+                deck_title: deckTitle,
+                deck_description: deckDescription,
+            }
+            json = await createTextDeck(data)
+
+        } else {// create new text and add it to an existing deck
+            const data: PostTextOnly = {
+                user_id: userID,
+                title: title,
+                text11: text1,
+                text12: null,
+                text21: text2,
+                text22: null,
+                visibility_int: visibilityInt,
+                deck_id: deckID,
+            }
+            json = await createTextOnly(data)
         }
 
-        if (deckID === -1) {// create a new deck
-            data['deck_title'] = deckTitle
-            data['deck_description'] = deckDescription
-        }
-
-
-        const json = await createText(data)
         console.log('Returned json: ', json)
         setMsg(JSON.stringify(json))
-
-        // const url = `${fastAPIURL}create_text`
-        // // post data to url
-        // const res = await fetch(url, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(data),
-        //     mode: 'cors',
-        // })
-        // const json = await res.json()
-        // console.log('Returned json: ', json)
-        // setMsg(JSON.stringify(json))
-
     }
 
 
@@ -149,14 +151,7 @@ export default function TextSetter({
                     setState={setTitle}
                 />
             </div>
-            <FormatCategory
-                category={category}
-                setCategory={setCategory}
-                subcategory={subcategory}
-                setSubcategory={setSubcategory}
-                level={level}
-                setLevel={setLevel}
-            />
+
 
             <div className={classChildDiv}>
                 Translation ?
@@ -226,6 +221,14 @@ export default function TextSetter({
                             setState={setDeckDescription}
                         />
                     </div>
+                    <FormatCategory
+                        category={category}
+                        setCategory={setCategory}
+                        subcategory={subcategory}
+                        setSubcategory={setSubcategory}
+                        level={level}
+                        setLevel={setLevel}
+                    />
                 </>
                 :
                 null
@@ -238,11 +241,6 @@ export default function TextSetter({
                     Submit
                 </button>{msg}
             </div>
-
-
-
-
-
         </div >
     )
 }
