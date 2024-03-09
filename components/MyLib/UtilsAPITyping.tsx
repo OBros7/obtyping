@@ -313,7 +313,6 @@ interface PostTextOnly {
 interface PostTextDeck {
     // text & deck property
     user_id: number
-    visibility_int: number
     // text property
     title: string
     text11: string
@@ -332,6 +331,7 @@ interface PostTextDeck {
     subcategory: string | null
     level: string | null
     shuffle: boolean
+    visibility_int: number
 }
 
 interface PostDeck {
