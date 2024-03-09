@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
-import { TypingPageBase } from './'
+import { TypingPageBase, ReadyScreen, langDict } from './'
 import { creteRandomDeck } from './UtilsTyping'
 import {
     ReceivedText,
     getTextListByDeck,
 } from '@/MyLib/UtilsAPITyping'
-
-
+import { useTranslation } from '@/MyCustomHooks'
 import { ResultDefault } from '@/CommonPage/Result'
 
 interface TypingProps {
@@ -15,7 +14,9 @@ interface TypingProps {
     minutes: number
 }
 
+
 export default function Typing({ deckId, minutes }: TypingProps) {
+    const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
     const [textList, setTextList] = useState<ReceivedText[]>([])
     const [status, setStatus] = useState<'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'>('waiting')
     const [score, setScore] = useState(0)
@@ -47,6 +48,20 @@ export default function Typing({ deckId, minutes }: TypingProps) {
         console.log('textlist', textList)
     }, [textList])
 
+    useEffect(() => {
+        const handleSpacePress = (event: KeyboardEvent) => {
+            if (event.code === "Space" && status === 'waiting') {
+                setStatus('ready');
+            }
+        };
+
+        window.addEventListener('keydown', handleSpacePress);
+
+        return () => {
+            window.removeEventListener('keydown', handleSpacePress);
+        };
+    }, [status, setStatus]);
+
     return (
         <Layout>
             <MainContainer addClass='p-4'>
@@ -55,16 +70,28 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                     className='btn-second'
                 >Toggle Status</button>
 
-                {status === 'running' ?
+                {status === 'waiting' ? (
+                    <div className="w-full text-center text-5xl mt-48 mb-48">
+                        {translater.pleasePressSpace}
+                    </div>
+                ) : status === 'ready' ? (
+                    <div className="w-full text-center text-5xl mt-48 mb-48">
+                        <ReadyScreen
+                            status={status}
+                            setStatus={setStatus}
+                        />
+                    </div>
+                ) : status === 'running' ?
                     <>
-                        <div>
+                        {/* <div>
                             <p>Minutes: {minutes}</p>
                             <p>Text List: </p>
-                            {/* Check if textList is not empty before mapping */}
+                            Check if textList is not empty before mapping
                             {textList && textList.length > 0 && textList.map((text, index) => (
                                 <p key={index}>{text.text11}</p>
                             ))}
-                        </div>
+                        </div> */}
+
                         {textList && textList.length > 0 && (
                             <TypingPageBase
                                 textList={textList}
