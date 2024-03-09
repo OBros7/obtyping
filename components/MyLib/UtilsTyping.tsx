@@ -75,6 +75,8 @@ const subcategoryJsonJa: ISubcategories = {
 // create category list from subcategoryJson
 const categoryListJa = subcategoryJsonJa.categories.map((category: ICategory) => category.name)
 
+
+
 const levelListJa = [
     { id: -1, name: 'レベルを選ぶ' },
     { id: 0, name: '小学生' },

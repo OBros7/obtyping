@@ -1,17 +1,18 @@
+// components/Layout/HamburgerMenu.tsx:
 import React, { useState, useContext, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { GlobalContext } from 'context/GlobalContext'
+import { GlobalContext } from '@contexts/GlobalContext'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { useRouter } from 'next/router'
 // import { signOut } from 'next-auth/react'
 import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
 
 interface HamburgerMenuProp {
-    user: any
+    userData: any
     signOut: any
 }
 
-export default function HamburgerMenu({ user, signOut }: HamburgerMenuProp) {
+export default function HamburgerMenu({ userData, signOut }: HamburgerMenuProp) {
     const [isOpen, setIsOpen] = useState(false)
     // const { session, paymentStatus } = useContext(GlobalContext)
     const menuRef = useRef<HTMLDivElement>(null)
@@ -65,7 +66,7 @@ export default function HamburgerMenu({ user, signOut }: HamburgerMenuProp) {
                             </a>
                         </Link>
                     </li>
-                    {user ? (
+                    {userData.loginStatus === true ? (
                         <li>
                             <button onClick={signOut}>Sign Out</button>
                         </li>

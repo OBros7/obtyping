@@ -1,3 +1,4 @@
+// components/CommonPage/DeckSelection/DeckSelectCustom.tsx
 import React, { useEffect, useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
 import langDict from './langDict'

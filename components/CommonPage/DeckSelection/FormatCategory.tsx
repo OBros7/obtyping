@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
-import {
-    ICategory,
-    ISubcategory,
-    subcategoryJsonJa,
-    levelListJa,
-    subcategoryJsonEn,
-    levelListEn,
-} from '@/MyLib/UtilsTyping'
 import { useRouter } from 'next/router'
+import { getCategoriesSubcategoriesLevels } from '@/MyLib/UtilsAPITyping'
 
-
-const minibox = 'flex flex-row  justify-center items-center'
+const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const minibox = 'flex flex-row justify-center items-center'
 
 interface FormatCategoryProps {
     category: string
@@ -23,7 +16,6 @@ interface FormatCategoryProps {
     classParent?: string
 }
 
-
 export default function FormatCategory({
     category,
     setCategory,
@@ -34,56 +26,33 @@ export default function FormatCategory({
     classParent = minibox
 }: FormatCategoryProps) {
     const { locale } = useRouter()
-    // const [categoryIDList, setCategoryIDList] = useState<number[]>([])
-    // const [subcategoryIDList, setSubcategoryIDList] = useState<number[]>([])
-    // const [levelIDList, setLevelIDList] = useState<number[]>([])
-    const [categoryList, setCategoryList] = useState<string[]>([])
+    const [categories, setCategories] = useState<string[]>([])
     const [subcategoryList, setSubcategoryList] = useState<string[]>([])
     const [levelList, setLevelList] = useState<string[]>([])
-
-
-    useEffect(() => {
-        let _categoryIDs
-        let _categoryList
-        let _levelIDs
-        let _levelList
-        if (locale === 'ja') {
-            // _categoryIDs = subcategoryJsonJa.categories.map((category: ICategory) => category.id)
-            _categoryList = subcategoryJsonJa.categories.map((category: ICategory) => category.name)
-            // _levelIDs = levelListJa.map(level => level.id)
-            _levelList = levelListJa.map(level => level.name)
-
-        } else {
-            // _categoryIDs = subcategoryJsonEn.categories.map((category: ICategory) => category.id)
-            _categoryList = subcategoryJsonEn.categories.map((category: ICategory) => category.name)
-            // _levelIDs = levelListEn.map(level => level.id)
-            _levelList = levelListEn.map(level => level.name)
-        }
-        // setCategoryIDList(_categoryIDs)
-        setCategoryList(_categoryList)
-        // setLevelIDList(_levelIDs)
-        setLevelList(_levelList)
-    }, [locale])
+    const [requestedData, setRequestedData] = useState<{
+        cat_subcat: { [key: string]: string[] },
+        levels: string[]
+    }>({ cat_subcat: {}, levels: [] })
 
     useEffect(() => {
-        let _subcategoryIDList = [-1]
-        let _subcategoryList = ['Choose a subcategory']
-        if (locale === 'ja') {
-            const selectedCategory = subcategoryJsonJa.categories.find(cat => cat.name === category);
-            if (selectedCategory) {
-                // _subcategoryIDList = selectedCategory.subcategories.map((subcategory: ISubcategory) => subcategory.id);
-                _subcategoryList = selectedCategory.subcategories.map((subcategory: ISubcategory) => subcategory.name);
-            }
-        } else {
-            const selectedCategory = subcategoryJsonEn.categories.find(cat => cat.name === category);
-            if (selectedCategory) {
-                // _subcategoryIDList = selectedCategory.subcategories.map((subcategory: ISubcategory) => subcategory.id);
-                _subcategoryList = selectedCategory.subcategories.map((subcategory: ISubcategory) => subcategory.name);
-            }
+
+        getCategoriesSubcategoriesLevels().then(data => {
+            setRequestedData(data)
+            setCategories(Object.keys(data.cat_subcat))
+            setLevelList(data.levels)
+            console.log(data)
+        })
+
+    }, [])
+
+    useEffect(() => {
+        if (requestedData.cat_subcat) {
+            const _subcategoryList = requestedData.cat_subcat[category] || []
+            setSubcategoryList(_subcategoryList)
         }
-        // setSubcategoryIDList(_subcategoryIDList);
-        setSubcategoryList(_subcategoryList);
-    }, [category]);
+    }, [category, requestedData])
+
+
 
     return (
         <div className={classParent}>
@@ -91,7 +60,7 @@ export default function FormatCategory({
             <MySelect
                 state={category}
                 setState={setCategory}
-                optionValues={categoryList}
+                optionValues={categories}
             />
             subcategory:
             <MySelect
