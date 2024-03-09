@@ -63,10 +63,10 @@ export default function DeckSetter({
         }
 
 
-        const lang1_int = lang2int[lang1] as number
+        const lang1_int = lang2int(lang1) as number
         let lang2_int: number | null = null
         if (!isLangLearn) {
-            lang2_int = lang2int[lang2]
+            lang2_int = lang2int(lang2)
         }
 
         const data = {
@@ -83,20 +83,6 @@ export default function DeckSetter({
         const json = await createDeck(data)
         console.log('Returned json: ', json)
         setMsg(JSON.stringify(json))
-        // const url = `${fastAPIURL}create_deck`
-        // // post data to url
-        // const res = await fetch(url, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(data),
-        //     mode: 'cors',
-        // })
-        // const json = await res.json()
-        // console.log('Returned json: ', json)
-        // setMsg(JSON.stringify(json))
-
     }
 
 

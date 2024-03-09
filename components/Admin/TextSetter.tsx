@@ -92,32 +92,38 @@ export default function TextSetter({
 
         // set language
         const lang1 = checkLanguage(text1)
-        const lang1_int = lang2int[lang1] as number
+        console.log(lang1, lang2int(lang1))
+
+        const lang1_int = lang2int(lang1) as number
         let lang2_int: number | null = null
         if (text2 !== '') {
             const lang2 = checkLanguage(text2)
-            lang2_int = lang2int[lang2]
+            lang2_int = lang2int(lang2)
         }
+        console.log(lang1, lang1_int)
 
 
         let json: any
         if (deckID === -1) {// create new deck and text
             const data: PostTextDeck = {
                 user_id: userID,
+                // about text
                 title: title,
                 text11: text1,
                 text12: null,
                 text21: text2,
                 text22: null,
+                // about deck
+                deck_title: deckTitle,
+                deck_description: deckDescription,
+                lang1_int: lang1_int,
+                lang2_int: lang2_int,
                 category: category,
                 subcategory: subcategory,
                 level: level,
-                lang1_int: lang1_int,
-                lang2_int: lang2_int,
                 visibility_int: visibilityInt,
                 shuffle: false,
-                deck_title: deckTitle,
-                deck_description: deckDescription,
+
             }
             json = await createTextDeck(data)
 
