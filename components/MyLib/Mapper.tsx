@@ -23,7 +23,8 @@ const _lang2int: { [key: string]: number | null } = {
     none: null
 }
 
-const lang2int = (lang: string): number | null => {
+const lang2int = (lang: string | null): number | null => {
+    if (lang === null) return 0
     return _lang2int[lang.toLowerCase()]
 }
 

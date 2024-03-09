@@ -13,14 +13,14 @@ function checkLanguage(input: string): string {
     // English alphabets, digits, standard keyboard symbols, empty space, and new line
     const englishRegex = /^[A-Za-z0-9 !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?\n]*$/;
 
-    let language = 'English';
+    let language = 'english';
 
     for (const char of input) {
         if (!englishRegex.test(char)) {
             if (japaneseRegex.test(char)) {
-                language = 'Japanese'
+                language = 'japanese'
             } else {
-                return 'Others'
+                return 'others'
             }
         }
     }
