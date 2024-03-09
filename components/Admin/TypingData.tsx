@@ -1,3 +1,4 @@
+// components/Admin/TypingData.tsx
 import React, { useEffect, useState } from 'react'
 import { TextGetter, TextSetter, DeckGetter, DeckSetter } from '@/Admin'
 import { Layout, MainContainer } from '@/Layout';

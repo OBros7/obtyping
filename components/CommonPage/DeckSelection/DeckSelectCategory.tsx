@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
 import { SearchBox, DeckListButton } from './'
 import {
-
     getDeckListByCategory,
     getDeckListBySearch,
     ReceivedDeck,
-
 } from '@/MyLib/UtilsAPITyping'
 
 

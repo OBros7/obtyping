@@ -1,3 +1,5 @@
+// components/MyLib/UtilsAPITyping.tsx
+
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { findCategoryAndSubcategoryIds } from './UtilsTyping'
 import { create } from 'domain';
@@ -262,6 +264,19 @@ const getTextListByDeck = async (
     return resJSON
 }
 
+const getCategoriesSubcategoriesLevels = async () => {
+    const url = fastAPIURL + 'get_categories_subcategories_levels'
+    const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    const resJSON = await res.json()
+    return resJSON
+
+}
+
 
 /////////////////////////////////////// API POST function ///////////////////////////////////////
 interface PostText {
@@ -283,6 +298,41 @@ interface PostText {
     deck_description?: string,
 }
 
+interface PostTextOnly {
+    user_id: number,
+    title: string,
+    text11: string,
+    text12?: string | null,
+    text21?: string | null,
+    text22?: string | null,
+    visibility_int: number,
+    deck_id: number,
+}
+
+
+interface PostTextDeck {
+    // text & deck property
+    user_id: number
+    visibility_int: number
+    // text property
+    title: string
+    text11: string
+    text12?: string | null,
+    text21?: string | null,
+    text22?: string | null,
+    // deck property
+    deck_title: string
+    deck_description: string | null,
+    lang1_int: number
+    lang2_int: number | null
+    // category_id: number | null
+    // subcategory_id: number | null
+    // level_id: number | null
+    category: string | null
+    subcategory: string | null
+    level: string | null
+    shuffle: boolean
+}
 
 interface PostDeck {
     user_id: number,
@@ -299,6 +349,36 @@ interface PostDeck {
 
 const createText = async (data: PostText) => {
     const url = fastAPIURL + 'create_text'
+    // post data to url
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        mode: 'cors',
+    })
+    const json = await res.json()
+    return json
+}
+
+const createTextOnly = async (data: PostTextOnly) => {
+    const url = fastAPIURL + 'create_text_only'
+    // post data to url
+    const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        mode: 'cors',
+    })
+    const json = await res.json()
+    return json
+}
+
+const createTextDeck = async (data: PostTextDeck) => {
+    const url = fastAPIURL + 'create_text_deck'
     // post data to url
     const res = await fetch(url, {
         method: 'POST',
@@ -335,6 +415,8 @@ const createDeck = async (data: PostDeck) => {
 export type {
     PostText,
     PostDeck,
+    PostTextOnly,
+    PostTextDeck,
     ReceivedText,
     ReceivedDeck,
     getDeckTextParams,
@@ -342,6 +424,8 @@ export type {
 export {
     createDeck,
     createText,
+    createTextOnly,
+    createTextDeck,
     getDeckListByUser,
     getDeckListBasic,
     getDeckListSelective,
@@ -349,4 +433,5 @@ export {
     getDeckListByCategory,
     getDeckListBySearch,
     getTextListByDeck,
+    getCategoriesSubcategoriesLevels,
 }

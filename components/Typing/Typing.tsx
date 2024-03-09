@@ -7,6 +7,9 @@ import {
     getTextListByDeck,
 } from '@/MyLib/UtilsAPITyping'
 
+
+import { ResultDefault } from '@/CommonPage/Result'
+
 interface TypingProps {
     deckId: number
     minutes: number
@@ -47,28 +50,50 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     return (
         <Layout>
             <MainContainer addClass='p-4'>
-                <div>
-                    {/* <p>Minutes: {minutes}</p>
-                    <p>Text List: </p> */}
-                    {/* Check if textList is not empty before mapping */}
-                    {/* {textList && textList.length > 0 && textList.map((text, index) => (
-                        <p key={index}>{text.text11}</p>
-                    ))} */}
-                </div>
-                {textList && textList.length > 0 && (
-                    <TypingPageBase
-                        textList={textList}
-                        status={status}
-                        setStatus={setStatus}
-                        score={score}
-                        setScore={setScore}
-                        mistake={mistake}
-                        setMistake={setMistake}
-                        languageType={languageType}
-                        mode={mode}
-                    />
-                )}
+                <button
+                    onClick={() => setStatus(status === "running" ? "result" : "running")}
+                    className='btn-second'
+                >Toggle Status</button>
 
+                {status === 'running' ?
+                    <>
+                        <div>
+                            <p>Minutes: {minutes}</p>
+                            <p>Text List: </p>
+                            {/* Check if textList is not empty before mapping */}
+                            {textList && textList.length > 0 && textList.map((text, index) => (
+                                <p key={index}>{text.text11}</p>
+                            ))}
+                        </div>
+                        {textList && textList.length > 0 && (
+                            <TypingPageBase
+                                textList={textList}
+                                status={status}
+                                setStatus={setStatus}
+                                score={score}
+                                setScore={setScore}
+                                mistake={mistake}
+                                setMistake={setMistake}
+                                languageType={languageType}
+                                mode={mode}
+                            />
+                        )}
+                    </>
+                    :
+                    <ResultDefault
+                        // urlPost={'/api/typing/post'}
+                        // urlGet={'/api/typing/get'}
+                        deckId={deckId}
+                        minutes={minutes}
+                        record={score}
+                        unit={'wpm'}
+                        resultBoxText={'Your typing speed is '}
+                        handlePlayAgain={() => setStatus('running')}
+                        handleBackToStart={() => setStatus('menu select')}
+                        higherBetter={true}
+                    />
+
+                }
             </MainContainer>
         </Layout>
     )

@@ -1,3 +1,4 @@
+//components/Layout/Layout.tsx:
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -5,9 +6,11 @@ import { useRouter } from 'next/router'
 import React, { useContext, useEffect, useState } from 'react'
 // import { useSession, signIn, signOut } from 'next-auth/react'
 // import { GlobalContext } from 'context/GlobalContext'
+import { useUserContext } from '@contexts/UserContext';
 import { HeaderLink, HamburgerMenu } from './'
 import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
-import useUserFromCookie from '@/MyCustomHooks/useUserFromCookie';
+
+
 const siteTitle = 'Obgames'
 const headerAttrs = {
   className: 'bg-blue-600 text-white flex justify-around',
@@ -19,23 +22,17 @@ const headerBox = {
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { locale } = useRouter()
-  const user2 = useUserFromCookie();
-  const { user, signedOut, setSignedOut, signOut } = useAuth();
+  //
+  const { signOut } = useAuth();
+  // const { user, signedOut, setSignedOut, signOut } = useAuth();
 
-  useEffect(() => {
-    if (signedOut) {
-      setSignedOut(false);
-    }
-  }, [signedOut, setSignedOut]);
-
-  useEffect(() => {
-    console.log('user', user);
-  }, [user])
+  // get userData from context (local storage)
+  const { userData, setUserData } = useUserContext();
+  console.log('userData', userData);
 
   return (
     // <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
-    <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen flex flex-col'>
+    <div key={userData.loginStatus === true ? 'loggedIn' : 'loggedOut'} className='min-h-screen flex flex-col'>
       <Head>
         <link rel='icon' href='/favicon.ico' />
         <meta charSet='utf-8' />
@@ -61,14 +58,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <HeaderLink href='/admin' text='Admin' addClass='outline outline-white outline-2' />
         </div>
         <div {...headerBox}>
-          {user ? (
+          {/* {user ? ( */}
+          {userData.loginStatus === true ? (
             // if paid user show nothing, else show payment link
-            <HeaderLink href='/account/payment' text='Subscribe' addClass='outline outline-white outline-2' />
+            < HeaderLink href='/payment/payment_page' text='Subscribe' addClass='outline outline-white outline-2' />
           ) : (
             <HeaderLink href='/account/signin' text='SignIn' addClass='outline outline-white outline-2' />
           )}
           <div {...headerBox}>
-            <HamburgerMenu user={user} signOut={signOut} />
+            {/* <HamburgerMenu userData={userData} signOut={() => signOut(setUserData)} /> */}
+            <HamburgerMenu userData={userData} signOut={() => signOut()} />
           </div>
         </div>
       </header>
