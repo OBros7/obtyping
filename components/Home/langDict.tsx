@@ -1,6 +1,6 @@
 let langDict = {
   startNow: {
-    ja: '今すぐタイピング速度を測定する',
+    ja: 'タイピング✖️学習を試してみる',
     en: 'Start typing test now!',
   },
   catchCopy: {
@@ -28,7 +28,7 @@ let langDict = {
   //   en: 'Basic typing',
   // },
   basicTypingDescription: {
-    ja: '基本的なタイピング練習です。基礎力を鍛えるのに最適です。',
+    ja: '基本的なタイピング練習です。',
     en: 'This is a basic typing practice. It is best for training your basic skills.',
   },
   customTypingTitle: {
@@ -44,7 +44,7 @@ let langDict = {
     en: 'Category typing',
   },
   categoryTypingDescription: {
-    ja: '様々なカテゴリからテキストを選ぶことができます。勉強をしながらタイピングを鍛えよう！',
+    ja: '様々なカテゴリからテキストを選ぶことができ、勉強をしながらタイピングを鍛えよう！',
     en: 'You can choose text from various categories. Let\'s train your typing while studying!',
   },
   recomendedFixedPhrase: {

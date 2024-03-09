@@ -3,6 +3,7 @@ import { AppCard, langDict, MenuCard } from './'
 import { Layout, MainContainer } from '@/Layout'
 import { useTranslation } from '@/MyCustomHooks'
 import Image from 'next/image'
+import Link from 'next/link';
 
 export default function HomeMain() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
@@ -14,10 +15,10 @@ export default function HomeMain() {
 
   return (
     <Layout>
-      <div className="bg-[url('/images/man.png')] w-screen h-[50vh] bg-center bg-cover flex items-center justify-center" >
+      <div className="bg-[url('/images/heroImage.png')] w-screen h-[50vh] bg-center bg-cover flex items-center justify-center relative">
         <div className="flex flex-row flex-wrap justify-center">
           <button
-            className="m-20 bg-blue-500 hover:bg-blue-700 text-white text-4xl font-bold py-4 px-16  rounded bg-center bg-cover">
+            className="m-20 bg-blue-500 hover:bg-blue-700 text-white text-4xl font-bold py-6 px-16 rounded bg-center bg-cover">
             {translater.startNow}
           </button>
         </div>
@@ -35,12 +36,19 @@ export default function HomeMain() {
         </div>
 
         <div className={appBoxClass}>
+          <Link href='/typing/typing'><a></a>
+          </Link>
 
           <AppCard
             href='./typing/basic_typing'
             title={translater.basicTypingTitle}
             description={translater.basicTypingDescription}
-            thumbnail={tbDefault}
+            thumbnail={<Image
+              src="/images/basicIcon.png"
+              alt="Basic Icon"
+              width={60} // 適切なサイズに調整
+              height={60} // 適切なサイズに調整
+            />}
             bgcolor='bg-green-400'
             recomendedFor={translater.recomendedFixedPhrase}
           ></AppCard>
@@ -48,7 +56,12 @@ export default function HomeMain() {
             href='./typing/custom_typing'
             title={translater.customTypingTitle}
             description={translater.customTypingDescription}
-            thumbnail={tbDefault}
+            thumbnail={<Image
+              src="/images/gearIcon.png"
+              alt="Basic Icon"
+              width={60} // 適切なサイズに調整
+              height={60} // 適切なサイズに調整
+            />}
             bgcolor='bg-yellow-400'
             recomendedFor={translater.recomendedFixedPhrase}
           ></AppCard>
@@ -56,7 +69,12 @@ export default function HomeMain() {
             href='./typing/category_typing'
             title={translater.categoryTypingTitle}
             description={translater.categoryTypingDescription}
-            thumbnail={tbDefault}
+            thumbnail={<Image
+              src="/images/brainIcon.png"
+              alt="Basic Icon"
+              width={60} // 適切なサイズに調整
+              height={60} // 適切なサイズに調整
+            />}
             bgcolor='bg-red-400'
             recomendedFor={translater.recomendedFixedPhrase}
           ></AppCard>

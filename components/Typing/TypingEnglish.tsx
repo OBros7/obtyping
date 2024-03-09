@@ -5,7 +5,7 @@ import { ReceivedText } from '@/MyLib/UtilsAPITyping'
 
 interface TypingEnglishProps {
   textList: ReceivedText[]
-  setStatus: React.Dispatch<React.SetStateAction<'menu select' | 'setting' | 'running' | 'result'>>
+  setStatus: React.Dispatch<React.SetStateAction<'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'>>
   score: number
   setScore: React.Dispatch<React.SetStateAction<number>>
   mistake: number
@@ -146,9 +146,9 @@ export default function TypingEnglish(
       const width = window.innerWidth;
 
       if (width >= 1536) {
-        setCharsPerLine(twoXlScrenWordNum); //75
+        setCharsPerLine(twoXlScrenWordNum);
       } else if (width >= 1280 && width < 1536) {
-        setCharsPerLine(xlScrenWordNum); //
+        setCharsPerLine(xlScrenWordNum);
       } else if (width >= 1024 && width < 1280) {
         setCharsPerLine(lgScrenWordNum);
       } else if (width >= 768 && width < 1024) {

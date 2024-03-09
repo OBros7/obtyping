@@ -10,7 +10,7 @@ import {
 
 const parentClass = 'flex flex-col items-center justify-center p-4 rounded-md'
 
-const buttonClass = 'btn-second rounded-md m-4 mt-8'
+const buttonClass = 'btn-primary rounded-md m-4 mt-8'
 
 export default function DeckSelectCategory() {
     const [searchType, setSearchType] = useState<'category' | 'text'>('category')

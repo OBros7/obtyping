@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { GoogleLogin, langDict, LoginForm, SignupForm } from '.';
 import { Layout, MainContainer } from '@/Layout';
 import { useTranslation } from '@/MyCustomHooks';
+import TabSwitcher from './TabSwitcher';
 
 const boxClass = 'outline outline-2 rounded m-4 p-4';
 const signinButtonClass = 'btn-third';
@@ -23,31 +24,24 @@ export default function Signin() {
   return (
     <Layout>
       <MainContainer>
-        <div className={boxClass}>
-          <GoogleLogin />
-        </div>
-        <div className={boxClass}>
-          {newUser ? (
-            <>
-              <button
-                onClick={() => setNewUser(!newUser)}
-                className={switchButtonClass}
-              >
-                I have my account
-              </button>
-              <SignupForm btnClass={signinButtonClass} />
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => setNewUser(!newUser)}
-                className={switchButtonClass}
-              >
-                I am a New User!
-              </button>
-              <LoginForm btnClass={signinButtonClass} />
-            </>
-          )}
+        <div className='flex justify-center items-center'>
+          <div className="flex outline outline-2 rounded my-8">
+            <div className='border-r border-gray-300 outline-2 p-4'>
+              <GoogleLogin />
+            </div>
+            <div className=' rounded m-4 p-4'>
+              <TabSwitcher text1='Login' text2='Signin' isSwitch={newUser} setIsSwitch={setNewUser} />
+              {newUser ? (
+                <>
+                  <SignupForm btnClass={signinButtonClass} />
+                </>
+              ) : (
+                <>
+                  <LoginForm btnClass={signinButtonClass} />
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </MainContainer>
     </Layout>
