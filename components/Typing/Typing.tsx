@@ -18,7 +18,7 @@ interface TypingProps {
 export default function Typing({ deckId, minutes }: TypingProps) {
     const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
     const [textList, setTextList] = useState<ReceivedText[]>([])
-    const [status, setStatus] = useState<'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'>('waiting')
+    const [status, setStatus] = useState<'waiting' | 'ready' | 'setting' | 'running' | 'result'>('waiting')
     const [score, setScore] = useState(0)
     const [mistake, setMistake] = useState(0)
     const [languageType, setLanguageType] = useState<'eg' | 'jp' | 'free'>('free')
@@ -116,7 +116,7 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                         unit={'wpm'}
                         resultBoxText={'Your typing speed is '}
                         handlePlayAgain={() => setStatus('running')}
-                        handleBackToStart={() => setStatus('menu select')}
+                        handleBackToStart={() => setStatus('waiting')}
                         higherBetter={true}
                     />
 

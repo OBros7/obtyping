@@ -5,8 +5,8 @@ import { hms2ms, ms2hms } from '@/MyLib/TimeLib'
 import { TimerBase, StopWatchBase } from '@/Timer'
 
 interface ReadyScreenProps {
-  status: 'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'
-  setStatus: React.Dispatch<React.SetStateAction<'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'>>
+  status: 'waiting' | 'ready' | 'setting' | 'running' | 'result'
+  setStatus: React.Dispatch<React.SetStateAction<'waiting' | 'ready' | 'setting' | 'running' | 'result'>>
 }
 
 export default function WaitingScreen({ status, setStatus }: ReadyScreenProps) {

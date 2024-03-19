@@ -14,7 +14,7 @@ import { ReceivedText } from '@/MyLib/UtilsAPITyping'
 interface TypingPageBaseProps {
     textList: ReceivedText[]
     status: 'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'
-    setStatus: React.Dispatch<React.SetStateAction<'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'>>
+    setStatus: React.Dispatch<React.SetStateAction<'waiting' | 'ready' | 'setting' | 'running' | 'result'>>
     score: number
     setScore: React.Dispatch<React.SetStateAction<number>>
     mistake: number
