@@ -8,7 +8,7 @@ import {
 	DeckListButton,
 	AddText,
 	CreateDeck,
-} from './'
+} from '.'
 import {
 	ReceivedDeck,
 	getDeckListByUser,
@@ -31,12 +31,14 @@ export default function DeckSelectCustom() {
 		const fetchDeckList = async () => {
 			let resJSON = await getDeckListByUser(userID)
 			setDeckList(resJSON)
+			console.log('deckList', deckList)
+
 			// return resJSON; // or set it in a state variable.
 		}
 		fetchDeckList()
 		// setDeckList(resJSON)
-		console.log('deckList', deckList)
 		console.log('addType', addType)
+		console.log('decklist', deckList)
 	}, [])
 
 	return (

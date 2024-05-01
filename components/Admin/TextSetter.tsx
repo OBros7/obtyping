@@ -15,8 +15,11 @@ import { FormatCategory } from '@/CommonPage/DeckSelection'
 const langOptions = Object.keys(lang2int)
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
-const classParDivDefault = 'search-container'
-const classChildDivDefault = 'minibox'
+// const classParDivDefault = 'search-container'
+const classParDivDefault = 'flex flex-col items-start space-y-4 w-3/4'
+// const classParDivDefault = 'items-start space-y-4 w-3/4'
+// const classChildDivDefault = 'minibox'
+const classChildDivDefault = 'w-full'
 
 interface TextSetterProps {
     userID: number
@@ -170,7 +173,7 @@ export default function TextSetter({
             {isLangLearn ?
                 <>
 
-                    <div className={classChildDiv}>
+                    <div className={`${classChildDiv} flex-grow`}>
                         Text1:
                         <MyTextarea
                             state={text1}
@@ -239,7 +242,7 @@ export default function TextSetter({
                 :
                 null
             }
-            <div className={classChildDiv}>
+            <div className={`${classChildDiv} flex item-center justify-center py-6`}>
                 <button
                     onClick={onClick}
                     className="btn-primary"

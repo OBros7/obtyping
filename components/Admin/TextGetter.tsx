@@ -98,22 +98,26 @@ export default function TextGetter({
                 />
             </div>
 
-            <div className={classChildDiv}>
-                Language 1:
-                <MySelect
-                    state={lang1}
-                    setState={setLang1}
-                    optionValues={langOptions}
-                />
+            <div className="flex items-center justify-center space-x-4">
+                <div className={classChildDiv}>
+                    Language 1:
+                    <MySelect
+                        state={lang1}
+                        setState={setLang1}
+                        optionValues={langOptions}
+                    />
+                </div>
+                <div className='text-xl'>/</div>
+                <div className={classChildDiv}>
+                    Language 2:
+                    <MySelect
+                        state={lang2}
+                        setState={setLang2}
+                        optionValues={langOptions}
+                    />
+                </div>
             </div>
-            <div className={classChildDiv}>
-                Language 2:
-                <MySelect
-                    state={lang2}
-                    setState={setLang2}
-                    optionValues={langOptions}
-                />
-            </div>
+
             <FormatCategory
                 category={category}
                 setCategory={setCategory}

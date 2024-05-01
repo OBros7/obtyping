@@ -13,6 +13,7 @@ interface TypingFreeProps {
   setMistake: React.Dispatch<React.SetStateAction<number>>
   languageType?: 'eg' | 'jp' | 'free'
   mode?: '1m' | '2m' | '3m' | '5m'
+  remainingTime?: number
 }
 
 const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
@@ -49,6 +50,7 @@ export default function TypingFree(
     setMistake,
     languageType,
     mode = '1m',
+    remainingTime
   }: TypingFreeProps
 ) {
   const [nextKey, setNextKey] = useState<string | null>(textList[0]?.text11[0].toUpperCase());
@@ -154,6 +156,12 @@ export default function TypingFree(
     setCurrentTextLength(currentText.length);
     isCorrects.current = [];
   }, [currentText]);
+
+  useEffect(() => {
+    if (remainingTime === 0) {
+      scoreUpdate(isCorrects.current, 0)
+    }
+  }, [remainingTime])
 
   useEffect(() => {
     const handleResize = () => {

@@ -30,7 +30,7 @@ export default function WaitingScreen({ status, setStatus }: ReadyScreenProps) {
   return (
     <>
       <div className="flex flex-col items-center justify-center">
-        <div className="w-full text-center text-5xl mt-48 mb-48">
+        <div className="w-full text-center text-5xl">
           <TimerBase
             totalTime={wataingTime}
             timePassed={timePassed}

@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'next/router'
 
 
-const minibox = 'flex flex-row  justify-center items-center'
+const minibox = 'flex flex-col  justify-center items-center'
 
 interface FormatCategoryProps {
     category: string
@@ -88,24 +88,29 @@ export default function FormatCategory({
 
     return (
         <div className={classParent}>
-            category:
-            <MySelect
-                state={category}
-                setState={setCategory}
-                optionValues={categoryList}
-            />
-            subcategory:
-            <MySelect
-                state={subcategory}
-                setState={setSubcategory}
-                optionValues={subcategoryList}
-            />
-            Level:
-            <MySelect
-                state={level}
-                setState={setLevel}
-                optionValues={levelList}
-            />
+            <div className="flex items-center justify-center space-x-4">
+                category:
+                <MySelect
+                    state={category}
+                    setState={setCategory}
+                    optionValues={categoryList}
+                />
+                <div className="text-xl pr-4">/</div>
+                subcategory:
+                <MySelect
+                    state={subcategory}
+                    setState={setSubcategory}
+                    optionValues={subcategoryList}
+                />
+            </div>
+            <div className="flex items-center justify-center space-x-4">
+                Level:
+                <MySelect
+                    state={level}
+                    setState={setLevel}
+                    optionValues={levelList}
+                />
+            </div>
         </div>
     )
 }

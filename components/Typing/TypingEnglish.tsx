@@ -12,6 +12,7 @@ interface TypingEnglishProps {
   setMistake: React.Dispatch<React.SetStateAction<number>>
   languageType?: 'eg' | 'jp' | 'free'
   mode?: '1m' | '2m' | '3m' | '5m'
+  remainingTime?: number
 }
 
 const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
@@ -48,6 +49,7 @@ export default function TypingEnglish(
     setMistake,
     languageType,
     mode = '1m',
+    remainingTime
   }: TypingEnglishProps
 ) {
   const [nextKey, setNextKey] = useState<string | null>(textList[0]?.text11[0].toUpperCase());
@@ -171,6 +173,23 @@ export default function TypingEnglish(
     setEndIndicesOfLines(newEndIndices);
   }, [currentText, charsPerLine]);
 
+  useEffect(() => {
+    if (remainingTime === 0) {
+      if (isCorrects.current.length > 0) {
+        let addNum: number = 0
+        let missNum: number = 0
+        for (let i = 0; i < isCorrects.current.length; i++) {
+          if (isCorrects.current[i]) {
+            addNum += 1
+          } else {
+            missNum += 1
+          }
+        }
+        setScore(score + addNum)
+        setMistake(mistake + missNum)
+      }
+    }
+  }, [remainingTime])
 
   return (
     <>

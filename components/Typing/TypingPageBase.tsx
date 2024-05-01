@@ -37,16 +37,14 @@ export default function TypingPageBase({
     const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
     const [timePassed, setTimePassed] = useState(0)
 
-
-
     // for timer base
     const totalTime = hms2ms(0, 10, 0, 0)
     const wataingTime = hms2ms(999, 3, 0, 0)
     const [finished, setFinished] = useState(false)
     const [ticking, setTicking] = useState(true)
     const [reset, setReset] = useState(true)
+    const [remainingTime, setRemainingTime] = useState(60)
     const attrsParentTimer = { className: 'flex flex-col items-center justify-center text-5xl' }
-
 
     // useEffect(() => {// shuffle
     //     console.log('textList', textList, textList[0].text11)
@@ -65,6 +63,12 @@ export default function TypingPageBase({
     //       setCurrentTextIndex(randomList[0])
     //     }
     //   }, [])
+
+    useEffect(() => {
+        const url = new URL(window.location.href);
+
+    }, [])
+
     useEffect(() => {
         const handleSpacePress = (event: KeyboardEvent) => {
             if (event.code === "Space" && status === 'waiting') {
@@ -86,6 +90,17 @@ export default function TypingPageBase({
             setReset(!reset); // タイマーをリセット
         }
     }, [finished, timePassed, status, setStatus, setReset, setTimePassed, reset]);
+
+    useEffect(() => {
+        setRemainingTime(totalTime - timePassed);
+    }, [totalTime, timePassed]);
+
+    useEffect(() => {
+        if (remainingTime <= 0) {
+            setStatus('result');
+            console.log('remainingTime', remainingTime, 'totalTime', totalTime, 'timePassed', timePassed)
+        }
+    }, [remainingTime])
 
     return (
         <>
@@ -132,6 +147,7 @@ export default function TypingPageBase({
                                 setMistake={setMistake}
                                 languageType={languageType}
                                 mode={mode}
+                                remainingTime={remainingTime}
                             />
                         )
                             : languageType === 'jp' ? (
@@ -145,7 +161,9 @@ export default function TypingPageBase({
                                     mistake={mistake}
                                     setMistake={setMistake}
                                     languageType={languageType}
-                                    mode={mode} />
+                                    mode={mode}
+                                    remainingTime={remainingTime}
+                                />
                             )
                         }
                     </>

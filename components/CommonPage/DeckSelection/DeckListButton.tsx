@@ -17,7 +17,9 @@ export default function DeckList({ deckList }: DeckListProps) {
     return (
         <>
             {deckList.map(deck => (
-                <DeckCardButton deck={deck} />
+                <DeckCardButton
+                    deck={deck}
+                />
             ))}
         </>
     )

@@ -23,6 +23,11 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     const [mistake, setMistake] = useState(0)
     const [languageType, setLanguageType] = useState<'eg' | 'jp' | 'free'>('free')
     const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m')
+    const [cpm, setCpm] = useState(0)
+    const [accuracy, setAccuracy] = useState(0)
+    const [recordScore, setRecordScore] = useState(0)
+
+
 
     useEffect(() => {
         async function fetchTextList() {
@@ -62,6 +67,46 @@ export default function Typing({ deckId, minutes }: TypingProps) {
         };
     }, [status, setStatus]);
 
+    useEffect(() => {
+        if (status === "result") {
+            if (score > 0) {
+                console.log('score', score, 'mistake', mistake, 'minutes', minutes)
+                const tempCpm = Math.round((score / minutes) * 100) / 100;
+                setCpm(tempCpm);
+                const calculatedAccuracy = score / (score + mistake);
+                // 小数点第二位で四捨五入
+                const roundedAccuracy = Math.round(calculatedAccuracy * 100) / 100;
+                // %表示のために100倍
+                setAccuracy(roundedAccuracy * 100);
+            } else {
+                setCpm(0);
+                setAccuracy(0);
+                setRecordScore(0);
+            }
+        }
+    }, [status, score, minutes, mistake]);
+
+    // cpmとaccuracyが更新された後にrecordScoreを更新
+    useEffect(() => {
+        if (status === "result" && score > 0) {
+            setRecordScore(Math.round(cpm * accuracy / 100));
+        }
+    }, [cpm, accuracy, score, status]);
+
+    const handleReset = () => {
+        allReset();
+        setStatus('waiting');
+    }
+
+    const allReset = () => {
+        setScore(0);
+        setMistake(0);
+        setCpm(0);
+        setAccuracy(0);
+        setRecordScore(0);
+    }
+
+
     return (
         <Layout>
             <MainContainer addClass='p-4'>
@@ -71,11 +116,12 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                 >Toggle Status</button>
 
                 {status === 'waiting' ? (
-                    <div className="w-full text-center text-5xl mt-48 mb-48">
+                    // <div className="w-full text-center text-5xl mt-48 mb-48">
+                    <div className="flex w-full justify-center items-center text-center text-5xl h-96">
                         {translater.pleasePressSpace}
                     </div>
                 ) : status === 'ready' ? (
-                    <div className="w-full text-center text-5xl mt-48 mb-48">
+                    <div className="flex w-full justify-center items-center text-center text-5xl h-96">
                         <ReadyScreen
                             status={status}
                             setStatus={setStatus}
@@ -112,10 +158,16 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                         // urlGet={'/api/typing/get'}
                         deckId={deckId}
                         minutes={minutes}
-                        record={score}
-                        unit={'wpm'}
+                        record={recordScore}
+                        unit={''}
                         resultBoxText={'Your typing speed is '}
-                        handlePlayAgain={() => setStatus('running')}
+                        supplementaryItem1={"Accuracy : "}
+                        supplementaryRecord1={accuracy}
+                        supplementaryUnit1={"%"}
+                        supplementaryItem2={"cpm : "}
+                        supplementaryRecord2={cpm}
+                        supplementaryUnit2={"/min"}
+                        handlePlayAgain={() => handleReset()}
                         handleBackToStart={() => setStatus('waiting')}
                         higherBetter={true}
                     />

@@ -43,6 +43,12 @@ interface ResultDefaultProps {
   resultBoxText?: string
   topK?: number
   recentK?: number
+  supplementaryItem1?: string
+  supplementaryRecord1?: number
+  supplementaryUnit1?: string
+  supplementaryItem2?: string
+  supplementaryRecord2?: number
+  supplementaryUnit2?: string
   handlePlayAgain: () => void
   handleBackToStart: () => void
   higherBetter: boolean
@@ -56,6 +62,12 @@ export default function ResultDefault({
   resultBoxText,
   topK = 5,
   recentK = 10,
+  supplementaryItem1,
+  supplementaryRecord1,
+  supplementaryUnit1,
+  supplementaryItem2,
+  supplementaryRecord2,
+  supplementaryUnit2,
   handlePlayAgain,
   handleBackToStart,
   higherBetter,
@@ -169,7 +181,17 @@ export default function ResultDefault({
         saved={saved}
       />
 
-      <ResultBox record={record} unit={unit} additionalText={resultBoxText} />
+      <ResultBox
+        record={record}
+        unit={unit}
+        additionalText={resultBoxText}
+        supplementaryItem1={supplementaryItem1}
+        supplementaryRecord1={supplementaryRecord1}
+        supplementaryUnit1={supplementaryUnit1}
+        supplementaryItem2={supplementaryItem2}
+        supplementaryRecord2={supplementaryRecord2}
+        supplementaryUnit2={supplementaryUnit2}
+      />
 
       {userData.loginStatus === true ? (
         <>

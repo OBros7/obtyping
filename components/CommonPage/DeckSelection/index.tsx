@@ -4,7 +4,7 @@ export { default as DeckCard } from './DeckCard'
 export { default as DeckList } from './DeckList'
 export { default as DeckCardButton } from './DeckCardButton'
 export { default as DeckListButton } from './DeckListButton'
-export { default as DeckSelectCustom } from './DeckSelectCustom'
+export { default as DeckSelectCustom } from './DeckSelectCustom_copy' // DeckSelectCustom_copy.tsx
 export { default as DeckSelectCategory } from './DeckSelectCategory'
 export { default as DeckSelectBasic } from './DeckSelectBasic'
 export { default as SearchBox } from './SearchBox'

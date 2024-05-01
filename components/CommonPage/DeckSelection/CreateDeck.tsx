@@ -21,6 +21,7 @@ interface CreateDeckProps {
 }
 const saveButtonClass = 'btn-second '
 
+
 export default function CreateDeck({ deckList, setDeckList, deckName, setDeckName }: CreateDeckProps) {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
   const [deckDescription, setDeckDescription] = useState('')

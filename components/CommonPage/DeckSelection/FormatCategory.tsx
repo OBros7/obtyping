@@ -5,6 +5,7 @@ import { getCategoriesSubcategoriesLevels } from '@/MyLib/UtilsAPITyping'
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 const minibox = 'flex flex-row justify-center items-center'
+const verticalRowClass = 'space-y-4'
 
 interface FormatCategoryProps {
     category: string
@@ -55,7 +56,7 @@ export default function FormatCategory({
 
 
     return (
-        <div className={classParent}>
+        <div className={`${verticalRowClass} `}>
             category:
             <MySelect
                 state={category}
