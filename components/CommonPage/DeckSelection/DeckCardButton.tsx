@@ -16,11 +16,11 @@ const divClass = 'flex flex-col flex-wrap justify-center w-8/12 rounded-xl p-8'
 const buttonClass = 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded h-fit w-fit'
 const titleClass = 'text-2xl font-bold'
 const descriptionClass = 'text-sm text-gray-500 pt-4'
-export default function DeckCardButton({ deck, setLanguage }: DeckCardButtonProps) {
+export default function DeckCardButton({ deck }: DeckCardButtonProps) {
     const [modeTime, setModeTime] = useState<1 | 2 | 3 | 5>(1)
 
     const handleClick = () => {
-        const url = `/typing/typing?deckid=${deck.deck_id}&minutes=${modeTime}`;
+        const url = `/typing/typing?deckid=${deck.deck_id}&minutes=${modeTime}&lang=${deck.lang1_int}`;
         window.location.href = url;
         // setLanguage(deck.lang1_int)
     }
