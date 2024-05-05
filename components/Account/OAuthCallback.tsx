@@ -8,11 +8,13 @@ import { useUserContext } from '@contexts/UserContext';
 const OAuthCallback = () => {
     const router = useRouter();
     const { provider } = router.query;
+    const { refreshUserSession } = useAuth();
     const { userData, setUserData } = useUserContext();
 
     useEffect(() => {
         if (provider) {
             // If signed out, redirect to signin page. Otherwise, redirect to the home page or a dashboard.
+            refreshUserSession();
             if (userData.loginStatus === false) {
                 router.push('/account/signin');
             } else {
