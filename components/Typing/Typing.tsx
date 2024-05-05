@@ -8,6 +8,7 @@ import {
 } from '@/MyLib/UtilsAPITyping'
 import { useTranslation } from '@/MyCustomHooks'
 import { ResultDefault } from '@/CommonPage/Result'
+// import { useNavigate } from 'react-router-dom';
 
 interface TypingProps {
     deckId: number
@@ -21,13 +22,13 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     const [status, setStatus] = useState<'waiting' | 'ready' | 'setting' | 'running' | 'result'>('waiting')
     const [score, setScore] = useState(0)
     const [mistake, setMistake] = useState(0)
-    const [languageType, setLanguageType] = useState<'eg' | 'jp' | 'free'>('free')
+    const [languageType, setLanguageType] = useState<'english' | 'japanese' | 'free'>('free')
     const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m')
     const [cpm, setCpm] = useState(0)
     const [accuracy, setAccuracy] = useState(0)
     const [recordScore, setRecordScore] = useState(0)
 
-
+    // let navigate = useNavigate();
 
     useEffect(() => {
         async function fetchTextList() {
@@ -106,7 +107,13 @@ export default function Typing({ deckId, minutes }: TypingProps) {
         setRecordScore(0);
     }
 
+    // const handleBackToHome = () => {
+    //     navigate('/')
+    // }
 
+    const handleBackToHome = () => {
+        window.location.href = '/';
+    }
     return (
         <Layout>
             <MainContainer addClass='p-4'>
@@ -148,6 +155,7 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                                 mistake={mistake}
                                 setMistake={setMistake}
                                 languageType={languageType}
+                                setLanguageType={setLanguageType}
                                 mode={mode}
                             />
                         )}
@@ -166,9 +174,8 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                         supplementaryUnit1={"%"}
                         supplementaryItem2={"cpm : "}
                         supplementaryRecord2={cpm}
-                        supplementaryUnit2={"/min"}
                         handlePlayAgain={() => handleReset()}
-                        handleBackToStart={() => setStatus('waiting')}
+                        handleBackToHome={() => handleBackToHome()}
                         higherBetter={true}
                     />
 

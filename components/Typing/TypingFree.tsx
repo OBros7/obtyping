@@ -11,7 +11,7 @@ interface TypingFreeProps {
   setScore: React.Dispatch<React.SetStateAction<number>>
   mistake: number
   setMistake: React.Dispatch<React.SetStateAction<number>>
-  languageType?: 'eg' | 'jp' | 'free'
+  languageType?: 'english' | 'japanese' | 'free'
   mode?: '1m' | '2m' | '3m' | '5m'
   remainingTime?: number
 }
@@ -223,44 +223,6 @@ export default function TypingFree(
             {nextText}
           </div>
         </div>
-
-        {/* <div className="text-4xl mt-8 text-left w-full p-4 outline rounded-lg">
-          {currentText && endIndicesOfLines.map((endIdx, rowIndex) => {
-            if (rowIndex < currentLine) {
-              return null;
-            }
-
-            if (rowIndex >= currentLine + numberOfRows) {
-              return null;
-            }
-
-            const startIdx = rowIndex === 0 ? 0 : endIndicesOfLines[rowIndex - 1];
-            const displayText = currentText.slice(startIdx, endIdx);
-
-            return (
-              <div key={rowIndex}>
-                {displayText.split("").map((char, charIndex) => {
-                  let className;
-                  const relativeIndex = startIdx + charIndex;
-
-                  if (relativeIndex < countCharWithin) {
-                    className = isCorrects.current[relativeIndex] ? "text-green-500" : "text-red-500 underline";
-                  } else if (relativeIndex === countCharWithin) {
-                    className = isCorrects.current[relativeIndex] !== false ? "text-blue-500 underline" : "text-red-500 underline";
-                  } else {
-                    className = "text-black";
-                  }
-
-                  return (
-                    <span key={charIndex} className={className}>
-                      {char}
-                    </span>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div> */}
       </div>
       <div className="flex justify-center w-full mb-10">
         <textarea

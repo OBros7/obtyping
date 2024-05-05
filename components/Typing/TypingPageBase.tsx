@@ -19,7 +19,8 @@ interface TypingPageBaseProps {
     setScore: React.Dispatch<React.SetStateAction<number>>
     mistake: number
     setMistake: React.Dispatch<React.SetStateAction<number>>
-    languageType?: 'eg' | 'jp' | 'free'
+    languageType?: 'english' | 'japanese' | 'free'
+    setLanguageType?: React.Dispatch<React.SetStateAction<'english' | 'japanese' | 'free'>>
     mode?: '1m' | '2m' | '3m' | '5m'
 }
 
@@ -32,6 +33,7 @@ export default function TypingPageBase({
     mistake,
     setMistake,
     languageType,
+    setLanguageType,
     mode = '1m',
 }: TypingPageBaseProps) {
     const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
@@ -45,6 +47,20 @@ export default function TypingPageBase({
     const [reset, setReset] = useState(true)
     const [remainingTime, setRemainingTime] = useState(60)
     const attrsParentTimer = { className: 'flex flex-col items-center justify-center text-5xl' }
+    // let timeLimit = hms2ms(0, 7, 0, 0)
+    const [timeLimit, setTimeLimit] = useState(hms2ms(0, 0, 1, 0))
+    const timeLimitDic: { [key: number]: number } = {
+        1: hms2ms(0, 0, 1, 0),
+        2: hms2ms(0, 0, 2, 0),
+        3: hms2ms(0, 0, 3, 0),
+        5: hms2ms(0, 0, 5, 0),
+    }
+
+    const languageTypeDic: { [key: number]: 'english' | 'japanese' | 'free' | undefined } = {
+        1: 'english',
+        2: 'japanese',
+        0: 'free'
+    }
 
     // useEffect(() => {// shuffle
     //     console.log('textList', textList, textList[0].text11)
@@ -63,9 +79,20 @@ export default function TypingPageBase({
     //       setCurrentTextIndex(randomList[0])
     //     }
     //   }, [])
+    const getQueryParameter = (param: string): string | null => {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(param);
+    }
 
     useEffect(() => {
-        const url = new URL(window.location.href);
+        const minutes = getQueryParameter('minutes');
+        const language = getQueryParameter('lang');
+
+        setTimeLimit(timeLimitDic[Number(minutes)])
+        const resolvedLanguageType = language ? languageTypeDic[Number(language)] : undefined;
+        if (setLanguageType && resolvedLanguageType) {
+            setLanguageType(resolvedLanguageType);
+        }
 
     }, [])
 
@@ -92,13 +119,12 @@ export default function TypingPageBase({
     }, [finished, timePassed, status, setStatus, setReset, setTimePassed, reset]);
 
     useEffect(() => {
-        setRemainingTime(totalTime - timePassed);
-    }, [totalTime, timePassed]);
+        setRemainingTime(timeLimit - timePassed);
+    }, [timeLimit, timePassed]);
 
     useEffect(() => {
         if (remainingTime <= 0) {
             setStatus('result');
-            console.log('remainingTime', remainingTime, 'totalTime', totalTime, 'timePassed', timePassed)
         }
     }, [remainingTime])
 
@@ -127,7 +153,8 @@ export default function TypingPageBase({
                     <>
                         <div className="w-full text-center text-5xl mt-8 mb-0">
                             <TimerBase
-                                totalTime={totalTime}
+                                // totalTime={totalTime}
+                                totalTime={timeLimit}
                                 timePassed={timePassed}
                                 setTimePassed={setTimePassed}
                                 ticking={ticking}
@@ -137,7 +164,7 @@ export default function TypingPageBase({
                                 attrsParent={attrsParentTimer}
                             />
                         </div>
-                        {languageType === 'eg' ? (
+                        {languageType === 'english' ? (
                             <TypingEnglish
                                 textList={textList}
                                 setStatus={setStatus}
@@ -150,7 +177,7 @@ export default function TypingPageBase({
                                 remainingTime={remainingTime}
                             />
                         )
-                            : languageType === 'jp' ? (
+                            : languageType === 'japanese' ? (
                                 <TypingJapanese />
                             ) : (
                                 <TypingFree

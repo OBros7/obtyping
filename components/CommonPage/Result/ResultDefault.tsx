@@ -50,7 +50,7 @@ interface ResultDefaultProps {
   supplementaryRecord2?: number
   supplementaryUnit2?: string
   handlePlayAgain: () => void
-  handleBackToStart: () => void
+  handleBackToHome: () => void
   higherBetter: boolean
 }
 
@@ -69,7 +69,7 @@ export default function ResultDefault({
   supplementaryRecord2,
   supplementaryUnit2,
   handlePlayAgain,
-  handleBackToStart,
+  handleBackToHome,
   higherBetter,
 }: ResultDefaultProps) {
   /* 
@@ -81,7 +81,7 @@ export default function ResultDefault({
   topK: number of records to be displayed in the table
   recentK: number of records to be displayed in the graph
   handlePlayAgain: function to be called when the play again button is clicked
-  handleBackToStart: function to be called when the back to start button is clicked
+  handleBackToHome: function to be called when the back to start button is clicked
   */
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
   const { userData, setUserData } = useUserContext();
@@ -177,7 +177,7 @@ export default function ResultDefault({
       <ResultButtons
         handleSave={handleSave}
         handlePlayAgain={handlePlayAgain}
-        handleBackToStart={handleBackToStart}
+        handleBackToHome={handleBackToHome}
         saved={saved}
       />
 
@@ -213,7 +213,7 @@ export default function ResultDefault({
           <ResultButtons
             handleSave={handleSave}
             handlePlayAgain={handlePlayAgain}
-            handleBackToStart={handleBackToStart}
+            handleBackToHome={handleBackToHome}
             saved={saved}
           />
         </>

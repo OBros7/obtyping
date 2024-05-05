@@ -5,7 +5,7 @@ import { useUserContext } from '@contexts/UserContext';
 interface ResultButtonsProps {
   handleSave: () => void
   handlePlayAgain: () => void
-  handleBackToStart: () => void
+  handleBackToHome: () => void
   saved: boolean
 }
 
@@ -14,7 +14,7 @@ const saveButtonClass = buttonClassCommon + ' bg-green-500 hover:bg-green-700 di
 const playAgainButtonClass = buttonClassCommon + ' bg-blue-500 hover:bg-blue-700'
 const backToStartButtonClass = buttonClassCommon + ' bg-red-500 hover:bg-red-700'
 
-export default function ResultButtons({ handleSave, handlePlayAgain, handleBackToStart, saved }: ResultButtonsProps) {
+export default function ResultButtons({ handleSave, handlePlayAgain, handleBackToHome, saved }: ResultButtonsProps) {
   // const { session, userID } = useContext(GlobalContext)
   const { userData, setUserData } = useUserContext();
 
@@ -29,8 +29,8 @@ export default function ResultButtons({ handleSave, handlePlayAgain, handleBackT
       <button className={playAgainButtonClass} onClick={handlePlayAgain}>
         Play Again
       </button>
-      <button className={backToStartButtonClass} onClick={handleBackToStart}>
-        Back to Start
+      <button className={backToStartButtonClass} onClick={handleBackToHome}>
+        Back to Home
       </button>
     </div>
   )

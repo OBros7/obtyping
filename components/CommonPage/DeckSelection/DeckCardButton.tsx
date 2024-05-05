@@ -22,7 +22,6 @@ export default function DeckCardButton({ deck }: DeckCardButtonProps) {
     const handleClick = () => {
         const url = `/typing/typing?deckid=${deck.deck_id}&minutes=${modeTime}&lang=${deck.lang1_int}`;
         window.location.href = url;
-        // setLanguage(deck.lang1_int)
     }
 
     return (
