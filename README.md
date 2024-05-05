@@ -28,6 +28,12 @@
 
 - singup (new user creation), login (existing user), signin (signup + login)
 
+# User Authentication
+
+- Store sensitive information like authentication cookie in httpOnly cookie
+
+- Store non-sensitive information like user_id and user_preference in localStorage
+
 # Dependencies
 
 ## tailwind

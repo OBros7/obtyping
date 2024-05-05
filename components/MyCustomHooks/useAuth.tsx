@@ -11,14 +11,14 @@ interface User {
     exp?: number;
     iat?: number;
 }
-const backendURL = process.env.FASTAPI_URL + '/api/users/session'
+const backendURL = process.env.FASTAPI_URL
 const useAuth = () => {
     const router = useRouter();
-    const { setUserData } = useUserContext();
+    const { userData, setUserData } = useUserContext();
 
     const fetchUser = async () => {
         try {
-            const response = await axios.get(backendURL, { withCredentials: true });
+            const response = await axios.get(backendURL + '/api/users/session', { withCredentials: true });
             if (response.data && response.data.user) {
                 const user = response.data.user;
                 localStorage.setItem('userID', user.user_id.toString());
@@ -40,19 +40,19 @@ const useAuth = () => {
                     expToken: user.exp ? user.exp.toString() : '',
                     iatToken: user.iat ? user.iat.toString() : '',
                 });
-
-                router.push('/');
+                console.log('User fetched:', user);
 
             } else {
                 throw new Error('User not authenticated');
             }
         } catch (error) {
-
             console.error('Error fetching user:', error);
         }
     };
     useEffect(() => {
-        fetchUser();
+        if (userData.loginStatus === true) {
+            fetchUser();
+        }
     }, []);
 
     const refreshUserSession = async () => {
@@ -60,28 +60,51 @@ const useAuth = () => {
     };
 
     // const signOut = useCallback((setUserData: any) => {
-    const signOut = useCallback(() => {
-        // Add logic to send a request to your backend to destroy the session/cookie
+    const signOut = useCallback(async () => {
+        try {
+            const response = await fetch(backendURL + '/api/users/logout', {
+                method: 'POST',
+            });
+            if (response.ok) {
+                // Here, you can clear the stored access token or perform any other cleanup tasks
+                // After that, update the user state on the client side.
+                localStorage.removeItem('userID');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('loginStatus');
+                localStorage.removeItem('subscriptionStatus');
+                localStorage.removeItem('expToken');
+                localStorage.removeItem('iatToken');
+                setUserData({
+                    userID: '',
+                    userName: '',
+                    loginStatus: false,
+                    subscriptionStatus: false,
+                    expToken: '',
+                    iatToken: '',
+                });
+                console.log('Sign out successful');
+                router.push('/account/signin');
+            } else {
+                console.error('Sign out failed:', response.statusText);
+                // localStorage.removeItem('userID');
+                // localStorage.removeItem('userName');
+                // localStorage.removeItem('loginStatus');
+                // localStorage.removeItem('subscriptionStatus');
+                // localStorage.removeItem('expToken');
+                // localStorage.removeItem('iatToken');
+                // setUserData({
+                //     userID: '',
+                //     userName: '',
+                //     loginStatus: false,
+                //     subscriptionStatus: false,
+                //     expToken: '',
+                //     iatToken: '',
+                // });
+            }
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
 
-
-
-        // After that, update the user state on the client side.
-        localStorage.removeItem('userID');
-        localStorage.removeItem('userName');
-        localStorage.removeItem('loginStatus');
-        localStorage.removeItem('subscriptionStatus');
-        localStorage.removeItem('expToken');
-        localStorage.removeItem('iatToken');
-        setUserData({
-            userID: '',
-            userName: '',
-            loginStatus: false,
-            subscriptionStatus: false,
-            expToken: '',
-            iatToken: '',
-        });
-
-        router.push('/account/signin');
     }, [router]);
 
     return { signOut, refreshUserSession };

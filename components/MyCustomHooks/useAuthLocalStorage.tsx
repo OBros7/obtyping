@@ -1,47 +1,72 @@
-// hooks/useAuth.tsx
 import { useState, useEffect } from 'react';
-import jwt_decode from 'jwt-decode';
-import { useRouter } from 'next/router';
 
-// this should be the same as the interface in the backend (see app/User/utils.py: create_access_token)
-interface DecodedUser {
-    user_id: number;
-    user_name?: string;
-    is_paid_user?: boolean;
-    exp?: number;
-    iat?: number;
-}
+const FASTAPI_URL = process.env.FASTAPI_URL;
 
 const useAuth = () => {
+    const [userData, setUserData] = useState({ loginStatus: false });
 
-    const [user, setUser] = useState<DecodedUser | null>(null);
-    const router = useRouter();
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
+        const fetchUserSession = async () => {
             try {
-                const decodedUser = jwt_decode(token) as DecodedUser; // Cast decoded user to DecodedUser type
-                setUser(decodedUser);
+                const response = await fetch(FASTAPI_URL + '/api/users/session');
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('userData', JSON.stringify(data.user));
+                    setUserData(data.user);
+                } else {
+                    setUserData({ loginStatus: false });
+                }
             } catch (error) {
-                console.error('Error decoding token:', error);
+                console.error('Error fetching user session:', error);
+                setUserData({ loginStatus: false });
             }
-        }
+        };
+
+        fetchUserSession();
     }, []);
 
-    const [signedOut, setSignedOut] = useState(false);
-
-    const signOut = () => {
-        localStorage.removeItem('token');
-        setUser(null);
-        router.push('/');
-        setSignedOut(true);
+    const signIn = async (email: string, password: string) => {
+        try {
+            const response = await fetch(FASTAPI_URL + '/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                // Here, you can handle the response data as needed, such as storing the access token in localStorage
+                console.log('Sign in successful:', data);
+                setUserData(data.user);
+            } else {
+                console.error('Sign in failed:', response.statusText);
+                setUserData({ loginStatus: false });
+            }
+        } catch (error) {
+            console.error('Error signing in:', error);
+            setUserData({ loginStatus: false });
+        }
     };
 
-    useEffect(() => {
-        setSignedOut(false);
-    }, [user]);
+    const signOut = async () => {
+        try {
+            const response = await fetch(FASTAPI_URL + '/api/users/logout', {
+                method: 'POST',
+            });
+            if (response.ok) {
+                // Here, you can clear the stored access token or perform any other cleanup tasks
+                setUserData({ loginStatus: false });
+                console.log('Sign out successful');
+            } else {
+                console.error('Sign out failed:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error signing out:', error);
+        }
+    };
 
-    return { user, signOut, signedOut, setSignedOut };
+    return { userData, signIn, signOut };
 };
 
 export default useAuth;

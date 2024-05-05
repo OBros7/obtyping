@@ -1,3 +1,4 @@
+// components/Account/LoginForm.tsx
 import { useState } from 'react';
 import axios from 'axios';
 import { MyEmailInput, MyPasswordInput } from '@/Basics';
@@ -26,11 +27,11 @@ const LoginForm = ({ btnClass = 'btn-second' }: LoginFormProps) => {
 
             console.log(decodedToken);  // You can inspect the token contents here
 
-            // Save the token and user data to your desired state management or storage (e.g., Redux, Context API, localStorage)
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(decodedToken));
+            // // Save the token and user data to your desired state management or storage (e.g., Redux, Context API, localStorage)
+            // localStorage.setItem('token', token);
+            // localStorage.setItem('user', JSON.stringify(decodedToken));
 
-            router.push('/'); // Redirect to the home pagea
+            router.push('/'); // Redirect to the home page
         } catch (error) {
             if (
                 error &&
