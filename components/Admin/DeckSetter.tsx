@@ -98,6 +98,15 @@ export default function DeckSetter({
 
     return (
         <div className={classParDiv}>
+            {/* <div className={classChildDiv}>
+                Deck:
+                <MySelect
+                    state={deckID}
+                    setState={setDeckID}
+                    optionValues={deckData.map((deck: any) => deck.deck_id)}
+                    optionTexts={deckData.map((deck: any) => deck.title)}
+                />
+            </div> */}
             <div className={classChildDiv}>
                 Title:
                 <MyTextbox
