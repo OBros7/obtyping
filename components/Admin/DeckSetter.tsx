@@ -1,15 +1,22 @@
 import React, { useState } from 'react'
 import { MySelect, MyTextbox } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { FormatCategory } from './'
+// import { FormatCategory } from './'
+import { FormatCategory } from '@/CommonPage/DeckSelection'
 import { createDeck } from '@/MyLib/UtilsAPITyping'
 const langOptions = Object.keys(lang2int)
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 
-const classParDivDefault = 'search-container'
-const classChildDivDefault = 'minibox'
+// const classParDivDefault = 'search-container'
+const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
+const classChildDivDefault = 'w-full'
 
+const orderByList = [
+    'random',
+    'title',
+    'like',
+]
 
 interface DeckSetterProps {
     userID: number
@@ -28,6 +35,8 @@ interface DeckSetterProps {
     setSubcategory: React.Dispatch<React.SetStateAction<string>>
     level: string
     setLevel: React.Dispatch<React.SetStateAction<string>>
+    orderBy: string
+    setOrderBy: React.Dispatch<React.SetStateAction<string>>
     classParDiv?: string
     classChildDiv?: string
 }
@@ -49,6 +58,8 @@ export default function DeckSetter({
     setSubcategory,
     level,
     setLevel,
+    orderBy,
+    setOrderBy,
     classParDiv = classParDivDefault,
     classChildDiv = classChildDivDefault,
 }: DeckSetterProps) {
@@ -85,9 +96,6 @@ export default function DeckSetter({
         setMsg(JSON.stringify(json))
     }
 
-
-
-
     return (
         <div className={classParDiv}>
             <div className={classChildDiv}>
@@ -102,6 +110,14 @@ export default function DeckSetter({
                 <MyTextbox
                     state={description}
                     setState={setDescription}
+                />
+            </div>
+            <div className={`${classChildDiv} items-start`}>
+                OrderBy:
+                <MySelect
+                    state={orderBy}
+                    setState={setOrderBy}
+                    optionValues={orderByList}
                 />
             </div>
             <FormatCategory
@@ -121,7 +137,7 @@ export default function DeckSetter({
                 />
             </div>
             <div className={classChildDiv}>
-                Translation ?
+                Translation :
                 <MySelect
                     state={isLangLearn}
                     setState={setIsLangLearn}
@@ -144,7 +160,7 @@ export default function DeckSetter({
             }
 
 
-            <div className={classChildDiv}>
+            <div className={`${classChildDiv} flex item-center justify-center py-6`}>
                 <button
                     onClick={onClick}
                     className="btn-primary"

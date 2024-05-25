@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { MyInputNumber, MySelect } from '@/Basics'
-import { FormatCategory } from './'
+import { MyInputNumber, MySelect, MyTextbox } from '@/Basics'
+// import { FormatCategory } from './'
+import { FormatCategory } from '@/CommonPage/DeckSelection'
 import {
     getDeckListByUser,
     getDeckListBasic,
@@ -13,8 +14,11 @@ import {
 
 const visibilityOptions = Object.keys(visibility2int)
 const langOptions = Object.keys(lang2int)
-const classParDivDefault = 'search-container'
-const classChildDivDefault = 'minibox'
+// const classParDivDefault = 'search-container'
+// const classChildDivDefault = 'minibox'
+const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
+const classChildDivDefault = 'w-full'
+
 
 interface DeckGetterProps {
     url: string
@@ -65,6 +69,10 @@ export default function DeckGetter(
 
 ) {
     const [msg, setMsg] = useState('')
+    const [newDeckTitle, setNewDeckTitle] = useState('')
+    const [deckDescription, setDeckDescription] = useState('')
+
+
     const onClick = async () => {
         console.log(url)
         // send get request
@@ -111,17 +119,28 @@ export default function DeckGetter(
             return
         }
 
-
-
         console.log(resJSON)
         setReturnedData(resJSON)
         setMsg('Done')
     }
 
-
-
     return (
         <div className={classParDiv}>
+            <div className={classChildDiv}>
+                New Deck Title:
+                <MyTextbox
+                    state={newDeckTitle}
+                    setState={setNewDeckTitle}
+                />
+            </div>
+
+            <div className={classChildDiv}>
+                Deck Description:
+                <MyTextbox
+                    state={deckDescription}
+                    setState={setDeckDescription}
+                />
+            </div>
 
             <div className={classChildDiv}>
                 Number of Select:
@@ -159,7 +178,7 @@ export default function DeckGetter(
                 level={level}
                 setLevel={setLevel}
             />
-            <div className={classChildDiv}>
+            <div className={`${classChildDiv} flex item-center justify-center py-6`}>
                 <button
                     onClick={onClick}
                     className="btn-primary"

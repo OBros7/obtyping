@@ -52,11 +52,7 @@ const urlListCreateText = [
   'create_text',
 ]
 
-const orderByList = [
-  'random',
-  'title',
-  'like',
-]
+
 
 export default function DeckSelectCustom() {
   /////////// Meta Infomation ///////////
@@ -94,7 +90,7 @@ export default function DeckSelectCustom() {
   const [returnedData, setReturnedData] = useState<[{ [key: string]: any }]>([{}]);
 
   /////////// menu ///////////
-  const [pageType, setPageType] = useState<'NewDeck' | 'YourDeck'>('YourDeck')
+  const [pageType, setPageType] = useState<'EditMode' | 'YourDeck'>('YourDeck')
   const [deckList, setDeckList] = useState<ReceivedDeck[]>([])
   const [language, setLanguage] = useState<'not selected' | 'japanese' | 'english' | 'free'>('not selected')
 
@@ -132,28 +128,12 @@ export default function DeckSelectCustom() {
           <MySelect
             state={pageType}
             setState={setPageType}
-            optionValues={['YourDeck', 'NewDeck']}
-            optionTexts={['Your Original Deck', 'Create New Deck']}
+            optionValues={['YourDeck', 'EditMode']}
+            optionTexts={['Your Original Deck', 'Edit Mode']}
           />
-          {pageType === 'NewDeck' ?
-            // <>
-            //   {addType === 'AddText' ?
-            //     <AddText
-            //       deckList={deckList}
-            //       setDeckList={setDeckList}
-            //       deckName={deckName}
-            //       setDeckName={setDeckName}
-            //     />
-            //     :
-            //     <CreateDeck
-            //       deckList={deckList}
-            //       setDeckList={setDeckList}
-            //       deckName={deckName}
-            //       setDeckName={setDeckName}
-            //     />}
-            // </>
+          {pageType === 'EditMode' ?
             <div className='flex flex-col items-center'>
-              <div className="flex space-x-32">
+              <div className="flex space-x-32 pb-4">
                 <MySelect
                   state={selectedAction}
                   setState={setSelectedAction}
@@ -167,97 +147,69 @@ export default function DeckSelectCustom() {
                   optionTexts={dataTypeList}
                 />
               </div>
-              <div className={minibox}>
-                User ID:
-                <MyInputNumber
-                  state={userID}
-                  setState={setUserID}
-                  min={1}
-                  max={100}
-                  step={1}
-                  defaultState={1}
-                />
-              </div>
-              <div className={`${minibox} items-start`}>
-                URL:
-                <MySelect
-                  state={url}
-                  setState={setUrl}
-                  optionValues={urlList}
-                />
-              </div>
-              <div className={`${minibox} items-start`}>
-                Visibility:
-                <MySelect
-                  state={visibility}
-                  setState={setVisibility}
-                  optionValues={visibilityOptions}
-                />
-              </div>
-              {selectedAction === 'none' || dataType === 'none' ? (
-                // {isGetter ? (
+
+              {selectedAction === 'create' && dataType === "text" ? (
                 <>
-                  <div className={minibox}>
-                    <p>Please select whether to create new or edit, text or deck.</p>
-                  </div>
-                  <div className={`${minibox} items-start`}>
-                    OrderBy:
-                    <MySelect
-                      state={orderBy}
-                      setState={setOrderBy}
-                      optionValues={orderByList}
-                    />
-                  </div>
-                  {dataType === 'text' ? (
-                    <TextGetter
-                      userID={userID}
-                      url={fastAPIURL + url}
-                      lang1={lang1}
-                      setLang1={setLang1}
-                      lang2={lang2}
-                      setLang2={setLang2}
-                      category={category}
-                      setCategory={setCategory}
-                      subcategory={subcategory}
-                      setSubcategory={setSubcategory}
-                      level={level}
-                      setLevel={setLevel}
-                      nSelect={nSelect}
-                      setNSelect={setNSelect}
-                      setReturnedData={setReturnedData}
-                      orderBy={orderBy}
-                    />
-                  ) : (
-                    <DeckGetter
-                      url={fastAPIURL + url}
-                      userID={userID}
-                      title={title}
-                      setTitle={setTitle}
-                      description={description}
-                      setDescription={setDescription}
-                      lang1={lang1}
-                      setLang1={setLang1}
-                      lang2={lang2}
-                      setLang2={setLang2}
-                      category={category}
-                      setCategory={setCategory}
-                      subcategory={subcategory}
-                      setSubcategory={setSubcategory}
-                      level={level}
-                      setLevel={setLevel}
-                      nSelect={nSelect}
-                      setNSelect={setNSelect}
-                      setReturnedData={setReturnedData}
-                      orderBy={orderBy}
-                    />
-                  )}
+                  <TextGetter
+                    userID={userID}
+                    url={fastAPIURL + url}
+                    title={title}
+                    setTitle={setTitle}
+                    visibility={visibility}
+                    setVisibility={setVisibility}
+                    visibilityOptions={visibilityOptions}
+                    text1={text1}
+                    setText1={setText1}
+                    text2={text2}
+                    setText2={setText2}
+                    lang1={lang1}
+                    setLang1={setLang1}
+                    lang2={lang2}
+                    setLang2={setLang2}
+                    category={category}
+                    setCategory={setCategory}
+                    subcategory={subcategory}
+                    setSubcategory={setSubcategory}
+                    level={level}
+                    setLevel={setLevel}
+                    nSelect={nSelect}
+                    setNSelect={setNSelect}
+                    setReturnedData={setReturnedData}
+                    orderBy={orderBy}
+                  />
                 </>
-              ) : dataType === 'text' ? (
+              ) : selectedAction === 'create' && dataType === "deck" ? (
+                <DeckGetter
+                  url={fastAPIURL + url}
+                  userID={userID}
+                  title={title}
+                  setTitle={setTitle}
+                  description={description}
+                  setDescription={setDescription}
+                  lang1={lang1}
+                  setLang1={setLang1}
+                  lang2={lang2}
+                  setLang2={setLang2}
+                  category={category}
+                  setCategory={setCategory}
+                  subcategory={subcategory}
+                  setSubcategory={setSubcategory}
+                  level={level}
+                  setLevel={setLevel}
+                  nSelect={nSelect}
+                  setNSelect={setNSelect}
+                  setReturnedData={setReturnedData}
+                  orderBy={orderBy}
+                />
+              ) : selectedAction === 'edit' && dataType === "text" ? (
                 <TextSetter
                   userID={userID}
                   visibilityInt={visibility2int[visibility]}
                   title={title}
                   setTitle={setTitle}
+                  visibility={visibility}
+                  setVisibility={setVisibility}
+                  visibilityOptions={visibilityOptions}
                   text1={text1}
                   setText1={setText1}
                   text2={text2}
@@ -271,7 +223,7 @@ export default function DeckSelectCustom() {
                   deck={deck}
                   setDeck={setDeck}
                 />
-              ) : (
+              ) : selectedAction === 'edit' && dataType === "deck" ? (
                 <DeckSetter
                   userID={userID}
                   visibilityInt={visibility2int[visibility]}
@@ -289,19 +241,21 @@ export default function DeckSelectCustom() {
                   setSubcategory={setSubcategory}
                   level={level}
                   setLevel={setLevel}
+                  orderBy={orderBy}
+                  setOrderBy={setOrderBy}
                 />
+              ) : (
+                <div className={`${minibox}`}>
+                  <p>Please select whether to create new or edit, text or deck.</p>
+                </div>
               )
               }
             </div>
             : pageType === 'YourDeck' ?
-              <DeckListButton deckList={deckList} setLanguage={setLanguage} /> :
+              <DeckListButton deckList={deckList} /> :
               null
           }
         </div>
-
-
-
-
       </MainContainer>
     </Layout>
   )

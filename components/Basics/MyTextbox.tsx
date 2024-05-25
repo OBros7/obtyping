@@ -6,7 +6,7 @@ interface MyTextboxProps {
     textboxClass?: string
 }
 
-const defaultClass = 'text-box'
+const defaultClass = 'text-box ml-2'
 
 export default function MyTextbox({
     state,

@@ -5,7 +5,7 @@ import { getCategoriesSubcategoriesLevels } from '@/MyLib/UtilsAPITyping'
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 const minibox = 'flex flex-row justify-center items-center'
-const verticalRowClass = 'space-y-4'
+const formRowClass = 'flex flex-row items-center justify-start space-x-2'
 
 interface FormatCategoryProps {
     category: string
@@ -56,25 +56,31 @@ export default function FormatCategory({
 
 
     return (
-        <div className={`${verticalRowClass} `}>
-            category:
-            <MySelect
-                state={category}
-                setState={setCategory}
-                optionValues={categories}
-            />
-            subcategory:
-            <MySelect
-                state={subcategory}
-                setState={setSubcategory}
-                optionValues={subcategoryList}
-            />
-            Level:
-            <MySelect
-                state={level}
-                setState={setLevel}
-                optionValues={levelList}
-            />
+        <div className="flex flex-col space-y-4 py-2">
+            <div className={formRowClass}>
+                Category:
+                <MySelect
+                    state={category}
+                    setState={setCategory}
+                    optionValues={categories}
+                />
+            </div>
+            <div className={formRowClass}>
+                Subcategory:
+                <MySelect
+                    state={subcategory}
+                    setState={setSubcategory}
+                    optionValues={subcategoryList}
+                />
+            </div>
+            <div className={formRowClass}>
+                Level:
+                <MySelect
+                    state={level}
+                    setState={setLevel}
+                    optionValues={levelList}
+                />
+            </div>
         </div>
-    )
+    );
 }

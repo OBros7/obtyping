@@ -10,7 +10,7 @@ interface TypingEnglishProps {
   setScore: React.Dispatch<React.SetStateAction<number>>
   mistake: number
   setMistake: React.Dispatch<React.SetStateAction<number>>
-  languageType?: 'eg' | 'jp' | 'free'
+  languageType?: 'english' | 'japanese' | 'free'
   mode?: '1m' | '2m' | '3m' | '5m'
   remainingTime?: number
 }

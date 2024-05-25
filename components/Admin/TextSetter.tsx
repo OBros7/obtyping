@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
+import { MySelect, MyTextbox, MyTextarea, MyInputNumber } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import {
     PostTextOnly,
@@ -9,16 +9,12 @@ import {
     createTextDeck,
 } from '@/MyLib/UtilsAPITyping'
 import { checkLanguage } from '@/MyLib/UtilsTyping'
-
 import { FormatCategory } from '@/CommonPage/DeckSelection'
 
 const langOptions = Object.keys(lang2int)
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
-// const classParDivDefault = 'search-container'
-const classParDivDefault = 'flex flex-col items-start space-y-4 w-3/4'
-// const classParDivDefault = 'items-start space-y-4 w-3/4'
-// const classChildDivDefault = 'minibox'
+const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
 const classChildDivDefault = 'w-full'
 
 interface TextSetterProps {
@@ -26,6 +22,9 @@ interface TextSetterProps {
     visibilityInt: number
     title: string
     setTitle: React.Dispatch<React.SetStateAction<string>>
+    visibility: string
+    visibilityOptions: string[]
+    setVisibility: React.Dispatch<React.SetStateAction<string>>
     text1: string
     setText1: React.Dispatch<React.SetStateAction<string>>
     text2: string
@@ -47,6 +46,9 @@ export default function TextSetter({
     visibilityInt,
     title,
     setTitle,
+    visibility,
+    setVisibility,
+    visibilityOptions,
     text1,
     setText1,
     text2,
@@ -154,16 +156,43 @@ export default function TextSetter({
     return (
         <div className={classParDiv}>
             <div className={classChildDiv}>
-                Title:
+                Deck:
+                <MySelect
+                    state={deckID}
+                    setState={setDeckID}
+                    optionValues={deckData.map((deck: any) => deck.deck_id)}
+                    optionTexts={deckData.map((deck: any) => deck.title)}
+
+                />
+            </div>
+            <div className={classChildDiv}>
+                Deck Description:
                 <MyTextbox
-                    state={title}
-                    setState={setTitle}
+                    state={deckDescription}
+                    setState={setDeckDescription}
                 />
             </div>
 
+            <div className={classChildDiv}>
+                Text Title:
+                <MyTextbox
+                    state={title}
+                    setState={setTitle}
+                    textboxClass='text-box w-3/4 ml-2'
+                />
+            </div>
 
             <div className={classChildDiv}>
-                Translation ?
+                Visibility:
+                <MySelect
+                    state={visibility}
+                    setState={setVisibility}
+                    optionValues={visibilityOptions}
+                />
+            </div>
+
+            <div className={classChildDiv}>
+                Translation:
                 <MySelect
                     state={isLangLearn}
                     setState={setIsLangLearn}
@@ -172,13 +201,12 @@ export default function TextSetter({
             </div>
             {isLangLearn ?
                 <>
-
                     <div className={`${classChildDiv} flex-grow`}>
                         Text1:
                         <MyTextarea
                             state={text1}
                             setState={setText1}
-                            textareaClass='text-box h-96 w-full'
+                            textareaClass='text-box h-48 w-full'
                         />
                     </div>
                     <div className={classChildDiv}>
@@ -186,14 +214,12 @@ export default function TextSetter({
                         <MyTextarea
                             state={text2}
                             setState={setText2}
-                            textareaClass='text-box h-96 w-full'
+                            textareaClass='text-box h-48 w-full'
                         />
                     </div>
                 </>
-
                 :
                 <>
-
                     <div className={classChildDiv}>
                         Text:
                         <MyTextarea
@@ -204,44 +230,22 @@ export default function TextSetter({
                     </div>
                 </>
             }
-            <div className={classChildDiv}>
-                Deck:
-                <MySelect
-                    state={deckID}
-                    setState={setDeckID}
-                    optionValues={deckData.map((deck: any) => deck.deck_id)}
-                    optionTexts={deckData.map((deck: any) => deck.title)}
 
+            {/* {deckID === -1 ? */}
+            <>
+
+                <FormatCategory
+                    category={category}
+                    setCategory={setCategory}
+                    subcategory={subcategory}
+                    setSubcategory={setSubcategory}
+                    level={level}
+                    setLevel={setLevel}
                 />
-            </div>
-            {deckID === -1 ?
-                <>
-                    <div className={classChildDiv}>
-                        Deck Title:
-                        <MyTextbox
-                            state={deckTitle}
-                            setState={setDeckTitle}
-                        />
-                    </div>
-                    <div className={classChildDiv}>
-                        Deck Description:
-                        <MyTextbox
-                            state={deckDescription}
-                            setState={setDeckDescription}
-                        />
-                    </div>
-                    <FormatCategory
-                        category={category}
-                        setCategory={setCategory}
-                        subcategory={subcategory}
-                        setSubcategory={setSubcategory}
-                        level={level}
-                        setLevel={setLevel}
-                    />
-                </>
-                :
+            </>
+            {/* :
                 null
-            }
+            } */}
             <div className={`${classChildDiv} flex item-center justify-center py-6`}>
                 <button
                     onClick={onClick}
