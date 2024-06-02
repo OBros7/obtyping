@@ -150,9 +150,6 @@ export default function TextSetter({
         setMsg(JSON.stringify(json))
     }
 
-
-
-
     return (
         <div className={classParDiv}>
             <div className={classChildDiv}>
@@ -162,7 +159,6 @@ export default function TextSetter({
                     setState={setDeckID}
                     optionValues={deckData.map((deck: any) => deck.deck_id)}
                     optionTexts={deckData.map((deck: any) => deck.title)}
-
                 />
             </div>
             <div className={classChildDiv}>

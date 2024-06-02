@@ -5,7 +5,7 @@ import {
 interface DeckCardButtonProps {
     deck: ReceivedDeck
     // setSelectedDeckId: React.Dispatch<React.SetStateAction<string>>
-    setLanguage: React.Dispatch<React.SetStateAction<'waiting' | 'ready' | 'setting' | 'running' | 'result'>>
+    setLanguage?: React.Dispatch<React.SetStateAction<'not selected' | 'japanese' | 'english' | 'free'>> | undefined
 
 }
 import { MySelect } from '@/Basics'
@@ -16,7 +16,7 @@ const divClass = 'flex flex-col flex-wrap justify-center w-8/12 rounded-xl p-8'
 const buttonClass = 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded h-fit w-fit'
 const titleClass = 'text-2xl font-bold'
 const descriptionClass = 'text-sm text-gray-500 pt-4'
-export default function DeckCardButton({ deck }: DeckCardButtonProps) {
+export default function DeckCardButton({ deck, setLanguage }: DeckCardButtonProps) {
     const [modeTime, setModeTime] = useState<1 | 2 | 3 | 5>(1)
 
     const handleClick = () => {
