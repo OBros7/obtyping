@@ -17,7 +17,7 @@ export default function DeckList({ deckList }: DeckListProps) {
     return (
         <>
             {deckList.map(deck => (
-                <DeckCard deck={deck} />
+                <DeckCard key={deck.deck_id} deck={deck} />
             ))}
         </>
     )

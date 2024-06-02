@@ -13,6 +13,12 @@ const langOptions = Object.keys(lang2int)
 const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
 const classChildDivDefault = 'w-full'
 
+interface Deck {
+    deck_id: number
+    title: string
+    description: string
+}
+
 interface TextGetterProps {
     userID: number
     url: string
@@ -75,7 +81,7 @@ export default function TextGetter({
 }: TextGetterProps) {
     const [msg, setMsg] = useState('')
     const [deckTitle, setDeckTitle] = useState('')
-    const [deckData, setDeckData] = useState([])
+    const [deckData, setDeckData] = useState<Deck[]>([])
 
     useEffect(() => {
         const fetchDeckData = async () => {
@@ -88,17 +94,22 @@ export default function TextGetter({
 
     const onClick = async () => {
         // get deckID from deckTitle
-        const deckID = deckData.filter((deck: any) => deck.title === deckTitle)[0].deck_id
-        console.log(deckID)
-        const resJSON = await getTextListByDeck(
-            deckID,
-            nSelect,
-            orderBy,
-        )
+        const filteredDecks = deckData.filter((deck: any) => deck.title === deckTitle);
+        if (filteredDecks.length > 0) {
+            const deckID = filteredDecks[0].deck_id;
+            console.log(deckID)
+            const resJSON = await getTextListByDeck(
+                deckID,
+                nSelect,
+                orderBy,
+            )
 
-        console.log(resJSON)
-        setReturnedData(resJSON)
-        setMsg('Done')
+            console.log(resJSON)
+            setReturnedData(resJSON)
+            setMsg('Done')
+        } else {
+            setMsg('Deck not found')
+        }
     }
     return (
         <div className={classParDiv}>
