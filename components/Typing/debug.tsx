@@ -14,10 +14,10 @@ interface TypingProps {
 
 export default function Typing({ deckId, minutes }: TypingProps) {
   const [textList, setTextList] = useState<ReceivedText[]>([])
-  const [status, setStatus] = useState<'menu select' | 'waiting' | 'ready' | 'setting' | 'running' | 'result'>('menu select')
+  const [status, setStatus] = useState<'waiting' | 'ready' | 'setting' | 'running' | 'result'>('waiting')
   const [score, setScore] = useState(0)
   const [mistake, setMistake] = useState(0)
-  const [languageType, setLanguageType] = useState<'eg' | 'jp' | 'free'>('free')
+  const [languageType, setLanguageType] = useState<'english' | 'japanese' | 'free'>('free')
   const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m')
 
   useEffect(() => {
@@ -55,6 +55,7 @@ export default function Typing({ deckId, minutes }: TypingProps) {
         {textList && textList.length > 0 && (
           <TypingPageBase
             textList={textList}
+            status={status}
             setStatus={setStatus}
             score={score}
             setScore={setScore}
