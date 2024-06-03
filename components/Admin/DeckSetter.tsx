@@ -35,8 +35,8 @@ interface DeckSetterProps {
     setSubcategory: React.Dispatch<React.SetStateAction<string>>
     level: string
     setLevel: React.Dispatch<React.SetStateAction<string>>
-    orderBy: string
-    setOrderBy: React.Dispatch<React.SetStateAction<string>>
+    orderBy?: string | undefined
+    setOrderBy?: React.Dispatch<React.SetStateAction<string>> | undefined
     classParDiv?: string
     classChildDiv?: string
 }
@@ -121,14 +121,16 @@ export default function DeckSetter({
                     setState={setDescription}
                 />
             </div>
-            <div className={`${classChildDiv} items-start`}>
-                OrderBy:
-                <MySelect
-                    state={orderBy}
-                    setState={setOrderBy}
-                    optionValues={orderByList}
-                />
-            </div>
+            {orderBy !== undefined && setOrderBy !== undefined ?
+                <div className={`${classChildDiv} items-start`}>
+                    OrderBy:
+                    <MySelect
+                        state={orderBy}
+                        setState={setOrderBy}
+                        optionValues={orderByList}
+                    />
+                </div>
+                : null}
             <FormatCategory
                 category={category}
                 setCategory={setCategory}

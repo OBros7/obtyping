@@ -22,9 +22,9 @@ interface TextSetterProps {
     visibilityInt: number
     title: string
     setTitle: React.Dispatch<React.SetStateAction<string>>
-    visibility: string
-    visibilityOptions: string[]
-    setVisibility: React.Dispatch<React.SetStateAction<string>>
+    visibility?: string | undefined
+    visibilityOptions?: string[] | undefined
+    setVisibility?: React.Dispatch<React.SetStateAction<string>> | undefined
     text1: string
     setText1: React.Dispatch<React.SetStateAction<string>>
     text2: string
@@ -178,14 +178,16 @@ export default function TextSetter({
                 />
             </div>
 
-            <div className={classChildDiv}>
-                Visibility:
-                <MySelect
-                    state={visibility}
-                    setState={setVisibility}
-                    optionValues={visibilityOptions}
-                />
-            </div>
+            {visibility !== undefined && setVisibility !== undefined && visibilityOptions !== undefined ?
+                <div className={classChildDiv}>
+                    Visibility:
+                    <MySelect
+                        state={visibility}
+                        setState={setVisibility}
+                        optionValues={visibilityOptions}
+                    />
+                </div>
+                : null}
 
             <div className={classChildDiv}>
                 Translation:
