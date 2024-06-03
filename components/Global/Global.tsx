@@ -64,7 +64,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   );
 };
 
-
+export default UserProvider;
 // import React, { useEffect, useState } from 'react';
 // import { useSession } from 'next-auth/react';
 // import { GlobalContext } from 'context/GlobalContext';
