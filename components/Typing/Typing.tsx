@@ -22,7 +22,7 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     const [status, setStatus] = useState<'waiting' | 'ready' | 'setting' | 'running' | 'result'>('waiting')
     const [score, setScore] = useState(0)
     const [mistake, setMistake] = useState(0)
-    const [languageType, setLanguageType] = useState<'english' | 'japanese' | 'free'>('free')
+    const [languageType, setLanguageType] = useState<'english' | 'japanese' | 'free'>('english')
     const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m')
     const [cpm, setCpm] = useState(0)
     const [accuracy, setAccuracy] = useState(0)
