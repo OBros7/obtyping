@@ -66,8 +66,8 @@ export default function TypingEnglish(
   const [numberOfRows, setNumberOfRows] = useState<number>(5); // Default to 1 row.
   const [endIndicesOfLines, setEndIndicesOfLines] = useState<number[]>([]);
 
-  const twoXlScrenWordNum = 75;
-  const xlScrenWordNum = 60;
+  const twoXlScrenWordNum = 65;
+  const xlScrenWordNum = 55;
   const lgScrenWordNum = 45;
   const mdScrenWordNum = 30;
   const smScrenWordNum = 15;
