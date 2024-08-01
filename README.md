@@ -23,6 +23,7 @@
 # Environment variables
 
 - .env.local に環境変数を書き、next.config.js で読み込む
+- Production 環境では Vercel の環境変数を使う
 
 # Wording
 
