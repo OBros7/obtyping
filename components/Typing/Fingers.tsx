@@ -14,7 +14,7 @@ interface FingerProps {
 const Finger: React.FC<FingerProps> = ({ height, color, className }) => (
   <div className={`${className} relative w-8`} style={{ height: height }}>
     <div className="h-full w-5 bg-transparent">
-      <div className={`mt-5 w-8 rounded-full overflow-hidden h-20`} style={{ backgroundColor: color }}></div> {/* koko */}
+      <div className={`mt-5 w-8 rounded-full overflow-hidden h-20`} style={{ backgroundColor: color }}></div>
       {/* <div className="w-5" style={{ backgroundColor: color }}></div> */}
     </div>
     <div className="absolute bottom-0 w-8 h-12 bg-white"></div>
