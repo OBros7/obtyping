@@ -33,11 +33,8 @@ const LoginWithGoogle = () => {
             const res = await axios.get(url);
             window.location.href = res.data.auth_url;
         } catch (err) {
-            console.error("ERROR!*", err);
+            console.error(err);
         }
-        console.log('login with google'
-
-        );
     };
 
     return (
