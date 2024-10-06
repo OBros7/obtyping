@@ -10,6 +10,7 @@ const tdClass = thTdClass + ' bg-blue-100'
 interface ResultTableProps {
   recordTopK: any
   topK: number
+  record: number
 }
 
 export default function ResultTable({ recordTopK, topK }: ResultTableProps) {
@@ -32,7 +33,7 @@ export default function ResultTable({ recordTopK, topK }: ResultTableProps) {
             <tr key={record.id}>
               <td className={tdClass}>{i + 1}</td>
               <td className={tdClass}>{record.score}</td>
-              <td className={tdClass}>{record.timestamp.slice(0, 10)}</td>
+              <td className={tdClass}>{record.timestamp.slice(0, 5)}</td>
             </tr>
           ))}
         </tbody>

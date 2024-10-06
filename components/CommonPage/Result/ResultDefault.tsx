@@ -208,7 +208,7 @@ export default function ResultDefault({
           ) : null}
           <div className='flex flex-col items-center justify-center md:w-4/6 w-full'>
             <ResultGraph data={chartData} options={options} />
-            <ResultTable recordTopK={recordTopK} topK={topK} />
+            <ResultTable recordTopK={recordTopK} topK={topK} record={record} />
           </div>
           <ResultButtons
             handleSave={handleSave}
