@@ -44,10 +44,10 @@ interface ResultDefaultProps {
   topK?: number
   recentK?: number
   supplementaryItem1?: string
-  supplementaryRecord1?: number
+  supplementaryRecord1: number
   supplementaryUnit1?: string
   supplementaryItem2?: string
-  supplementaryRecord2?: number
+  supplementaryRecord2: number
   supplementaryUnit2?: string
   handlePlayAgain: () => void
   handleBackToHome: () => void
@@ -150,10 +150,10 @@ export default function ResultDefault({
       user_id: Number(userData.userID),
       deck_id: deckId,
       // needs to be fixed based on the results from typing game!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      score: 10,
+      score: record,
       wpm: 1,
-      cpm: 1,
-      accuracy: 0.5,
+      cpm: supplementaryRecord2,
+      accuracy: supplementaryRecord1,
       seconds: minutes * 60,
     }
 

@@ -33,7 +33,7 @@ export default function ResultTable({ recordTopK, topK }: ResultTableProps) {
             <tr key={record.id}>
               <td className={tdClass}>{i + 1}</td>
               <td className={tdClass}>{record.score}</td>
-              <td className={tdClass}>{record.timestamp.slice(0, 5)}</td>
+              <td className={tdClass}>{record.timestamp.slice(0, 10)}</td>
             </tr>
           ))}
         </tbody>
