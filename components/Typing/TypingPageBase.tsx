@@ -22,6 +22,8 @@ interface TypingPageBaseProps {
     languageType?: 'english' | 'japanese' | 'free'
     setLanguageType?: React.Dispatch<React.SetStateAction<'english' | 'japanese' | 'free'>>
     mode?: '1m' | '2m' | '3m' | '5m'
+    mostMistakenKey: string
+    setMostMistakenKey: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function TypingPageBase({
@@ -35,6 +37,8 @@ export default function TypingPageBase({
     languageType,
     setLanguageType,
     mode = '1m',
+    mostMistakenKey,
+    setMostMistakenKey
 }: TypingPageBaseProps) {
     const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
     const [timePassed, setTimePassed] = useState(0)
@@ -122,11 +126,11 @@ export default function TypingPageBase({
         setRemainingTime(timeLimit - timePassed);
     }, [timeLimit, timePassed]);
 
-    useEffect(() => {
-        if (remainingTime <= 0) {
-            setStatus('result');
-        }
-    }, [remainingTime])
+    // useEffect(() => {
+    //     if (remainingTime <= 0) {
+    //         setStatus('result');
+    //     }
+    // }, [remainingTime])
 
     return (
         <>
@@ -167,6 +171,7 @@ export default function TypingPageBase({
                         {languageType === 'english' ? (
                             <TypingEnglish
                                 textList={textList}
+                                status={status}
                                 setStatus={setStatus}
                                 score={score}
                                 setScore={setScore}
@@ -175,6 +180,8 @@ export default function TypingPageBase({
                                 languageType={languageType}
                                 mode={mode}
                                 remainingTime={remainingTime}
+                                mostMistakenKey={mostMistakenKey}
+                                setMostMistakenKey={setMostMistakenKey}
                             />
                         )
                             : languageType === 'japanese' ? (

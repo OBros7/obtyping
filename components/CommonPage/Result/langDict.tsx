@@ -19,6 +19,10 @@ const langDict = {
     ja: 'Saveを押して記録を保存しよう',
     en: 'Press Save to save your record',
   },
+  mistakeKeyInfoMessage: {
+    ja: '今回最も打ち間違えが多いキーは ',
+    en: 'The most commonly mistyped key this time is ',
+  }
 }
 
 export default langDict

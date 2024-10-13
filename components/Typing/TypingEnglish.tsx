@@ -2,9 +2,11 @@ import React, { useEffect, useRef, useState } from 'react'
 import Keyboard from './Keyboard'
 import Fingers from './Fingers';
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
+import { set } from 'react-hook-form';
 
 interface TypingEnglishProps {
   textList: ReceivedText[]
+  status: 'waiting' | 'ready' | 'setting' | 'running' | 'result'
   setStatus: React.Dispatch<React.SetStateAction<'waiting' | 'ready' | 'setting' | 'running' | 'result'>>
   score: number
   setScore: React.Dispatch<React.SetStateAction<number>>
@@ -12,7 +14,9 @@ interface TypingEnglishProps {
   setMistake: React.Dispatch<React.SetStateAction<number>>
   languageType?: 'english' | 'japanese' | 'free'
   mode?: '1m' | '2m' | '3m' | '5m'
-  remainingTime?: number
+  remainingTime: number
+  mostMistakenKey: string
+  setMostMistakenKey: React.Dispatch<React.SetStateAction<string>>
 }
 
 const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
@@ -42,6 +46,7 @@ const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number
 export default function TypingEnglish(
   {
     textList,
+    status,
     setStatus,
     score,
     setScore,
@@ -49,7 +54,9 @@ export default function TypingEnglish(
     setMistake,
     languageType,
     mode = '1m',
-    remainingTime
+    remainingTime,
+    mostMistakenKey,
+    setMostMistakenKey
   }: TypingEnglishProps
 ) {
   const [nextKey, setNextKey] = useState<string | null>(textList[0]?.text11[0].toUpperCase());
@@ -65,6 +72,7 @@ export default function TypingEnglish(
   const [currentLine, setCurrentLine] = useState<number>(0);
   const [numberOfRows, setNumberOfRows] = useState<number>(5); // Default to 1 row.
   const [endIndicesOfLines, setEndIndicesOfLines] = useState<number[]>([]);
+  const [errorKeys, setErrorKeys] = useState<Record<string, number>>({});
 
   const twoXlScrenWordNum = 65;
   const xlScrenWordNum = 55;
@@ -128,6 +136,14 @@ export default function TypingEnglish(
       setMistake((prevMistake) => prevMistake + 1);
       missSound.currentTime = 0
       missSound.play();
+
+      // 期待されるキーを誤打としてカウント
+      if (nextKey) {
+        setErrorKeys((prevErrorKeys) => ({
+          ...prevErrorKeys,
+          [nextKey.toLowerCase()]: (prevErrorKeys[nextKey.toLowerCase()] || 0) + 1,
+        }));
+      }
     }
   };
 
@@ -174,22 +190,51 @@ export default function TypingEnglish(
   }, [currentText, charsPerLine]);
 
   useEffect(() => {
-    if (remainingTime === 0) {
-      if (isCorrects.current.length > 0) {
-        let addNum: number = 0
-        let missNum: number = 0
-        for (let i = 0; i < isCorrects.current.length; i++) {
-          if (isCorrects.current[i]) {
-            addNum += 1
-          } else {
-            missNum += 1
-          }
-        }
-        setScore(score + addNum)
-        setMistake(mistake + missNum)
-      }
+    if (remainingTime <= 0) {
+      setStatus('result');
+      const getMostMistakenKey = (): string | null => {
+        const entries = Object.entries(errorKeys);
+        if (entries.length === 0) return null;
+        entries.sort((a, b) => b[1] - a[1]);
+        return entries[0][0];
+      };
+
+      setMostMistakenKey(getMostMistakenKey() || '');
+      console.log('Most Mistaken Key:', mostMistakenKey);
     }
   }, [remainingTime])
+
+  // useEffect(() => {
+  //   if (status === 'result' && mistake > 0) {
+
+  //     // 日本語で入力中の文字分のスコアを更新
+  //     // if (isCorrects.current.length > 0) {
+  //     //   let addNum: number = 0
+  //     //   let missNum: number = 0
+  //     //   for (let i = 0; i < isCorrects.current.length; i++) {
+  //     //     if (isCorrects.current[i]) {
+  //     //       addNum += 1
+  //     //     } else {
+  //     //       missNum += 1
+  //     //     }
+  //     //   }
+  //     //   setScore(score + addNum)
+  //     //   setMistake(mistake + missNum)
+  //     // }
+
+  //     // 最も誤打回数が多いキーを特定
+  //     const getMostMistakenKey = (): string | null => {
+  //       const entries = Object.entries(errorKeys);
+  //       if (entries.length === 0) return null;
+  //       entries.sort((a, b) => b[1] - a[1]);
+  //       return entries[0][0];
+  //     };
+
+  //     // const mostMistakenKey = getMostMistakenKey();
+  //     setMostMistakenKey(getMostMistakenKey() || '');
+  //     console.log('Most Mistaken Key:', mostMistakenKey);
+  //   }
+  // }, [status])
 
   return (
     <>

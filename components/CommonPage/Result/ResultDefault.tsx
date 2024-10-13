@@ -52,6 +52,9 @@ interface ResultDefaultProps {
   handlePlayAgain: () => void
   handleBackToHome: () => void
   higherBetter: boolean
+  mostMistakenKey: string
+  setMostMistakenKey: React.Dispatch<React.SetStateAction<string>>
+  mistake: number
 }
 
 export default function ResultDefault({
@@ -71,6 +74,9 @@ export default function ResultDefault({
   handlePlayAgain,
   handleBackToHome,
   higherBetter,
+  mostMistakenKey,
+  setMostMistakenKey,
+  mistake
 }: ResultDefaultProps) {
   /* 
   urlPost: url for posting data. userID & setting information should be included in the url as parameters
@@ -98,7 +104,8 @@ export default function ResultDefault({
       fetch(`${fastAPIURL}get_record_time_by_deckid/?deck_id=${deckId}&n_select=${nSelect}&order_by=${orderBy}&seconds=${minutes * 60}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data)
+          // console.log('Fetched Data:', data); // 追加
+          // console.log(data)
           if (data && data.detail) {
             console.error('Error fetching data:', data.detail);
             // Set recordTopK to an empty array to avoid breaking .map() usage
@@ -166,10 +173,7 @@ export default function ResultDefault({
       .catch((error) => {
         console.error('Error sending data:', error)
       })
-
     console.log(resJson)
-
-
   }
 
   return (
@@ -192,6 +196,10 @@ export default function ResultDefault({
         supplementaryRecord2={supplementaryRecord2}
         supplementaryUnit2={supplementaryUnit2}
       />
+
+      {<div className='text-2xl font-bold'>
+        {mistake > 0 && <a>{translater.mistakeKeyInfoMessage}... {mostMistakenKey} !</a>}
+      </div>}
 
       {userData.loginStatus === true ? (
         <>
