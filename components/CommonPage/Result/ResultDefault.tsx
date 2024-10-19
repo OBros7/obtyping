@@ -197,9 +197,14 @@ export default function ResultDefault({
         supplementaryUnit2={supplementaryUnit2}
       />
 
-      {<div className='text-2xl font-bold'>
-        {mistake > 0 && <a>{translater.mistakeKeyInfoMessage}... {mostMistakenKey} !</a>}
-      </div>}
+      <div className='text-2xl font-bold underline decoration-solid'>
+        {mistake > 0 && (
+          <span>
+            {translater.mistakeKeyInfoMessage}...{' '}
+            <span className='text-red-500'>&#39;{mostMistakenKey}&#39;</span> !
+          </span>
+        )}
+      </div>
 
       {userData.loginStatus === true ? (
         <>

@@ -12,15 +12,15 @@ const Keyboard: React.FC<KeyboardProps> = ({ nextKey }) => {
   // Define the keyboard layout
   const keyboardLayout = [
     // Row 1
-    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Back\nspace'],
+    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '^', '¥', 'Back\nspace'],
     // Row 2
-    ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
+    ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '@', '[', 'Enter'],
     // Row 3
-    ['Caps Lock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'", 'Enter'],
+    ['Caps Lock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', ':', ']'],
     // Row 4
-    ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Shift'],
+    ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', '_', 'Shift'],
     // Row 5
-    ['Ctrl', 'Alt', ' ', 'Alt', 'Ctrl'],
+    ['Ctrl', 'Alt', ' ', 'Fn', 'Ctrl'],
   ];
 
   const getFingerIndicator = (rowIndex: number, keyIndex: number): number => {
