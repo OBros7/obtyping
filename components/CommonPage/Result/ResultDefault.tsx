@@ -52,8 +52,8 @@ interface ResultDefaultProps {
   handlePlayAgain: () => void
   handleBackToHome: () => void
   higherBetter: boolean
-  mostMistakenKey: string
-  setMostMistakenKey: React.Dispatch<React.SetStateAction<string>>
+  mostMistakenKeys: { key: string; count: number }[]
+  setMostMistakenKeys: React.Dispatch<React.SetStateAction<{ key: string; count: number }[]>>
   mistake: number
 }
 
@@ -74,8 +74,8 @@ export default function ResultDefault({
   handlePlayAgain,
   handleBackToHome,
   higherBetter,
-  mostMistakenKey,
-  setMostMistakenKey,
+  mostMistakenKeys,
+  setMostMistakenKeys,
   mistake
 }: ResultDefaultProps) {
   /* 
@@ -198,11 +198,23 @@ export default function ResultDefault({
       />
 
       <div className='text-2xl font-bold underline decoration-solid'>
-        {mistake > 0 && (
+        {/* {mistake > 0 && (
           <span>
             {translater.mistakeKeyInfoMessage}...{' '}
-            <span className='text-red-500'>&#39;{mostMistakenKey}&#39;</span> !
+            <span className='text-red-500'>&#39;{mostMistakenKeys.map}&#39;</span> !
           </span>
+        )} */}
+        {mostMistakenKeys.length > 0 && (
+          <div className="mistaken-keys mt-4">
+            <h3 className="text-xl font-semibold">最も間違えたキー（上位3つ）</h3>
+            <ul>
+              {mostMistakenKeys.map(({ key, count }, index) => (
+                <li key={index}>
+                  {key}: {count}回
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
 

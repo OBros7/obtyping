@@ -22,8 +22,8 @@ interface TypingPageBaseProps {
     languageType?: 'english' | 'japanese' | 'free'
     setLanguageType?: React.Dispatch<React.SetStateAction<'english' | 'japanese' | 'free'>>
     mode?: '1m' | '2m' | '3m' | '5m'
-    mostMistakenKey: string
-    setMostMistakenKey: React.Dispatch<React.SetStateAction<string>>
+    mostMistakenKeys: { key: string; count: number }[]
+    setMostMistakenKeys: React.Dispatch<React.SetStateAction<{ key: string; count: number }[]>>
 }
 
 export default function TypingPageBase({
@@ -37,8 +37,8 @@ export default function TypingPageBase({
     languageType,
     setLanguageType,
     mode = '1m',
-    mostMistakenKey,
-    setMostMistakenKey
+    mostMistakenKeys,
+    setMostMistakenKeys
 }: TypingPageBaseProps) {
     const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
     const [timePassed, setTimePassed] = useState(0)
@@ -180,8 +180,8 @@ export default function TypingPageBase({
                                 languageType={languageType}
                                 mode={mode}
                                 remainingTime={remainingTime}
-                                mostMistakenKey={mostMistakenKey}
-                                setMostMistakenKey={setMostMistakenKey}
+                                mostMistakenKeys={mostMistakenKeys}
+                                setMostMistakenKeys={setMostMistakenKeys}
                             />
                         )
                             : languageType === 'japanese' ? (

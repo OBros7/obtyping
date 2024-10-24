@@ -27,7 +27,7 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     const [cpm, setCpm] = useState(0)
     const [accuracy, setAccuracy] = useState(0)
     const [recordScore, setRecordScore] = useState(0)
-    const [mostMistakenKey, setMostMistakenKey] = useState<string>('')
+    const [mostMistakenKeys, setMostMistakenKeys] = useState<{ key: string; count: number }[]>([]);
 
     // let navigate = useNavigate();
 
@@ -158,8 +158,8 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                                 languageType={languageType}
                                 setLanguageType={setLanguageType}
                                 mode={mode}
-                                mostMistakenKey={mostMistakenKey}
-                                setMostMistakenKey={setMostMistakenKey}
+                                mostMistakenKeys={mostMistakenKeys}
+                                setMostMistakenKeys={setMostMistakenKeys}
                             />
                         )}
                     </>
@@ -180,8 +180,8 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                         handlePlayAgain={() => handleReset()}
                         handleBackToHome={() => handleBackToHome()}
                         higherBetter={true}
-                        mostMistakenKey={mostMistakenKey}
-                        setMostMistakenKey={setMostMistakenKey}
+                        mostMistakenKeys={mostMistakenKeys}
+                        setMostMistakenKeys={setMostMistakenKeys}
                         mistake={mistake}
                     />
 

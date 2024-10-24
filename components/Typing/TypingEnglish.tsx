@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import Keyboard from './Keyboard'
 import Fingers from './Fingers';
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
@@ -15,8 +15,8 @@ interface TypingEnglishProps {
   languageType?: 'english' | 'japanese' | 'free'
   mode?: '1m' | '2m' | '3m' | '5m'
   remainingTime: number
-  mostMistakenKey: string
-  setMostMistakenKey: React.Dispatch<React.SetStateAction<string>>
+  mostMistakenKeys: { key: string; count: number }[]
+  setMostMistakenKeys: React.Dispatch<React.SetStateAction<{ key: string; count: number }[]>>
 }
 
 const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
@@ -43,6 +43,17 @@ const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number
   return potentialEndIndex;
 };
 
+// クォートを正規化する関数
+const normalizeKey = (key: string): string => {
+  const quoteMap: Record<string, string> = {
+    '’': "'",
+    '‘': "'",
+    '“': '"',
+    '”': '"',
+  };
+  return quoteMap[key] || key;
+};
+
 export default function TypingEnglish(
   {
     textList,
@@ -55,8 +66,8 @@ export default function TypingEnglish(
     languageType,
     mode = '1m',
     remainingTime,
-    mostMistakenKey,
-    setMostMistakenKey
+    mostMistakenKeys,
+    setMostMistakenKeys
   }: TypingEnglishProps
 ) {
   const [nextKey, setNextKey] = useState<string | null>(textList[0]?.text11[0].toUpperCase());
@@ -102,50 +113,65 @@ export default function TypingEnglish(
     return localEndIndices;
   };
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    event.preventDefault();
-    const inputKey = event.key;
-    const isPrintable = /^[ -~]+$/;
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      event.preventDefault();
+      let inputKey = event.key;
+      const isPrintable = /^[ -~]+$/;
 
-    if (!isPrintable.test(inputKey)) return;
+      inputKey = normalizeKey(inputKey);
+      const normalizedNextKey = normalizeKey(nextKey || '');
 
-    if (inputKey === "Shift") {
-      return;
-    }
+      console.log(`Key pressed: ${inputKey}, Expected: ${normalizedNextKey}`); // デバッグ用ログ
 
-    if (inputKey === nextKey) {
-      isCorrects.current[countCharWithin] = true;
-      setScore((prevScore) => prevScore + 1);
+      if (!isPrintable.test(inputKey)) return;
 
-      if (currentTextLength - 1 === countCharWithin) {
-        setCountTextIndex((prevIndex) => prevIndex + 1);
-        setCountCharWithin(0); // Reset character counter for the new text
-        setCurrentLine(0);     // Reset the line whenever you move to the next text
+      if (inputKey === 'Shift') {
+        return;
+      }
+
+      if (inputKey === normalizedNextKey) {
+        isCorrects.current[countCharWithin] = true;
+        setScore((prevScore) => prevScore + 1);
+
+        if (currentTextLength - 1 === countCharWithin) {
+          setCountTextIndex((prevIndex) => prevIndex + 1);
+          setCountCharWithin(0);
+          setCurrentLine(0);
+        } else {
+          setCountCharWithin((prevIndex) => prevIndex + 1);
+          const nextChar = currentText[countCharWithin + 1] || null;
+          setNextKey(nextChar);
+          setPressKey(nextChar ? nextChar.toUpperCase() : null);
+
+          // 行末でスペースが押された場合
+          if (inputKey === ' ' && countCharWithin + 1 > (endIndicesOfLines[currentLine] || 0)) {
+            setCurrentLine((prevLine) => prevLine + 1);
+          }
+        }
       } else {
-        setCountCharWithin((prevIndex) => prevIndex + 1);
-        setNextKey(currentText[countCharWithin + 1]);
-        setPressKey(currentText[countCharWithin + 1]?.toUpperCase());
+        isCorrects.current[countCharWithin] = false;
+        setMistake((prevMistake) => prevMistake + 1);
+        missSound.currentTime = 0;
+        missSound.play();
 
-        // If we're at a space AND this is the last space on the line, advance to next line
-        if (inputKey === " " && countCharWithin + 1 > endIndicesOfLines[currentLine]) {
-          setCurrentLine((prevLine) => prevLine + 1);  // Update the line when the current line is completed
+        if (nextKey) {
+          setErrorKeys((prevErrorKeys) => ({
+            ...prevErrorKeys,
+            [nextKey.toLowerCase()]: (prevErrorKeys[nextKey.toLowerCase()] || 0) + 1,
+          }));
         }
       }
-    } else {
-      isCorrects.current[countCharWithin] = false;
-      setMistake((prevMistake) => prevMistake + 1);
-      missSound.currentTime = 0
-      missSound.play();
+    },
+    [nextKey, countCharWithin, currentTextLength, currentText, endIndicesOfLines, currentLine]
+  );
 
-      // 期待されるキーを誤打としてカウント
-      if (nextKey) {
-        setErrorKeys((prevErrorKeys) => ({
-          ...prevErrorKeys,
-          [nextKey.toLowerCase()]: (prevErrorKeys[nextKey.toLowerCase()] || 0) + 1,
-        }));
-      }
-    }
-  };
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   useEffect(() => {
     setCurrentText(textList[countTextIndex % textListLength].text11);
@@ -192,17 +218,21 @@ export default function TypingEnglish(
   useEffect(() => {
     if (remainingTime <= 0) {
       setStatus('result');
-      const getMostMistakenKey = (): string | null => {
+      const getTopMistakenKeys = (limit: number = 3): { key: string; count: number }[] => {
         const entries = Object.entries(errorKeys);
-        if (entries.length === 0) return null;
+        if (entries.length === 0) return [];
+
+        // キーを誤打回数で降順にソート
         entries.sort((a, b) => b[1] - a[1]);
-        return entries[0][0];
+
+        // 上位3つを取得
+        return entries.slice(0, limit).map(([key, count]) => ({ key, count }));
       };
 
-      setMostMistakenKey(getMostMistakenKey() || '');
-      console.log('Most Mistaken Key:', mostMistakenKey);
+      setMostMistakenKeys(getTopMistakenKeys());
+      console.log('Top Mistaken Keys:', mostMistakenKeys);
     }
-  }, [remainingTime])
+  }, [remainingTime, errorKeys]); // errorKeysも依存配列に追加
 
   // useEffect(() => {
   //   if (status === 'result' && mistake > 0) {
