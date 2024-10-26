@@ -10,6 +10,7 @@ import {
   createChartData,
   createXY4Graph,
   getTopRecords,
+  MistakenKeyTable,
 } from './'
 import {
   PostRecordTime,
@@ -96,6 +97,8 @@ export default function ResultDefault({
   const [chartData, setChartData] = useState<any>(createChartData([], []))
   const [recordTopK, setRecordTopK] = useState<any>([])
 
+  const mistypeTableHeader = [translater.key, translater.count]
+
   // get user records
   useEffect(() => {
     if (userData.loginStatus === true) {
@@ -104,23 +107,27 @@ export default function ResultDefault({
       fetch(`${fastAPIURL}get_record_time_by_deckid/?deck_id=${deckId}&n_select=${nSelect}&order_by=${orderBy}&seconds=${minutes * 60}`)
         .then((res) => res.json())
         .then((data) => {
-          // console.log('Fetched Data:', data); // 追加
-          // console.log(data)
+
           if (data && data.detail) {
             console.error('Error fetching data:', data.detail);
             // Set recordTopK to an empty array to avoid breaking .map() usage
             setRecordTopK([]);
           } else {
-            setRecordTopK(data)
-            if (data.length > 0) {
-              // add is for better animation when adding the new record for graph: show recentK + 1 records when saved
-              const add = saved ? 1 : 0
+            // 並び替え (古い順)
+            const sortedData = data.sort((a: { timestamp: number }, b: { timestamp: number }) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+            setRecordTopK(sortedData);
+            if (sortedData.length > 0) {
+              const add = saved ? 1 : 0;
+
               // for graph
               const { x, y } = createXY4Graph(data, recentK + add)
               setChartData(createChartData(x, y))
+
               // for table
               const dataTopK = getTopRecords(data, topK, higherBetter)
               setRecordTopK(dataTopK)
+
               // rank
               if (!saved) {
                 if (higherBetter) {
@@ -169,6 +176,23 @@ export default function ResultDefault({
       .then((res) => {
         console.log(res)
         setSaved(true)
+        // Update chart data to include '今回'
+        setChartData((prevChartData: any) => {
+          const updatedLabels = [...prevChartData.labels.slice(1), '今回'];
+          const updatedDatasets = prevChartData.datasets.map((dataset: any) => {
+            return {
+              ...dataset,
+              data: [...dataset.data.slice(1), record],
+            };
+          });
+
+          return {
+            ...prevChartData,
+            labels: updatedLabels,
+            datasets: updatedDatasets,
+          };
+        });
+
       })
       .catch((error) => {
         console.error('Error sending data:', error)
@@ -197,26 +221,16 @@ export default function ResultDefault({
         supplementaryUnit2={supplementaryUnit2}
       />
 
-      <div className='text-2xl font-bold underline decoration-solid'>
-        {/* {mistake > 0 && (
-          <span>
-            {translater.mistakeKeyInfoMessage}...{' '}
-            <span className='text-red-500'>&#39;{mostMistakenKeys.map}&#39;</span> !
-          </span>
-        )} */}
-        {mostMistakenKeys.length > 0 && (
-          <div className="mistaken-keys mt-4">
-            <h3 className="text-xl font-semibold">最も間違えたキー（上位3つ）</h3>
-            <ul>
-              {mostMistakenKeys.map(({ key, count }, index) => (
-                <li key={index}>
-                  {key}: {count}回
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      {mistake > 0 ? (
+        <MistakenKeyTable
+          headers={mistypeTableHeader}
+          data={mostMistakenKeys.map(({ key, count }) => [key, count])}
+          title={translater.mistakeKeyInfoMessage}
+        />
+      ) : (
+        <p className='text-xl font-bold mb-1'>{translater.noMissMassage}</p>
+      )
+      }
 
       {userData.loginStatus === true ? (
         <>

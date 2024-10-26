@@ -20,9 +20,22 @@ const langDict = {
     en: 'Press Save to save your record',
   },
   mistakeKeyInfoMessage: {
-    ja: '今回最も打ち間違えが多いキーは ',
-    en: 'The most commonly mistyped key this time is ',
+    ja: '今回打ち間違えが多かったキー',
+    en: 'The most commonly typed keys this time',
+  },
+  key: {
+    ja: '間違えたキー',
+    en: 'Mistyped key',
+  },
+  count: {
+    ja: '回数',
+    en: 'Count',
+  },
+  noMissMassage: {
+    ja: 'スゴイ！今回ミスタイプは1度もありませんでした',
+    en: 'Amazing! There were no typos this time.',
   }
+
 }
 
 export default langDict
