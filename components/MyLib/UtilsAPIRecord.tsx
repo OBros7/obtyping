@@ -1,4 +1,5 @@
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
+const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
 
 interface PostRecordTime {
     user_id: number,
@@ -15,6 +16,7 @@ const createRecordTime = async (data: PostRecordTime) => {
     const res = await fetch(url, {
         method: 'POST',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
