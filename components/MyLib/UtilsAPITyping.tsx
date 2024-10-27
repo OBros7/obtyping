@@ -1,10 +1,12 @@
 // components/MyLib/UtilsAPITyping.tsx
 
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { findCategoryAndSubcategoryIds } from './UtilsTyping'
-import { create } from 'domain';
+// import { findCategoryAndSubcategoryIds } from './UtilsTyping'
+// import { create } from 'domain';
+// import { fetchFromBackend } from '@api/typing/typingGet'
 
 const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
 
 /////////////////////////////////////// Interface for post request ///////////////////////////////////////
 
@@ -68,10 +70,6 @@ const createQueryString = (data: getDeckTextParams) => {
         })
         .join('&');
     return queryString
-
-    // const queryString = Object.keys(data)
-    // .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key as keyof typeof data])}`)
-    // .join('&');
 }
 
 
@@ -80,28 +78,20 @@ const getDeckListByUser = async (
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
-    const url = fastAPIURL + 'get_decklist_by_user'
-
     const data = {
         user_id: userID,
         n_select: nSelect,
         order_by: orderBy,
     }
-
-
-    const queryString = createQueryString(data)
-
-
-    // send get request
-    console.log(`${url}?${queryString}`)
-    const res = await fetch(`${url}?${queryString}`, {
-        method: 'GET',
+    const response = await fetch('/api/typing/typingGet', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-    })
-    const resJSON = await res.json()
-    return resJSON
+        body: JSON.stringify({ endpoint: 'get_decklist_by_user', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
 
 const getDeckListBasic = async (
@@ -121,6 +111,7 @@ const getDeckListBasic = async (
     const res = await fetch(`${url}?${queryString}`, {
         method: 'GET',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
     })
@@ -149,6 +140,7 @@ const getDeckListSelective = async (
     const res = await fetch(`${url}?${queryString}`, {
         method: 'GET',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
     })
@@ -170,11 +162,11 @@ const getDeckListPrivate = async (
     }
     const queryString = createQueryString(data)
 
-
     // send get request
     const res = await fetch(`${url}?${queryString}`, {
         method: 'GET',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
     })
@@ -205,6 +197,7 @@ const getDeckListByCategory = async (
     const res = await fetch(`${url}?${queryString}`, {
         method: 'GET',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
     })
@@ -232,6 +225,7 @@ const getDeckListBySearch = async (
     const res = await fetch(`${url}?${queryString}`, {
         method: 'GET',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
     })
@@ -257,6 +251,7 @@ const getTextListByDeck = async (
     const res = await fetch(`${url}?${queryString}`, {
         method: 'GET',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
     })
@@ -269,6 +264,7 @@ const getCategoriesSubcategoriesLevels = async () => {
     const res = await fetch(url, {
         method: 'GET',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
     })
@@ -353,6 +349,7 @@ const createText = async (data: PostText) => {
     const res = await fetch(url, {
         method: 'POST',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
@@ -368,6 +365,7 @@ const createTextOnly = async (data: PostTextOnly) => {
     const res = await fetch(url, {
         method: 'POST',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
@@ -383,6 +381,7 @@ const createTextDeck = async (data: PostTextDeck) => {
     const res = await fetch(url, {
         method: 'POST',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
@@ -397,6 +396,7 @@ const createDeck = async (data: PostDeck) => {
     const res = await fetch(url, {
         method: 'POST',
         headers: {
+            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),

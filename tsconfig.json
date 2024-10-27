@@ -28,7 +28,10 @@
       ],
       "@contexts/*": [
         "./contexts/*"
-      ]
+      ],
+      "@api/*": [
+        "./pages/api/*"
+      ],
     }
   },
   "include": [
