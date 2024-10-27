@@ -19,7 +19,8 @@ import { GlobalContext } from '@contexts/GlobalContext'
 import { signIn } from 'next-auth/react'
 import type { ChartData, ChartOptions } from 'chart.js'
 
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
+const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
 const options: ChartOptions<'line'> = {
   scales: {
     y: {
@@ -95,7 +96,14 @@ export default function ResultDefault({
     if (userData.loginStatus === true) {
       const nSelect = recentK
       const orderBy = 'score'
-      fetch(`${fastAPIURL}get_record_time_by_deckid/?deck_id=${deckId}&n_select=${nSelect}&order_by=${orderBy}&seconds=${minutes * 60}`)
+      const url = `${fastAPIURL}get_record_time_by_deckid/?deck_id=${deckId}&n_select=${nSelect}&order_by=${orderBy}&seconds=${minutes * 60}`
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'X-API-Key': BACKEND_API_KEY, // Pass the API key in the headers
+          'Content-Type': 'application/json', // Specify content type
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           console.log(data)

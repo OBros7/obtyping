@@ -18,7 +18,7 @@ const useAuth = () => {
 
     const fetchUser = async () => {
         try {
-            const response = await axios.get(backendURL + '/api/users/session', { withCredentials: true });
+            const response = await axios.get(backendURL + 'users/session', { withCredentials: true });
             if (response.data && response.data.user) {
                 const user = response.data.user;
                 localStorage.setItem('userID', user.user_id.toString());
@@ -62,7 +62,7 @@ const useAuth = () => {
     // const signOut = useCallback((setUserData: any) => {
     const signOut = useCallback(async () => {
         try {
-            const response = await fetch(backendURL + '/api/users/logout', {
+            const response = await fetch(backendURL + 'users/logout', {
                 method: 'POST',
             });
             if (response.ok) {
