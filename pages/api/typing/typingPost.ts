@@ -1,48 +1,30 @@
-// pages/api/typing/typingGet.ts
-// //https://chatgpt.com/c/671cb60d-85b8-8000-9b0b-74d2f35f6167
-
+// pages/api/typing/typingPost.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 // Access environment variables on the server side
 const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY
 
-// Helper function to create query strings from an object
-const createQueryString = (data: Record<string, any>) => {
-  return Object.keys(data)
-    .filter((key) => data[key] !== undefined)
-    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
-    .join('&')
-}
-
 // Main API handler function with properly typed parameters
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { endpoint, data, method = 'GET' } = req.body
+  const { endpoint, data } = req.body
   const url = `${fastAPIURL}${endpoint}`
-
-  //   console.log('Server-side BACKEND_API_KEY:', BACKEND_API_KEY); // Verify it logs in terminal
-
-  // Create the query string if it's a GET request
-  const queryString = createQueryString(data)
-  const fullUrl = method === 'GET' ? `${url}?${queryString}` : url
 
   // Set up options for the fetch request
   const options: RequestInit = {
-    method,
+    method: 'POST',
     headers: {
       'X-API-Key': BACKEND_API_KEY || '',
       'Content-Type': 'application/json',
     },
-  }
-
-  // If POST request, include the data in the body
-  if (method === 'POST') {
-    options.body = JSON.stringify(data)
+    body: JSON.stringify(data),
   }
 
   // Execute fetch request and handle errors
   try {
-    const response = await fetch(fullUrl, options)
+    console.log('TypingUrl:', url)
+    console.log('TypingPostProcess')
+    const response = await fetch(url, options)
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`)
     }
