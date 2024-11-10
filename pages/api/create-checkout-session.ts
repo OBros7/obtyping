@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-const url = process.env.FASTAPI_URL + '/create-checkout-session'
+const url = process.env.FASTAPI_URL + 'create-checkout-session'
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {

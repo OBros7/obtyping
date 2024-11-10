@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const FASTAPI_URL = process.env.FASTAPI_URL;
+const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
 
 const useAuth = () => {
     const [userData, setUserData] = useState({ loginStatus: false });
@@ -8,7 +9,7 @@ const useAuth = () => {
     useEffect(() => {
         const fetchUserSession = async () => {
             try {
-                const response = await fetch(FASTAPI_URL + '/api/users/session');
+                const response = await fetch(FASTAPI_URL + 'users/session');
                 if (response.ok) {
                     const data = await response.json();
                     localStorage.setItem('userData', JSON.stringify(data.user));
@@ -27,7 +28,7 @@ const useAuth = () => {
 
     const signIn = async (email: string, password: string) => {
         try {
-            const response = await fetch(FASTAPI_URL + '/api/users/login', {
+            const response = await fetch(FASTAPI_URL + 'users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -51,7 +52,7 @@ const useAuth = () => {
 
     const signOut = async () => {
         try {
-            const response = await fetch(FASTAPI_URL + '/api/users/logout', {
+            const response = await fetch(FASTAPI_URL + 'users/logout', {
                 method: 'POST',
             });
             if (response.ok) {

@@ -3,7 +3,7 @@ import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
 import { useRouter } from 'next/router'
 import { getCategoriesSubcategoriesLevels } from '@/MyLib/UtilsAPITyping'
 
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
 const minibox = 'flex flex-row justify-center items-center'
 const formRowClass = 'flex flex-row items-center justify-start space-x-2'
 

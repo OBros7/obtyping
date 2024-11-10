@@ -10,6 +10,7 @@ import {
   createChartData,
   createXY4Graph,
   getTopRecords,
+  MistakenKeyTable,
 } from './'
 import {
   PostRecordTime,
@@ -19,7 +20,8 @@ import { GlobalContext } from '@contexts/GlobalContext'
 import { signIn } from 'next-auth/react'
 import type { ChartData, ChartOptions } from 'chart.js'
 
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
+const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
 const options: ChartOptions<'line'> = {
   scales: {
     y: {
@@ -52,6 +54,9 @@ interface ResultDefaultProps {
   handlePlayAgain: () => void
   handleBackToHome: () => void
   higherBetter: boolean
+  mostMistakenKeys: { key: string; count: number }[]
+  setMostMistakenKeys: React.Dispatch<React.SetStateAction<{ key: string; count: number }[]>>
+  mistake: number
 }
 
 export default function ResultDefault({
@@ -71,6 +76,9 @@ export default function ResultDefault({
   handlePlayAgain,
   handleBackToHome,
   higherBetter,
+  mostMistakenKeys,
+  setMostMistakenKeys,
+  mistake
 }: ResultDefaultProps) {
   /* 
   urlPost: url for posting data. userID & setting information should be included in the url as parameters
@@ -90,30 +98,44 @@ export default function ResultDefault({
   const [chartData, setChartData] = useState<any>(createChartData([], []))
   const [recordTopK, setRecordTopK] = useState<any>([])
 
+  const mistypeTableHeader = [translater.key, translater.count]
+
   // get user records
   useEffect(() => {
     if (userData.loginStatus === true) {
       const nSelect = recentK
       const orderBy = 'score'
-      fetch(`${fastAPIURL}get_record_time_by_deckid/?deck_id=${deckId}&n_select=${nSelect}&order_by=${orderBy}&seconds=${minutes * 60}`)
+      const url = `${fastAPIURL}get_record_time_by_deckid/?deck_id=${deckId}&n_select=${nSelect}&order_by=${orderBy}&seconds=${minutes * 60}`
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'X-API-Key': BACKEND_API_KEY, // Pass the API key in the headers
+          'Content-Type': 'application/json', // Specify content type
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data)
+
           if (data && data.detail) {
             console.error('Error fetching data:', data.detail);
             // Set recordTopK to an empty array to avoid breaking .map() usage
             setRecordTopK([]);
           } else {
-            setRecordTopK(data)
-            if (data.length > 0) {
-              // add is for better animation when adding the new record for graph: show recentK + 1 records when saved
-              const add = saved ? 1 : 0
+            // 並び替え (古い順)
+            const sortedData = data.sort((a: { timestamp: number }, b: { timestamp: number }) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+            setRecordTopK(sortedData);
+            if (sortedData.length > 0) {
+              const add = saved ? 1 : 0;
+
               // for graph
               const { x, y } = createXY4Graph(data, recentK + add)
               setChartData(createChartData(x, y))
+
               // for table
               const dataTopK = getTopRecords(data, topK, higherBetter)
               setRecordTopK(dataTopK)
+
               // rank
               if (!saved) {
                 if (higherBetter) {
@@ -162,14 +184,28 @@ export default function ResultDefault({
       .then((res) => {
         console.log(res)
         setSaved(true)
+        // Update chart data to include '今回'
+        setChartData((prevChartData: any) => {
+          const updatedLabels = [...prevChartData.labels.slice(1), '今回'];
+          const updatedDatasets = prevChartData.datasets.map((dataset: any) => {
+            return {
+              ...dataset,
+              data: [...dataset.data.slice(1), record],
+            };
+          });
+
+          return {
+            ...prevChartData,
+            labels: updatedLabels,
+            datasets: updatedDatasets,
+          };
+        });
+
       })
       .catch((error) => {
         console.error('Error sending data:', error)
       })
-
     console.log(resJson)
-
-
   }
 
   return (
@@ -192,6 +228,17 @@ export default function ResultDefault({
         supplementaryRecord2={supplementaryRecord2}
         supplementaryUnit2={supplementaryUnit2}
       />
+
+      {mistake > 0 ? (
+        <MistakenKeyTable
+          headers={mistypeTableHeader}
+          data={mostMistakenKeys.map(({ key, count }) => [key, count])}
+          title={translater.mistakeKeyInfoMessage}
+        />
+      ) : (
+        <p className='text-xl font-bold mb-1'>{translater.noMissMassage}</p>
+      )
+      }
 
       {userData.loginStatus === true ? (
         <>

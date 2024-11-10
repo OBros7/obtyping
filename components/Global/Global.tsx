@@ -69,7 +69,7 @@ export default UserProvider;
 // import { useSession } from 'next-auth/react';
 // import { GlobalContext } from 'context/GlobalContext';
 
-// const urlUsers = process.env.FASTAPI_URL + '/users/';
+// const urlUsers = process.env.FASTAPI_URL + 'users/';
 
 // // this code is suggested by ChatGPT. If it doesn't work, try the code below
 
@@ -143,7 +143,7 @@ export default UserProvider;
 // import { useSession } from 'next-auth/react'
 // import { GlobalContext } from 'context/GlobalContext'
 
-// const urlUsers = process.env.FASTAPI_URL + '/users/'
+// const urlUsers = process.env.FASTAPI_URL + 'users/'
 
 // export default function Global({ children }: { children: React.ReactNode }) {
 //   const { data: session } = useSession()

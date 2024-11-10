@@ -6,7 +6,7 @@ import { FormatCategory } from '@/CommonPage/DeckSelection'
 import { createDeck } from '@/MyLib/UtilsAPITyping'
 const langOptions = Object.keys(lang2int)
 
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
 
 // const classParDivDefault = 'search-container'
 const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
