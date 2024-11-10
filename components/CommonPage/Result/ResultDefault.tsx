@@ -14,7 +14,8 @@ import {
 } from './'
 import {
   PostRecordTime,
-  createRecordTime
+  createRecordTime,
+  getRecordTime,
 } from '@/MyLib/UtilsAPIRecord'
 import { GlobalContext } from '@contexts/GlobalContext'
 import { signIn } from 'next-auth/react'
@@ -103,56 +104,47 @@ export default function ResultDefault({
   // get user records
   useEffect(() => {
     if (userData.loginStatus === true) {
-      const nSelect = recentK
-      const orderBy = 'score'
-      const url = `${fastAPIURL}get_record_time_by_deckid/?deck_id=${deckId}&n_select=${nSelect}&order_by=${orderBy}&seconds=${minutes * 60}`
-      fetch(url, {
-        method: 'GET',
-        headers: {
-          'X-API-Key': BACKEND_API_KEY, // Pass the API key in the headers
-          'Content-Type': 'application/json', // Specify content type
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
+      const nSelect = recentK;
+      const orderBy = 'score';
 
+      getRecordTime(userData.userID, deckId, nSelect, orderBy)
+        .then((data) => {
           if (data && data.detail) {
             console.error('Error fetching data:', data.detail);
-            // Set recordTopK to an empty array to avoid breaking .map() usage
             setRecordTopK([]);
           } else {
-            // 並び替え (古い順)
+            // Sort data in ascending order by timestamp
             const sortedData = data.sort((a: { timestamp: number }, b: { timestamp: number }) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-
             setRecordTopK(sortedData);
+
             if (sortedData.length > 0) {
               const add = saved ? 1 : 0;
 
-              // for graph
-              const { x, y } = createXY4Graph(data, recentK + add)
-              setChartData(createChartData(x, y))
+              // Set data for graph
+              const { x, y } = createXY4Graph(data, recentK + add);
+              setChartData(createChartData(x, y));
 
-              // for table
-              const dataTopK = getTopRecords(data, topK, higherBetter)
-              setRecordTopK(dataTopK)
+              // Set data for table
+              const dataTopK = getTopRecords(data, topK, higherBetter);
+              setRecordTopK(dataTopK);
 
-              // rank
+              // Determine rank
               if (!saved) {
                 if (higherBetter) {
                   if (dataTopK[0].record < record) {
-                    setRank('best')
+                    setRank('best');
                   } else if (dataTopK[dataTopK.length - 1].record < record) {
-                    setRank('topK')
+                    setRank('topK');
                   } else {
-                    setRank('none')
+                    setRank('none');
                   }
                 } else {
                   if (dataTopK[0].record > record) {
-                    setRank('best')
+                    setRank('best');
                   } else if (dataTopK[dataTopK.length - 1].record > record) {
-                    setRank('topK')
+                    setRank('topK');
                   } else {
-                    setRank('none')
+                    setRank('none');
                   }
                 }
               }
@@ -160,10 +152,10 @@ export default function ResultDefault({
           }
         })
         .catch((error) => {
-          console.error('Error fetching data:', error)
-        })
+          console.error('Error fetching data:', error);
+        });
     }
-  }, [userData.userID, saved])
+  }, [userData.userID, saved]);
 
   // post record in the database
   const handleSave = () => {
@@ -180,32 +172,32 @@ export default function ResultDefault({
     }
 
 
-    const resJson = createRecordTime(data)
-      .then((res) => {
-        console.log(res)
-        setSaved(true)
-        // Update chart data to include '今回'
-        setChartData((prevChartData: any) => {
-          const updatedLabels = [...prevChartData.labels.slice(1), '今回'];
-          const updatedDatasets = prevChartData.datasets.map((dataset: any) => {
-            return {
-              ...dataset,
-              data: [...dataset.data.slice(1), record],
-            };
-          });
+    // const resJson = createRecordTime(data)
+    //   .then((res) => {
+    //     console.log(res)
+    //     setSaved(true)
+    //     // Update chart data to include '今回'
+    //     setChartData((prevChartData: any) => {
+    //       const updatedLabels = [...prevChartData.labels.slice(1), '今回'];
+    //       const updatedDatasets = prevChartData.datasets.map((dataset: any) => {
+    //         return {
+    //           ...dataset,
+    //           data: [...dataset.data.slice(1), record],
+    //         };
+    //       });
 
-          return {
-            ...prevChartData,
-            labels: updatedLabels,
-            datasets: updatedDatasets,
-          };
-        });
+    //       return {
+    //         ...prevChartData,
+    //         labels: updatedLabels,
+    //         datasets: updatedDatasets,
+    //       };
+    //     });
 
-      })
-      .catch((error) => {
-        console.error('Error sending data:', error)
-      })
-    console.log(resJson)
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error sending data:', error)
+    //   })
+    // console.log(resJson)
   }
 
   return (
@@ -227,9 +219,10 @@ export default function ResultDefault({
         supplementaryItem2={supplementaryItem2}
         supplementaryRecord2={supplementaryRecord2}
         supplementaryUnit2={supplementaryUnit2}
+        mistakenKeys={mostMistakenKeys}
       />
 
-      {mistake > 0 ? (
+      {/* {mistake > 0 ? (
         <MistakenKeyTable
           headers={mistypeTableHeader}
           data={mostMistakenKeys.map(({ key, count }) => [key, count])}
@@ -238,7 +231,7 @@ export default function ResultDefault({
       ) : (
         <p className='text-xl font-bold mb-1'>{translater.noMissMassage}</p>
       )
-      }
+      } */}
 
       {userData.loginStatus === true ? (
         <>
