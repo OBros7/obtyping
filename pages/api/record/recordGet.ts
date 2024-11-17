@@ -1,5 +1,6 @@
 // pages/api/Record/recordGet.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { createQueryString } from '../utils'
 
 const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
@@ -21,18 +22,28 @@ const recordGet = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: 'Missing required query parameters: user_id or deck_id' })
   }
 
-  const endpoint = `get_record/?user_id=${user_id}&deck_id=${deck_id}`
-  const url = fastAPIURL + endpoint
+  const { endpoint, data, method = 'GET' } = req.body
+
+  const url = `${fastAPIURL}${endpoint}`
+  const queryString = createQueryString(data)
+  const fullUrl = method === 'GET' ? `${url}?${queryString}` : url
+
+  // const endpoint = `get_record/?user_id=${user_id}&deck_id=${deck_id}`
+  // const url = fastAPIURL + endpoint
+  const options: RequestInit = {
+    method,
+    headers: {
+      'X-API-Key': BACKEND_API_KEY || '',
+      'Content-Type': 'application/json',
+    },
+  }
+  if (method === 'POST') {
+    options.body = JSON.stringify(data)
+  }
 
   try {
     console.log('recordGetProcess')
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'X-API-Key': BACKEND_API_KEY,
-        'Content-Type': 'application/json',
-      },
-    })
+    const response = await fetch(fullUrl, options)
 
     if (!response.ok) {
       return res.status(response.status).json({ error: 'Failed to fetch record from FastAPI' })

@@ -172,32 +172,32 @@ export default function ResultDefault({
     }
 
 
-    // const resJson = createRecordTime(data)
-    //   .then((res) => {
-    //     console.log(res)
-    //     setSaved(true)
-    //     // Update chart data to include '今回'
-    //     setChartData((prevChartData: any) => {
-    //       const updatedLabels = [...prevChartData.labels.slice(1), '今回'];
-    //       const updatedDatasets = prevChartData.datasets.map((dataset: any) => {
-    //         return {
-    //           ...dataset,
-    //           data: [...dataset.data.slice(1), record],
-    //         };
-    //       });
+    const resJson = createRecordTime(data)
+      .then((res) => {
+        console.log(res)
+        setSaved(true)
+        // Update chart data to include '今回'
+        setChartData((prevChartData: any) => {
+          const updatedLabels = [...prevChartData.labels.slice(1), '今回'];
+          const updatedDatasets = prevChartData.datasets.map((dataset: any) => {
+            return {
+              ...dataset,
+              data: [...dataset.data.slice(1), record],
+            };
+          });
 
-    //       return {
-    //         ...prevChartData,
-    //         labels: updatedLabels,
-    //         datasets: updatedDatasets,
-    //       };
-    //     });
+          return {
+            ...prevChartData,
+            labels: updatedLabels,
+            datasets: updatedDatasets,
+          };
+        });
 
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error sending data:', error)
-    //   })
-    // console.log(resJson)
+      })
+      .catch((error) => {
+        console.error('Error sending data:', error)
+      })
+    console.log(resJson)
   }
 
   return (

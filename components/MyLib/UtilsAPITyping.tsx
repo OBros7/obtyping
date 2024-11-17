@@ -88,7 +88,7 @@ const getDeckListByUser = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_decklist_by_user', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_by_user', data: data }),
     });
     const result = await response.json();
     return result;
@@ -109,7 +109,7 @@ const getDeckListBasic = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_decklist_basic', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_basic', data: data }),
     });
     const result = await response.json();
     return result;
@@ -157,7 +157,7 @@ const getDeckListSelective = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_decklist_selective', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_selective', data: data }),
     });
     const result = await response.json();
     return result;
@@ -207,7 +207,7 @@ const getDeckListPrivate = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_decklist_private', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_private', data: data }),
     });
     const result = await response.json();
     return result;
@@ -261,7 +261,7 @@ const getDeckListByCategory = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_decklist_by_category', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_by_category', data: data }),
     });
     const result = await response.json();
     return result;
@@ -317,7 +317,7 @@ const getDeckListBySearch = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_decklist_by_search', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_by_search', data: data }),
     });
     const result = await response.json();
     return result;
@@ -368,7 +368,7 @@ const getTextListByDeck = async (
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_textlist_by_deck', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_textlist_by_deck', data: data }),
     });
     const result = await response.json();
     return result;
@@ -407,7 +407,7 @@ const getCategoriesSubcategoriesLevels = async () => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_categories_subcategories_levels' }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_categories_subcategories_levels' }),
     });
     const result = await response.json();
     return result;
@@ -504,7 +504,7 @@ const createText = async (data: PostText) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'create_text', data: data }),
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_text', data: data }),
     });
     const result = await response.json();
     return result;
@@ -533,7 +533,7 @@ const createTextOnly = async (data: PostTextOnly) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'create_text_only', data: data }),
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_text_only', data: data }),
     });
     const result = await response.json();
     return result;
@@ -562,7 +562,7 @@ const createTextDeck = async (data: PostTextDeck) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'create_text_deck', data: data }),
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_text_deck', data: data }),
     });
     const result = await response.json();
     return result;
@@ -590,7 +590,7 @@ const createDeck = async (data: PostDeck) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'create_deck', data: data }),
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_deck', data: data }),
     });
     const result = await response.json();
     return result;

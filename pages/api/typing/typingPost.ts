@@ -7,7 +7,7 @@ const BACKEND_API_KEY = process.env.BACKEND_API_KEY
 
 // Main API handler function with properly typed parameters
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { endpoint, data } = req.body
+  const { endpoint, data, method = 'POST' } = req.body
   const url = `${fastAPIURL}${endpoint}`
 
   // Set up options for the fetch request
@@ -18,6 +18,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
+  }
+
+  // If GET request, include the data in the body
+  if (method === 'GET') {
+    options.body = JSON.stringify(data)
   }
 
   // Execute fetch request and handle errors

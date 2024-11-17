@@ -11,20 +11,13 @@ interface PostRecordTime {
     seconds: number | null,// only for Time
 }
 
-interface GetRecordTime {
-    user_id: string,
-    deck_id: number,
-    nSelect: number,
-    orderby: string,
-}
-
 const createRecordTime = async (data: PostRecordTime) => {
-    const response = await fetch('/api/record/recordPost', {
+    const response = await fetch('/api/typing/typingPost', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'create_record_time', data: data }),
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_record_time', data: data }),
     });
     const result = await response.json();
     return result;
@@ -37,17 +30,17 @@ const getRecordTime = async (
     orderby: string,
 ) => {
     const data = {
-        user_id: userId,
+        // user_id: userId,
         deck_id: deckId,
-        nSelect: nSelect,
-        orderby: orderby,
+        n_select: nSelect,
+        order_by: orderby,
     }
-    const response = await fetch('/api/record/recordGet', {
-        method: 'GET',
+    const response = await fetch('/api/typing/typingGet', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        // body: JSON.stringify({ endpoint: 'get_record_time_by_deckid', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_record_time_by_deckid', data: data }),
     });
     const result = await response.json();
     return result;
