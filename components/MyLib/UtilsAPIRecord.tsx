@@ -12,7 +12,9 @@ interface PostRecordTime {
 }
 
 const createRecordTime = async (data: PostRecordTime) => {
-    const response = await fetch('/api/typing/typingPost', {
+    // const response = await fetch('/api/typing/typingPost', {
+    console.log('Data being sent to create_record_time:', data);
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -35,7 +37,8 @@ const getRecordTime = async (
         n_select: nSelect,
         order_by: orderby,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

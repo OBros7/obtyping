@@ -83,7 +83,8 @@ const getDeckListByUser = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -104,7 +105,8 @@ const getDeckListBasic = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -152,7 +154,8 @@ const getDeckListSelective = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -202,7 +205,8 @@ const getDeckListPrivate = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -256,7 +260,8 @@ const getDeckListByCategory = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -312,7 +317,8 @@ const getDeckListBySearch = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -363,7 +369,8 @@ const getTextListByDeck = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -402,7 +409,8 @@ const getTextListByDeck = async (
 // }
 
 const getCategoriesSubcategoriesLevels = async () => {
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -498,8 +506,13 @@ interface PostDeck {
     shuffle?: boolean,
 }
 
+interface DeckListByDeck {
+
+}
+
 const createText = async (data: PostText) => {
-    const response = await fetch('/api/typing/typingPost', {
+    // const response = await fetch('/api/typing/typingPost', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -528,7 +541,8 @@ const createText = async (data: PostText) => {
 // }
 
 const createTextOnly = async (data: PostTextOnly) => {
-    const response = await fetch('/api/typing/typingPost', {
+    // const response = await fetch('/api/typing/typingPost', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -557,7 +571,8 @@ const createTextOnly = async (data: PostTextOnly) => {
 // }
 
 const createTextDeck = async (data: PostTextDeck) => {
-    const response = await fetch('/api/typing/typingPost', {
+    // const response = await fetch('/api/typing/typingPost', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -585,7 +600,8 @@ const createTextDeck = async (data: PostTextDeck) => {
 // }
 
 const createDeck = async (data: PostDeck) => {
-    const response = await fetch('/api/typing/typingPost', {
+    // const response = await fetch('/api/typing/typingPost', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -612,7 +628,18 @@ const createDeck = async (data: PostDeck) => {
 //     return json
 // }
 
-
+// 型は？？？
+const getDeckListByDeck = async (data: DeckListByDeck) => {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ method: 'POST', endpoint: 'get_decklist_by_deck', data: data }),
+    });
+    const result = await response.json();
+    return result;
+}
 
 
 /////////////////////////////////////// Export ///////////////////////////////////////
@@ -640,4 +667,5 @@ export {
     getDeckListBySearch,
     getTextListByDeck,
     getCategoriesSubcategoriesLevels,
+    getDeckListByDeck,
 }
