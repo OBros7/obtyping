@@ -51,6 +51,7 @@ const useAuth = () => {
     };
 
     const signOut = async () => {
+        console.log('Signing out...(*LocalStrage*)');
         try {
             const response = await fetch(FASTAPI_URL + 'users/logout', {
                 method: 'POST',
