@@ -117,10 +117,10 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     return (
         <Layout>
             <MainContainer addClass='p-4'>
-                <button
+                {/* <button
                     onClick={() => setStatus(status === "running" ? "result" : "running")}
                     className='btn-second'
-                >Toggle Status</button>
+                >Toggle Status</button> */}
 
                 {status === 'waiting' ? (
                     // <div className="w-full text-center text-5xl mt-48 mb-48">
