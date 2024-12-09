@@ -17,6 +17,9 @@ export default function HomeMain() {
     <Layout>
       <div className="bg-[url('/images/heroImage.png')] w-screen h-[50vh] bg-center bg-cover flex items-center justify-center relative">
         <div className="flex flex-row flex-wrap justify-center">
+          {/* <Link href="" className="m-20 bg-blue-500 hover:bg-blue-700 text-white text-4xl font-bold py-6 px-16 rounded bg-center bg-cover inline-block text-center">
+            {translater.startNow}
+          </Link> */}
           <button
             className="m-20 bg-blue-500 hover:bg-blue-700 text-white text-4xl font-bold py-6 px-16 rounded bg-center bg-cover">
             {translater.startNow}

@@ -54,9 +54,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
         </div>
-        <div {...headerBox}>
+        {/* <div {...headerBox}>
           <HeaderLink href='/admin' text='Admin' addClass='outline outline-white outline-2' />
-        </div>
+        </div> */}
         <div {...headerBox}>
           {/* {user ? ( */}
           {userData.loginStatus === true ? (
@@ -74,7 +74,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="flex-grow">{children}</main>
       <footer {...footerAttrs}>
         <div {...headerBox}>
-          <HeaderLink href='/' text='&copy; 2023 OBros.' />
+          <HeaderLink href='/' text='&copy; 2024 OBros.' />
         </div>
         <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
