@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppCard, langDict, MenuCard } from './'
+import { AppCard, langDict, MenuCard, PreparationCard } from './'
 import { Layout, MainContainer } from '@/Layout'
 import { useTranslation } from '@/MyCustomHooks'
 import Image from 'next/image'
@@ -46,48 +46,57 @@ export default function HomeMain() {
           <Link href='/typing/typing'><a></a>
           </Link>
 
-          <AppCard
-            // href='./typing/basic_typing'
-            href='/'
-            title={translater.basicTypingTitle}
-            description={translater.basicTypingDescription}
-            thumbnail={<Image
-              src="/images/basicIcon.png"
-              alt="Basic Icon"
-              width={60} // 適切なサイズに調整
-              height={60} // 適切なサイズに調整
-            />}
-            bgcolor='bg-green-400'
-            recomendedFor={translater.recomendedFixedPhrase}
-          ></AppCard>
-          <AppCard
-            // href='./typing/custom_typing'
-            href='/'
-            title={translater.customTypingTitle}
-            description={translater.customTypingDescription}
-            thumbnail={<Image
-              src="/images/gearIcon.png"
-              alt="Basic Icon"
-              width={60} // 適切なサイズに調整
-              height={60} // 適切なサイズに調整
-            />}
-            bgcolor='bg-yellow-400'
-            recomendedFor={translater.recomendedFixedPhrase}
-          ></AppCard>
-          <AppCard
-            // href='./typing/category_typing'
-            href='/'
-            title={translater.categoryTypingTitle}
-            description={translater.categoryTypingDescription}
-            thumbnail={<Image
-              src="/images/brainIcon.png"
-              alt="Basic Icon"
-              width={60} // 適切なサイズに調整
-              height={60} // 適切なサイズに調整
-            />}
-            bgcolor='bg-red-400'
-            recomendedFor={translater.recomendedFixedPhrase}
-          ></AppCard>
+          <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
+            <AppCard
+              // href='./typing/basic_typing'
+              href='/'
+              title={translater.basicTypingTitle}
+              description={translater.basicTypingDescription}
+              thumbnail={<Image
+                src="/images/basicIcon.png"
+                alt="Basic Icon"
+                width={60} // 適切なサイズに調整
+                height={60} // 適切なサイズに調整
+              />}
+              bgcolor='bg-green-400'
+              recomendedFor={translater.recomendedFixedPhrase}
+              isReady={false}
+            ></AppCard>
+          </PreparationCard>
+          <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
+            <AppCard
+              // href='./typing/custom_typing'
+              href='/'
+              title={translater.customTypingTitle}
+              description={translater.customTypingDescription}
+              thumbnail={<Image
+                src="/images/gearIcon.png"
+                alt="Basic Icon"
+                width={60} // 適切なサイズに調整
+                height={60} // 適切なサイズに調整
+              />}
+              bgcolor='bg-yellow-400'
+              recomendedFor={translater.recomendedFixedPhrase}
+              isReady={false}
+            ></AppCard>
+          </PreparationCard>
+          <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
+            <AppCard
+              // href='./typing/category_typing'
+              href='/'
+              title={translater.categoryTypingTitle}
+              description={translater.categoryTypingDescription}
+              thumbnail={<Image
+                src="/images/brainIcon.png"
+                alt="Basic Icon"
+                width={60} // 適切なサイズに調整
+                height={60} // 適切なサイズに調整
+              />}
+              bgcolor='bg-red-400'
+              recomendedFor={translater.recomendedFixedPhrase}
+              isReady={false}
+            ></AppCard>
+          </PreparationCard>
 
         </div>
 
