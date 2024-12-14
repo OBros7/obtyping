@@ -52,25 +52,23 @@ export default function HomeMain() {
               />}
               bgcolor='bg-green-400'
               recomendedFor={translater.recomendedFixedPhrase}
-              isReady={false}
             ></AppCard>
           </PreparationCard>
-          <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
-            <AppCard
-              href='./typing/custom_typing'
-              title={translater.customTypingTitle}
-              description={translater.customTypingDescription}
-              thumbnail={<Image
-                src="/images/gearIcon.png"
-                alt="Basic Icon"
-                width={60}
-                height={60}
-              />}
-              bgcolor='bg-yellow-400'
-              recomendedFor={translater.recomendedFixedPhrase}
-              isReady={false}
-            ></AppCard>
-          </PreparationCard>
+          {/* <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。"> */}
+          <AppCard
+            href='./typing/custom_typing'
+            title={translater.customTypingTitle}
+            description={translater.customTypingDescription}
+            thumbnail={<Image
+              src="/images/gearIcon.png"
+              alt="Basic Icon"
+              width={60}
+              height={60}
+            />}
+            bgcolor='bg-yellow-400'
+            recomendedFor={translater.recomendedFixedPhrase}
+          ></AppCard>
+          {/* </PreparationCard> */}
           <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
             <AppCard
               href='./typing/category_typing'
@@ -84,7 +82,6 @@ export default function HomeMain() {
               />}
               bgcolor='bg-red-400'
               recomendedFor={translater.recomendedFixedPhrase}
-              isReady={false}
             ></AppCard>
           </PreparationCard>
         </div>
