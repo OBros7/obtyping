@@ -273,7 +273,7 @@ export default function TypingEnglish(
           <span>Score: {score}</span>
           <span className="ml-4">Mistakes: {mistake}</span>
         </div>
-        <div className="text-4xl mt-8 text-left w-full p-4 outline rounded-lg">
+        <div className="text-4xl mt-8 text-center w-full py-4 px-8 outline rounded-lg">
           {currentText && endIndicesOfLines.map((endIdx, rowIndex) => {
             if (rowIndex < currentLine) {
               return null;

@@ -13,7 +13,7 @@ import {
   getDeckListByUser,
 } from '@/MyLib/UtilsAPITyping'
 
-const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
+const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 const selectedActionList = ['choose create or edit', 'Create', 'Edit']
 const deckOrText = ['choose deck or text', 'Deck', 'Text']
 const dataTypeList = ['choose deck or text', 'Deck', 'Text']

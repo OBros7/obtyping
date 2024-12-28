@@ -44,7 +44,7 @@ const urlListGetText = [
 
 const saveButtonClass = 'btn-second '
 const visibilityOptions = Object.keys(visibility2int)
-const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
+const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 const langOptions = Object.keys(lang2int)
 
 

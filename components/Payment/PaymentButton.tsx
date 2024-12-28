@@ -7,7 +7,7 @@ interface PaymentButtonProps {
     className?: string;
 }
 
-const url = process.env.FASTAPI_URL + 'stripe/create_checkout_session'
+const url = process.env.FASTAPI_URL + '/api/stripe/create_checkout_session'
 const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
 
 

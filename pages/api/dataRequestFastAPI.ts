@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { createQueryString } from './utils'
 
 // Access environment variables on the server side
-const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
+const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY
 
 // Main API handler function with properly typed parameters

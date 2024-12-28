@@ -9,7 +9,7 @@ const useAuth = () => {
     useEffect(() => {
         const fetchUserSession = async () => {
             try {
-                const response = await fetch(FASTAPI_URL + 'users/session');
+                const response = await fetch(FASTAPI_URL + '/api/users/session');
                 if (response.ok) {
                     const data = await response.json();
                     localStorage.setItem('userData', JSON.stringify(data.user));
@@ -28,7 +28,7 @@ const useAuth = () => {
 
     const signIn = async (email: string, password: string) => {
         try {
-            const response = await fetch(FASTAPI_URL + 'users/login', {
+            const response = await fetch(FASTAPI_URL + '/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ const useAuth = () => {
     const signOut = async () => {
         console.log('Signing out...(*LocalStrage*)');
         try {
-            const response = await fetch(FASTAPI_URL + 'users/logout', {
+            const response = await fetch(FASTAPI_URL + 'api/users/logout', {
                 method: 'POST',
             });
             if (response.ok) {

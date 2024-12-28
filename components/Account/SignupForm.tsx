@@ -4,7 +4,7 @@ import axios from 'axios';
 import { MyEmailInput, MyPasswordInput } from '@/Basics';
 import { set } from 'react-hook-form';
 
-const url = process.env.FASTAPI_URL + 'users/signup';
+const url = process.env.FASTAPI_URL + '/api/users/signup';
 
 
 const is_valid_email = (email: string): boolean => {

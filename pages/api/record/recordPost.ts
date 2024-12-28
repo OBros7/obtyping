@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { PostRecordTime } from '@/MyLib/UtilsAPIRecord'
 
-const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
+const fastAPIURL = process.env.FASTAPI_URL + 'api/typing/'
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
 
 const recordPost = async (req: NextApiRequest, res: NextApiResponse) => {

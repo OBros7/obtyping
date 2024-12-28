@@ -13,7 +13,7 @@ const switchButtonClass = 'btn-primary';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? ''
 const fastAPIURL = process.env.FASTAPI_URL
 
-const url = process.env.FASTAPI_URL + 'users/oauth_google';
+const url = process.env.FASTAPI_URL + '/api/users/oauth_google';
 
 export default function Signin() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string,];

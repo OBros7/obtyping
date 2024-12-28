@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import jwt_decode from 'jwt-decode';
 import Image from 'next/image';
 
-const url = process.env.FASTAPI_URL + 'users/oauth_google';
+const url = process.env.FASTAPI_URL + '/api/users/oauth_google';
 
 const LoginWithGoogle = () => {
     const router = useRouter();
@@ -29,7 +29,9 @@ const LoginWithGoogle = () => {
     // }, [access_token, router]);
 
     const handleLogin = async () => {
+        console.log('login');
         try {
+            console.log('url: ', url);
             const res = await axios.get(url);
             window.location.href = res.data.auth_url;
         } catch (err) {

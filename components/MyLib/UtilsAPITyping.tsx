@@ -5,7 +5,7 @@ import { visibility2int, lang2int } from '@/MyLib/Mapper'
 // import { create } from 'domain';
 // import { fetchFromBackend } from '@api/typing/typingGet'
 
-const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
+const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
 
 /////////////////////////////////////// Interface for post request ///////////////////////////////////////

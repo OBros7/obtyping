@@ -18,7 +18,7 @@ const useAuth = () => {
 
     const fetchUser = async () => {
         try {
-            const response = await axios.get(backendURL + 'users/session', { withCredentials: true });
+            const response = await axios.get(backendURL + '/api/users/session', { withCredentials: true });
             if (response.data && response.data.user) {
                 const user = response.data.user;
                 localStorage.setItem('userID', user.user_id.toString());
@@ -64,7 +64,7 @@ const useAuth = () => {
         console.log('Signing out...');
         console.log('BACKEND_API_KEY', process.env.BACKEND_API_KEY);
         try {
-            const response = await fetch(backendURL + 'users/logout', {
+            const response = await fetch(backendURL + '/api/users/logout', {
                 method: 'POST',
                 credentials: 'include', // ここを追加
                 headers: {

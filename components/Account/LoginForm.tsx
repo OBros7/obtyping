@@ -5,7 +5,7 @@ import { MyEmailInput, MyPasswordInput } from '@/Basics';
 import { useRouter } from 'next/router';
 import jwt_decode from 'jwt-decode';
 
-const url = process.env.FASTAPI_URL + 'users/login';
+const url = process.env.FASTAPI_URL + '/api/users/login';
 
 
 interface LoginFormProps {
