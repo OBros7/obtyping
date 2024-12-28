@@ -5,42 +5,16 @@ interface KeyboardProps {
 }
 
 const Keyboard: React.FC<KeyboardProps> = ({ nextKey }) => {
+  const keySize = "w-10 h-10";
 
-  const spaceKeySize = "w-40"
-  const shiftKeySize = "w-20"
-
-  // Define the keyboard layout
+  // 必要なキーのみを含むキーボードレイアウト
   const keyboardLayout = [
-    // Row 1
-    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Back\nspace'],
-    // Row 2
-    ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
-    // Row 3
-    ['Caps Lock', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', "'", 'Enter'],
-    // Row 4
-    ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Shift'],
-    // Row 5
-    ['Ctrl', 'Alt', ' ', 'Alt', 'Ctrl'],
+    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.'],
+    [' '], // Space キー
   ];
-
-  const getFingerIndicator = (rowIndex: number, keyIndex: number): number => {
-    if (rowIndex === 0) {
-      if (keyIndex < 6) return keyIndex + 1;
-      if (keyIndex < 9) return keyIndex - 4;
-      return 10;
-    }
-    if (rowIndex === 1 || rowIndex === 2) {
-      if (keyIndex < 5) return keyIndex + 1;
-      if (keyIndex < 9) return keyIndex - 3;
-      return 10;
-    }
-    if (rowIndex === 3) {
-      if (keyIndex < 6) return keyIndex + 1;
-      if (keyIndex < 9) return keyIndex - 4;
-      return 9;
-    }
-    return 0;
-  };
 
   return (
     <div className="flex flex-col items-center space-y-2">
@@ -49,10 +23,9 @@ const Keyboard: React.FC<KeyboardProps> = ({ nextKey }) => {
           {row.map((key, keyIndex) => (
             <div
               key={keyIndex}
-              className={`relative flex items-center justify-center h-10 border border-gray-300 rounded-md select-none${key === nextKey ? " bg-red-500 text-white" : ""
-                } ${/^[a-zA-Z0-9]$/.test(key) ? "w-10" : key === "Shift" ? shiftKeySize : key === " " ? spaceKeySize : "w-10"}`}
+              className={`relative flex items-center justify-center border border-gray-300 rounded-md select-none ${key === nextKey ? "bg-red-500 text-white" : "bg-white text-black"} ${key === ' ' ? "w-40" : "w-10 h-10"}`}
             >
-              {key}
+              {key === ' ' ? 'Space' : key}
             </div>
           ))}
         </div>

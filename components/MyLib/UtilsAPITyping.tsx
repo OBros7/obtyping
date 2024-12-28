@@ -83,12 +83,13 @@ const getDeckListByUser = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const response = await fetch('/api/typing/typingGet', {
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ endpoint: 'get_decklist_by_user', data: data }),
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_by_user', data: data }),
     });
     const result = await response.json();
     return result;
@@ -99,26 +100,47 @@ const getDeckListBasic = async (
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
-    const url = fastAPIURL + 'get_decklist_basic'
-    let data: getDeckTextParams = {
+    const data = {
         lang1_int: lang2int(lang1),
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = createQueryString(data)
-
-    // send get request
-    const res = await fetch(`${url}?${queryString}`, {
-        method: 'GET',
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-    })
-    const resJSON = await res.json()
-    return resJSON
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_basic', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const getDeckListBasic = async (
+//     lang1: string,
+//     nSelect: number = 10,
+//     orderBy: string = 'title',
+// ) => {
+//     const url = fastAPIURL + 'get_decklist_basic'
+//     let data: getDeckTextParams = {
+//         lang1_int: lang2int(lang1),
+//         n_select: nSelect,
+//         order_by: orderBy,
+//     }
+//     const queryString = createQueryString(data)
 
+//     // send get request
+//     const res = await fetch(`${url}?${queryString}`, {
+//         method: 'GET',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//     })
+//     const resJSON = await res.json()
+//     return resJSON
+// }
 
 const getDeckListSelective = async (
     userID: number | null,
@@ -126,53 +148,102 @@ const getDeckListSelective = async (
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
-    const url = fastAPIURL + 'get_decklist_selective'
-    let data: getDeckTextParams = {
+    const data = {
         user_id: userID,
         lang1_int: lang2int(lang1),
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = createQueryString(data)
-
-
-    // send get request
-    const res = await fetch(`${url}?${queryString}`, {
-        method: 'GET',
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-    })
-    const resJSON = await res.json()
-    return resJSON
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_selective', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
 
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const getDeckListSelective = async (
+//     userID: number | null,
+//     lang1: string,
+//     nSelect: number = 10,
+//     orderBy: string = 'title',
+// ) => {
+//     const url = fastAPIURL + 'get_decklist_selective'
+//     let data: getDeckTextParams = {
+//         user_id: userID,
+//         lang1_int: lang2int(lang1),
+//         n_select: nSelect,
+//         order_by: orderBy,
+//     }
+//     const queryString = createQueryString(data)
+
+
+//     // send get request
+//     const res = await fetch(`${url}?${queryString}`, {
+//         method: 'GET',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//     })
+//     const resJSON = await res.json()
+//     return resJSON
+// }
 
 const getDeckListPrivate = async (
     userID: number | null,
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
-    const url = fastAPIURL + 'get_decklist_private'
-    const data: getDeckTextParams = {
+    const data = {
         user_id: userID,
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = createQueryString(data)
-
-    // send get request
-    const res = await fetch(`${url}?${queryString}`, {
-        method: 'GET',
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-    })
-    const resJSON = await res.json()
-    return resJSON
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_private', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
+
+
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const getDeckListPrivate = async (
+//     userID: number | null,
+//     nSelect: number = 10,
+//     orderBy: string = 'title',
+// ) => {
+//     const url = fastAPIURL + 'get_decklist_private'
+//     const data: getDeckTextParams = {
+//         user_id: userID,
+//         n_select: nSelect,
+//         order_by: orderBy,
+//     }
+//     const queryString = createQueryString(data)
+
+//     // send get request
+//     const res = await fetch(`${url}?${queryString}`, {
+//         method: 'GET',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//     })
+//     const resJSON = await res.json()
+//     return resJSON
+// }
+
 const getDeckListByCategory = async (
     userID: number | null,
     category: string,
@@ -181,8 +252,7 @@ const getDeckListByCategory = async (
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
-    const url = fastAPIURL + 'get_decklist_by_category'
-    const data: getDeckTextParams = {
+    const data = {
         user_id: userID,
         category: category,
         subcategory: subcategory,
@@ -190,20 +260,50 @@ const getDeckListByCategory = async (
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = createQueryString(data)
-
-
-    // send get request
-    const res = await fetch(`${url}?${queryString}`, {
-        method: 'GET',
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-    })
-    const resJSON = await res.json()
-    return resJSON
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_by_category', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
+
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const getDeckListByCategory = async (
+//     userID: number | null,
+//     category: string,
+//     subcategory: string,
+//     level: string,
+//     nSelect: number = 10,
+//     orderBy: string = 'title',
+// ) => {
+//     const url = fastAPIURL + 'get_decklist_by_category'
+//     const data: getDeckTextParams = {
+//         user_id: userID,
+//         category: category,
+//         subcategory: subcategory,
+//         level: level,
+//         n_select: nSelect,
+//         order_by: orderBy,
+//     }
+//     const queryString = createQueryString(data)
+
+
+//     // send get request
+//     const res = await fetch(`${url}?${queryString}`, {
+//         method: 'GET',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//     })
+//     const resJSON = await res.json()
+//     return resJSON
+// }
 
 const getDeckListBySearch = async (
     userID: number | null,
@@ -211,67 +311,130 @@ const getDeckListBySearch = async (
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
-    const url = fastAPIURL + 'get_decklist_by_search'
-    const data: getDeckTextParams = {
+    const data = {
         user_id: userID,
         search_text: searchText,
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = createQueryString(data)
-
-
-    // send get request
-    const res = await fetch(`${url}?${queryString}`, {
-        method: 'GET',
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-    })
-    const resJSON = await res.json()
-    return resJSON
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_decklist_by_search', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
+
+
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const getDeckListBySearch = async (
+//     userID: number | null,
+//     searchText: string,
+//     nSelect: number = 10,
+//     orderBy: string = 'title',
+// ) => {
+//     const url = fastAPIURL + 'get_decklist_by_search'
+//     const data: getDeckTextParams = {
+//         user_id: userID,
+//         search_text: searchText,
+//         n_select: nSelect,
+//         order_by: orderBy,
+//     }
+//     const queryString = createQueryString(data)
+
+
+//     // send get request
+//     const res = await fetch(`${url}?${queryString}`, {
+//         method: 'GET',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//     })
+//     const resJSON = await res.json()
+//     return resJSON
+// }
 
 const getTextListByDeck = async (
     deckID: number,
     nSelect: number = 10,
     orderBy: string = 'title',
 ) => {
-    const url = fastAPIURL + 'get_textlist_by_deck'
-    const data: getDeckTextParams = {
+    const data = {
         deck_id: deckID,
         n_select: nSelect,
         order_by: orderBy,
     }
-    const queryString = createQueryString(data)
-
-
-    // send get request
-    const res = await fetch(`${url}?${queryString}`, {
-        method: 'GET',
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-    })
-    const resJSON = await res.json()
-    return resJSON
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_textlist_by_deck', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
+
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const getTextListByDeck = async (
+//     deckID: number,
+//     nSelect: number = 10,
+//     orderBy: string = 'title',
+// ) => {
+//     const url = fastAPIURL + 'get_textlist_by_deck'
+//     const data: getDeckTextParams = {
+//         deck_id: deckID,
+//         n_select: nSelect,
+//         order_by: orderBy,
+//     }
+//     const queryString = createQueryString(data)
+
+
+//     // send get request
+//     const res = await fetch(`${url}?${queryString}`, {
+//         method: 'GET',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//     })
+//     const resJSON = await res.json()
+//     return resJSON
+// }
 
 const getCategoriesSubcategoriesLevels = async () => {
-    const url = fastAPIURL + 'get_categories_subcategories_levels'
-    const res = await fetch(url, {
-        method: 'GET',
+    // const response = await fetch('/api/typing/typingGet', {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-    })
-    const resJSON = await res.json()
-    return resJSON
-
+        body: JSON.stringify({ method: 'GET', endpoint: 'get_categories_subcategories_levels' }),
+    });
+    const result = await response.json();
+    return result;
 }
+
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const getCategoriesSubcategoriesLevels = async () => {
+//     const url = fastAPIURL + 'get_categories_subcategories_levels'
+//     const res = await fetch(url, {
+//         method: 'GET',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//     })
+//     const resJSON = await res.json()
+//     return resJSON
+
+// }
 
 
 /////////////////////////////////////// API POST function ///////////////////////////////////////
@@ -343,70 +506,140 @@ interface PostDeck {
     shuffle?: boolean,
 }
 
+interface DeckListByDeck {
+
+}
+
 const createText = async (data: PostText) => {
-    const url = fastAPIURL + 'create_text'
-    // post data to url
-    const res = await fetch(url, {
+    // const response = await fetch('/api/typing/typingPost', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-        mode: 'cors',
-    })
-    const json = await res.json()
-    return json
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_text', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
+
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const createText = async (data: PostText) => {
+//     const url = fastAPIURL + 'create_text'
+//     // post data to url
+//     const res = await fetch(url, {
+//         method: 'POST',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data),
+//         mode: 'cors',
+//     })
+//     const json = await res.json()
+//     return json
+// }
 
 const createTextOnly = async (data: PostTextOnly) => {
-    const url = fastAPIURL + 'create_text_only'
-    // post data to url
-    const res = await fetch(url, {
+    // const response = await fetch('/api/typing/typingPost', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-        mode: 'cors',
-    })
-    const json = await res.json()
-    return json
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_text_only', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
+
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const createTextOnly = async (data: PostTextOnly) => {
+//     const url = fastAPIURL + 'create_text_only'
+//     // post data to url
+//     const res = await fetch(url, {
+//         method: 'POST',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data),
+//         mode: 'cors',
+//     })
+//     const json = await res.json()
+//     return json
+// }
 
 const createTextDeck = async (data: PostTextDeck) => {
-    const url = fastAPIURL + 'create_text_deck'
-    // post data to url
-    const res = await fetch(url, {
+    // const response = await fetch('/api/typing/typingPost', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-        mode: 'cors',
-    })
-    const json = await res.json()
-    return json
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_text_deck', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const createTextDeck = async (data: PostTextDeck) => {
+//     const url = fastAPIURL + 'create_text_deck'
+//     // post data to url
+//     const res = await fetch(url, {
+//         method: 'POST',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data),
+//         mode: 'cors',
+//     })
+//     const json = await res.json()
+//     return json
+// }
 
 const createDeck = async (data: PostDeck) => {
-    const url = fastAPIURL + 'create_deck'
-    const res = await fetch(url, {
+    // const response = await fetch('/api/typing/typingPost', {
+    const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
-            'X-API-Key': BACKEND_API_KEY,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-        mode: 'cors',
-    })
-    const json = await res.json()
-    return json
+        body: JSON.stringify({ method: 'POST', endpoint: 'create_deck', data: data }),
+    });
+    const result = await response.json();
+    return result;
 }
 
+// これはクライアント→fastAPIへのリクエストを送る関数
+// const createDeck = async (data: PostDeck) => {
+//     const url = fastAPIURL + 'create_deck'
+//     const res = await fetch(url, {
+//         method: 'POST',
+//         headers: {
+//             'X-API-Key': BACKEND_API_KEY,
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data),
+//         mode: 'cors',
+//     })
+//     const json = await res.json()
+//     return json
+// }
 
+// 型は？？？
+const getDeckListByDeck = async (data: DeckListByDeck) => {
+    const response = await fetch('/api/dataRequestFastAPI', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ method: 'POST', endpoint: 'get_decklist_by_deck', data: data }),
+    });
+    const result = await response.json();
+    return result;
+}
 
 
 /////////////////////////////////////// Export ///////////////////////////////////////
@@ -434,4 +667,5 @@ export {
     getDeckListBySearch,
     getTextListByDeck,
     getCategoriesSubcategoriesLevels,
+    getDeckListByDeck,
 }

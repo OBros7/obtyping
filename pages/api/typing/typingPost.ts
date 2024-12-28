@@ -1,45 +1,35 @@
-// pages/api/typing/typingGet.ts
-// //https://chatgpt.com/c/671cb60d-85b8-8000-9b0b-74d2f35f6167
-
+// pages/api/typing/typingPost.ts
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createQueryString } from '../utils'
 
 // Access environment variables on the server side
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY
 
 // Main API handler function with properly typed parameters
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { endpoint, data, method = 'GET' } = req.body
-  console.log('Received endpoint:', endpoint)
-  console.log('Received data:', data)
+  const { endpoint, data, method = 'POST' } = req.body
   const url = `${fastAPIURL}${endpoint}`
-
-  //   console.log('Server-side BACKEND_API_KEY:', BACKEND_API_KEY); // Verify it logs in terminal
-
-  // Create the query string if it's a GET request
-  const queryString = createQueryString(data) // ここで生成されるクエリがFastAPI側で期待するものと一致するように注意
-  const fullUrl = method === 'GET' ? `${url}?${queryString}` : url
 
   // Set up options for the fetch request
   const options: RequestInit = {
-    method,
+    method: 'POST',
     headers: {
       'X-API-Key': BACKEND_API_KEY || '',
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify(data),
   }
 
-  // If POST request, include the data in the body
-  if (method === 'POST') {
+  // If GET request, include the data in the body
+  if (method === 'GET') {
     options.body = JSON.stringify(data)
   }
 
   // Execute fetch request and handle errors
   try {
-    console.log('Requesting URL:', fullUrl)
-    const response = await fetch(fullUrl, options)
-    console.log('FastAPI Response Status:', response.status)
+    console.log('TypingUrl:', url)
+    console.log('TypingPostProcess')
+    const response = await fetch(url, options)
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`)
     }

@@ -10,26 +10,28 @@ const LoginWithGoogle = () => {
     const router = useRouter();
     const { access_token } = router.query;
 
-    useEffect(() => {
-        const handleCallback = async () => {
-            if (access_token) {
-                const token = Array.isArray(access_token) ? access_token[0] : access_token;
-                const decodedToken = jwt_decode(token);
+    // useEffect(() => {
+    //     const handleCallback = async () => {
+    //         if (access_token) {
+    //             const token = Array.isArray(access_token) ? access_token[0] : access_token;
+    //             const decodedToken = jwt_decode(token);
 
-                console.log('decoded token: ', decodedToken);
+    //             console.log('decoded token: ', decodedToken);
 
-                localStorage.setItem('token', token);
-                localStorage.setItem('user', JSON.stringify(decodedToken));
+    //             localStorage.setItem('token', token);
+    //             localStorage.setItem('user', JSON.stringify(decodedToken));
 
-                router.push('/');
-            }
-        };
+    //             router.push('/');
+    //         }
+    //     };
 
-        handleCallback();
-    }, [access_token, router]);
+    //     handleCallback();
+    // }, [access_token, router]);
 
     const handleLogin = async () => {
+        console.log('login');
         try {
+            console.log('url: ', url);
             const res = await axios.get(url);
             window.location.href = res.data.auth_url;
         } catch (err) {

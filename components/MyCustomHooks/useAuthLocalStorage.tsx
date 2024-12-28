@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 const FASTAPI_URL = process.env.FASTAPI_URL;
+const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
 
 const useAuth = () => {
     const [userData, setUserData] = useState({ loginStatus: false });
@@ -50,8 +51,9 @@ const useAuth = () => {
     };
 
     const signOut = async () => {
+        console.log('Signing out...(*LocalStrage*)');
         try {
-            const response = await fetch(FASTAPI_URL + '/api/users/logout', {
+            const response = await fetch(FASTAPI_URL + 'api/users/logout', {
                 method: 'POST',
             });
             if (response.ok) {

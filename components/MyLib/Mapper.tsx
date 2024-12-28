@@ -28,4 +28,4 @@ const lang2int = (lang: string | null): number | null => {
     return _lang2int[lang.toLowerCase()]
 }
 
-export { visibility2int, lang2int }
+export { visibility2int, lang2int, _lang2int }

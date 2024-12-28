@@ -61,19 +61,27 @@ const useAuth = () => {
 
     // const signOut = useCallback((setUserData: any) => {
     const signOut = useCallback(async () => {
+        console.log('Signing out...');
+        console.log('BACKEND_API_KEY', process.env.BACKEND_API_KEY);
         try {
             const response = await fetch(backendURL + '/api/users/logout', {
                 method: 'POST',
+                credentials: 'include', // ここを追加
+                headers: {
+                    ...(process.env.BACKEND_API_KEY && { 'X-API-Key': process.env.BACKEND_API_KEY }),
+                },
             });
             if (response.ok) {
                 // Here, you can clear the stored access token or perform any other cleanup tasks
                 // After that, update the user state on the client side.
-                localStorage.removeItem('userID');
-                localStorage.removeItem('userName');
-                localStorage.removeItem('loginStatus');
-                localStorage.removeItem('subscriptionStatus');
-                localStorage.removeItem('expToken');
-                localStorage.removeItem('iatToken');
+                // ログアウト成功時の処理
+                localStorage.clear(); // 一括削除
+                // localStorage.removeItem('userID');
+                // localStorage.removeItem('userName');
+                // localStorage.removeItem('loginStatus');
+                // localStorage.removeItem('subscriptionStatus');
+                // localStorage.removeItem('expToken');
+                // localStorage.removeItem('iatToken');
                 setUserData({
                     userID: '',
                     userName: '',

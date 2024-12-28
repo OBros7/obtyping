@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { visibility2int, lang2int } from '@/MyLib/Mapper'
+// import { visibility2int, lang2int } from '@/MyLib/Mapper'
+import { visibility2int, _lang2int } from '@/MyLib/Mapper'
 import { MyInputNumber, MySelect, MyTextbox } from '@/Basics'
 // import { FormatCategory } from './'
 import { FormatCategory } from '@/CommonPage/DeckSelection'
@@ -10,10 +11,11 @@ import {
     getDeckListPrivate,
     getDeckListByCategory,
     getDeckListBySearch,
+    getDeckListByDeck,
 } from '@/MyLib/UtilsAPITyping'
 
 const visibilityOptions = Object.keys(visibility2int)
-const langOptions = Object.keys(lang2int)
+const langOptions = Object.keys(_lang2int)
 // const classParDivDefault = 'search-container'
 // const classChildDivDefault = 'minibox'
 const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
@@ -114,6 +116,13 @@ export default function DeckGetter(
                 nSelect,
                 orderBy,
             )
+            // } else if (url.includes('get_decklist_by_deck')) {
+            //     resJSON = await getDeckListByDeck(
+            //         userID,
+            //         // 'search_text',
+            //         // nSelect,
+            //         // orderBy,
+            //     )
         } else {
             console.log('url not found')
             return
