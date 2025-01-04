@@ -142,7 +142,8 @@ export default function TypingEnglish(
           setCountCharWithin((prevIndex) => prevIndex + 1);
           const nextChar = currentText[countCharWithin + 1] || null;
           setNextKey(nextChar);
-          setPressKey(nextChar ? nextChar.toUpperCase() : null);
+          // setPressKey(nextChar ? nextChar.toUpperCase() : null);
+          setPressKey(nextChar ? nextChar : null);
 
           // 行末でスペースが押された場合
           if (inputKey === ' ' && countCharWithin + 1 > (endIndicesOfLines[currentLine] || 0)) {

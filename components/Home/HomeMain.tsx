@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppCard, langDict, MenuCard } from './'
+import { AppCard, langDict, MenuCard, PreparationCard } from './'
 import { Layout, MainContainer } from '@/Layout'
 import { useTranslation } from '@/MyCustomHooks'
 import Image from 'next/image'
@@ -12,6 +12,7 @@ export default function HomeMain() {
   const categoryTitleClass = 'mb-4 text-blue-500 text-4xl font-bold'
   const appBoxClass = 'flex flex-row flex-wrap justify-center'
   const tbDefault = ''
+  const trialUrl = '/typing/typing?deckid=-4&minutes=1';
 
   return (
     <Layout>
@@ -19,7 +20,9 @@ export default function HomeMain() {
         <div className="flex flex-row flex-wrap justify-center">
           <button
             className="m-20 bg-blue-500 hover:bg-blue-700 text-white text-4xl font-bold py-6 px-16 rounded bg-center bg-cover">
-            {translater.startNow}
+            <Link href={trialUrl}>
+              <a>{translater.startNow}</a>
+            </Link>
           </button>
         </div>
       </div>
@@ -36,35 +39,37 @@ export default function HomeMain() {
         </div>
 
         <div className={appBoxClass}>
-          <Link href='/typing/typing'><a></a>
-          </Link>
-
-          <AppCard
-            href='./typing/basic_typing'
-            title={translater.basicTypingTitle}
-            description={translater.basicTypingDescription}
-            thumbnail={<Image
-              src="/images/basicIcon.png"
-              alt="Basic Icon"
-              width={60} // 適切なサイズに調整
-              height={60} // 適切なサイズに調整
-            />}
-            bgcolor='bg-green-400'
-            recomendedFor={translater.recomendedFixedPhrase}
-          ></AppCard>
-          <AppCard
-            href='./typing/custom_typing'
-            title={translater.customTypingTitle}
-            description={translater.customTypingDescription}
-            thumbnail={<Image
-              src="/images/gearIcon.png"
-              alt="Basic Icon"
-              width={60} // 適切なサイズに調整
-              height={60} // 適切なサイズに調整
-            />}
-            bgcolor='bg-yellow-400'
-            recomendedFor={translater.recomendedFixedPhrase}
-          ></AppCard>
+          <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
+            <AppCard
+              href='./typing/basic_typing'
+              title={translater.basicTypingTitle}
+              description={translater.basicTypingDescription}
+              thumbnail={<Image
+                src="/images/basicIcon.png"
+                alt="Basic Icon"
+                width={60}
+                height={60}
+              />}
+              bgcolor='bg-green-400'
+              recomendedFor={translater.recomendedFixedPhrase}
+            ></AppCard>
+          </PreparationCard>
+          <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
+            <AppCard
+              href='./typing/custom_typing'
+              title={translater.customTypingTitle}
+              description={translater.customTypingDescription}
+              thumbnail={<Image
+                src="/images/gearIcon.png"
+                alt="Basic Icon"
+                width={60}
+                height={60}
+              />}
+              bgcolor='bg-yellow-400'
+              recomendedFor={translater.recomendedFixedPhrase}
+            ></AppCard>
+          </PreparationCard>
+          {/* <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。"> */}
           <AppCard
             href='./typing/category_typing'
             title={translater.categoryTypingTitle}
@@ -72,16 +77,14 @@ export default function HomeMain() {
             thumbnail={<Image
               src="/images/brainIcon.png"
               alt="Basic Icon"
-              width={60} // 適切なサイズに調整
-              height={60} // 適切なサイズに調整
+              width={60}
+              height={60}
             />}
             bgcolor='bg-red-400'
             recomendedFor={translater.recomendedFixedPhrase}
           ></AppCard>
-
+          {/* </PreparationCard> */}
         </div>
-
-
       </MainContainer>
     </Layout>
   )

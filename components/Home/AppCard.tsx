@@ -25,6 +25,7 @@ export default function AppCard({ href = '/#', title, description, thumbnail, bg
   const classDescription =
     'basis-[50%] rounded-b-lg p-0.5 text-md text-left font-bold flex overflow-auto p-4' + commonClass
 
+
   return (
     <Link href={href}>
       <a>
@@ -36,4 +37,5 @@ export default function AppCard({ href = '/#', title, description, thumbnail, bg
       </a>
     </Link>
   )
+
 }
