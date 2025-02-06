@@ -13,22 +13,22 @@ import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
 
 const siteTitle = 'Obgames'
 const headerAttrs = {
-  className: 'bg-blue-600 text-white flex justify-around',
+  className: 'bg-blue-600 text-white flex justify-between px-4', // justify-aroundをjustify-betweenに変更し、paddingを追加
 }
 const footerAttrs = headerAttrs
 const headerBox = {
-  className: 'flex flex-row items-center',
+  className: 'flex flex-row items-center mx-4', // marginを追加
 }
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  //
   const { signOut } = useAuth();
-  // const { user, signedOut, setSignedOut, signOut } = useAuth();
+  const { locale: routerLocale } = useRouter(); // Rename locale to routerLocale
+  const locale = routerLocale || 'ja'; // Set default locale to 'ja'
 
   // get userData from context (local storage)
   const { userData, setUserData } = useUserContext();
-  console.log('userData', userData);
+  // console.log('userData', userData);
 
   return (
     // <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
@@ -41,44 +41,48 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           name='viewport'
           content='width=device-width, initial-scale=1.0, user-scalable=1.0, minimum-scale=1.0, maximum-scale=1.0'
         />
-        <meta property='og:image' content='/images/profile.png' />
+        <meta property='og:image' content='/images/logoIcon.png' />
         <meta name='og:title' content={siteTitle} />
         <meta name='title' content='OBGames' />
-        <meta name='description' content='Brain Games, Typing Games and Web Tools' />
+        <meta name='description' content='A typing practice site where you can study at the same time' />
       </Head>
       <header {...headerAttrs}>
         <div {...headerBox}>
           <Image src='/images/logoIcon.png' height={32} width={32} alt='img' />
           <HeaderLink href='/' text='TypingNLearning' addClass='text-xl font-bold mr-4' />
         </div>
-        <div {...headerBox}>
+        {/* <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
-        </div>
+        </div> */}
         {/* <div {...headerBox}>
           <HeaderLink href='/admin' text='Admin' addClass='outline outline-white outline-2' />
         </div> */}
-        <div {...headerBox}>
-          {/* {user ? ( */}
+        {/* <div {...headerBox}>
           {userData.loginStatus === true ? (
             // if paid user show nothing, else show payment link
             < HeaderLink href='/payment/payment_page' text='Subscribe' addClass='outline outline-white outline-2' />
           ) : (
             <HeaderLink href='/account/signin' text='SignIn' addClass='outline outline-white outline-2' />
           )}
-          <div {...headerBox}>
-            {/* <HamburgerMenu userData={userData} signOut={() => signOut(setUserData)} /> */}
-            <HamburgerMenu userData={userData} signOut={() => signOut()} />
-          </div>
+        </div> */}
+
+        <div {...headerBox}>
+          {/* <HamburgerMenu userData={userData} signOut={() => signOut()} /> サインイン抜き処理 */}
+          <Link href='' locale={locale === 'ja' ? 'en' : 'ja'} passHref>
+            <a className='block p-1'>
+              {locale === 'ja' ? 'English' : '日本語'}
+            </a>
+          </Link>
         </div>
       </header>
       <main className="flex-grow">{children}</main>
       <footer {...footerAttrs}>
         <div {...headerBox}>
-          <HeaderLink href='/' text='&copy; 2024 OBros.' />
+          <HeaderLink href='/' text='&copy; 2025 OBros.' />
         </div>
-        <div {...headerBox}>
+        {/* <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
-        </div>
+        </div> */}
       </footer>
     </div>
   )

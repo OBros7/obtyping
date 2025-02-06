@@ -1,22 +1,29 @@
 import React from 'react';
+import { useTranslation } from '@/MyCustomHooks'
+import langDict from './langDict'; // langDictをインポート
 
 interface UnderConstructionOverlayProps {
   isReady?: boolean;
-  message?: string;
+  viewMessage?: string;
   children: React.ReactNode;
-  alertMessage?: string;
+  onclickMessage?: string;
 }
 
 const PreparationCard: React.FC<UnderConstructionOverlayProps> = ({
   isReady = true,
-  message = "現在準備中です。リリースまでもうしばらくお待ちください",
+  viewMessage,
   children,
-  alertMessage = "現在準備中です"
+  onclickMessage
 }) => {
+  const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
+
+  // デフォルト値を設定
+  const defaultViewMessage = translater.viewMessage;
+  const defaultOnclickMessage = translater.onclickMessage;
 
   const handleClick = () => {
     if (!isReady) {
-      alert(alertMessage);
+      alert(onclickMessage || defaultOnclickMessage);
     }
   }
 
@@ -29,7 +36,7 @@ const PreparationCard: React.FC<UnderConstructionOverlayProps> = ({
           onClick={handleClick}
         >
           <div className="p-4 bg-gray-100 border border-gray-300 rounded text-gray-700 font-bold text-center max-w-sm">
-            {message}
+            {viewMessage || defaultViewMessage}
           </div>
         </div>
       )}

@@ -47,12 +47,12 @@ export default function Typing({ deckId, minutes }: TypingProps) {
             }
         }
 
-        console.log('deckId', deckId, 'minutes', minutes);
+        // console.log('deckId', deckId, 'minutes', minutes);
         fetchTextList();
     }, [deckId, minutes]);
 
     useEffect(() => {
-        console.log('textlist', textList)
+        // console.log('textlist', textList)
     }, [textList])
 
     useEffect(() => {
@@ -72,7 +72,7 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     useEffect(() => {
         if (status === "result") {
             if (score > 0) {
-                console.log('score', score, 'mistake', mistake, 'minutes', minutes)
+                // console.log('score', score, 'mistake', mistake, 'minutes', minutes)
                 const tempCpm = Math.round((score / minutes) * 100) / 100;
                 setCpm(tempCpm);
                 const calculatedAccuracy = score / (score + mistake);

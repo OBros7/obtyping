@@ -76,7 +76,7 @@ export default function DeckGetter(
 
 
     const onClick = async () => {
-        console.log(url)
+        // console.log(url)
         // send get request
         let resJSON
         if (url.includes('get_decklist_by_user')) {
@@ -124,11 +124,11 @@ export default function DeckGetter(
             //         // orderBy,
             //     )
         } else {
-            console.log('url not found')
+            // console.log('url not found')
             return
         }
 
-        console.log(resJSON)
+        // console.log(resJSON)
         setReturnedData(resJSON)
         setMsg('Done')
     }

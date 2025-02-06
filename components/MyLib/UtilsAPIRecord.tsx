@@ -13,7 +13,7 @@ interface PostRecordTime {
 
 const createRecordTime = async (data: PostRecordTime) => {
     // const response = await fetch('/api/typing/typingPost', {
-    console.log('Data being sent to create_record_time:', data);
+    // console.log('Data being sent to create_record_time:', data);
     const response = await fetch('/api/dataRequestFastAPI', {
         method: 'POST',
         headers: {
