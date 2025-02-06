@@ -91,7 +91,7 @@ export default function TypingEnglish(
   const mdScrenWordNum = 30;
   const smScrenWordNum = 15;
   const verySmallScrenWordNum = 10;
-  const missSound = new Audio('/sounds/beep-03.mp3');
+  const missSound = new Audio('/sounds/mistyped_sound.mp3');
 
   useEffect(() => {
     // Attach the event listener to the window to handle key press globally
@@ -122,7 +122,7 @@ export default function TypingEnglish(
       inputKey = normalizeKey(inputKey);
       const normalizedNextKey = normalizeKey(nextKey || '');
 
-      console.log(`Key pressed: ${inputKey}, Expected: ${normalizedNextKey}`); // デバッグ用ログ
+      // console.log(`Key pressed: ${inputKey}, Expected: ${normalizedNextKey}`); // デバッグ用ログ
 
       if (!isPrintable.test(inputKey)) return;
 
@@ -231,7 +231,7 @@ export default function TypingEnglish(
       };
 
       setMostMistakenKeys(getTopMistakenKeys());
-      console.log('Top Mistaken Keys:', mostMistakenKeys);
+      // console.log('Top Mistaken Keys:', mostMistakenKeys);
     }
   }, [remainingTime, errorKeys]); // errorKeysも依存配列に追加
 
@@ -274,7 +274,7 @@ export default function TypingEnglish(
           <span>Score: {score}</span>
           <span className="ml-4">Mistakes: {mistake}</span>
         </div>
-        <div className="text-4xl mt-8 text-center w-full py-4 px-8 outline rounded-lg">
+        <div className="text-4xl mt-8 text-left w-full py-4 px-24 outline rounded-lg">
           {currentText && endIndicesOfLines.map((endIdx, rowIndex) => {
             if (rowIndex < currentLine) {
               return null;

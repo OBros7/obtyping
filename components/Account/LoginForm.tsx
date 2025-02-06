@@ -25,7 +25,7 @@ const LoginForm = ({ btnClass = 'btn-second' }: LoginFormProps) => {
             const token = response.data.access_token;
             const decodedToken = jwt_decode(token);
 
-            console.log(decodedToken);  // You can inspect the token contents here
+            // console.log(decodedToken);  // You can inspect the token contents here
 
             // // Save the token and user data to your desired state management or storage (e.g., Redux, Context API, localStorage)
             // localStorage.setItem('token', token);
