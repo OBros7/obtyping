@@ -15,8 +15,8 @@ const OAuthCallback = () => {
         if (provider) {
             // If signed out, redirect to signin page. Otherwise, redirect to the home page or a dashboard.
             refreshUserSession();
-            console.log('userData.loginStatus:', userData.loginStatus);
-            console.log('userData.:', userData)
+            // console.log('userData.loginStatus:', userData.loginStatus);
+            // console.log('userData.:', userData)
             if (userData.loginStatus === false) {
                 router.push('/account/signin');
             } else {

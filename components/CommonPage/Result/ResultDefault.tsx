@@ -233,7 +233,7 @@ export default function ResultDefault({
       )
       } */}
 
-      {userData.loginStatus === true ? (
+      {/* {userData.loginStatus === true ? (
         <>
           {rank === 'best' ? (
             <div className='my-2 outline outline-red-500 p-4 rounded bg-red-100 text-center'>
@@ -259,7 +259,7 @@ export default function ResultDefault({
         </>
       ) : (
         <button className='text-white text-3xl font-bold bg-green-500 hover:bg-green-700 p-4 rounded m-4' onClick={() => signIn()}> {translater.signinToRecord}</button>
-      )}
+      )} サインイン抜き処理 */}
     </div>
   )
 }

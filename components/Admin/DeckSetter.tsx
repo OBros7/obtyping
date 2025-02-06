@@ -92,7 +92,7 @@ export default function DeckSetter({
             visibility_int: visibilityInt,
         }
         const json = await createDeck(data)
-        console.log('Returned json: ', json)
+        // console.log('Returned json: ', json)
         setMsg(JSON.stringify(json))
     }
 

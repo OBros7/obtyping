@@ -1,15 +1,19 @@
 let langDict = {
   startNow: {
-    ja: 'タイピング✖️学習を試してみる',
+    ja: 'まずはタイピングをお試し！',
     en: 'Start typing test now!',
   },
   catchCopy: {
     ja: 'タイピング練習 ✖️ 学習',
     en: 'Typing practice ✖️ Learning',
   },
-  conceptExplanation: {
-    ja: '素早いタイピングにも学習にも大事なのは反復練習！勉強したい文章をセットしてタイピング練習と同時に覚えよう！',
-    en: 'The most important thing for fast typing and learning is repetition! Set the text you want to study and learn while practicing typing!',
+  conceptExplanation_1: {
+    ja: '素早いタイピングにも学習にも大事なのは反復練習！',
+    en: 'The most important thing for fast typing and learning is repetition! ',
+  },
+  conceptExplanation_2: {
+    ja: '勉強したい文章をセットしてタイピング練習と同時に覚えよう！',
+    en: 'Set the text you want to study and learn while practicing typing!',
   },
   selectTyping: {
     ja: 'タイピングモードの種類を選択',
@@ -51,6 +55,15 @@ let langDict = {
     ja: 'こんな人におすすめ！',
     en: 'Recommended for people like this!',
   },
+  viewMessage: {
+    ja: '現在準備中です。リリースまでもうしばらくお待ちください',
+    en: 'We are currently preparing it. Please wait a little longer until the release.',
+  },
+  onclickMessage: {
+    ja: '現在準備中です',
+    en: 'Currently in preparation',
+  },
+
 }
 
 export default langDict

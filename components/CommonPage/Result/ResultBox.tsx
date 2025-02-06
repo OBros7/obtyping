@@ -1,4 +1,6 @@
 import React from 'react'
+import { langDict } from './'
+import { useTranslation } from '@/MyCustomHooks'
 
 interface ResultBoxPrep {
   record: number
@@ -15,6 +17,7 @@ interface ResultBoxPrep {
 
 export default function ResultBox({ record, unit, additionalText, supplementaryItem1, supplementaryRecord1, supplementaryUnit1, supplementaryItem2, supplementaryRecord2, supplementaryUnit2, mistakenKeys }: ResultBoxPrep) {
   // mistakenKeysをソートして上位3つを取得
+  const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
   const topMistakenKeys = mistakenKeys
     ? [...mistakenKeys].sort((a, b) => b.count - a.count).slice(0, 3)
     : []
@@ -32,7 +35,7 @@ export default function ResultBox({ record, unit, additionalText, supplementaryI
       {/* 間違えたキーの上位3つを表示 */}
       {topMistakenKeys.length > 0 ? (
         <div className='mt-4'>
-          <div className='text-xl font-bold mb-2'>Frequently mistyped keys:</div>
+          <div className='text-xl font-bold mb-2'>{translater.frequentlyMistypedKeys}</div>
           <ul className='list-disc list-inside'>
             {topMistakenKeys.map((item, index) => (
               <div key={index} className='text-lg text-center'>
@@ -42,7 +45,7 @@ export default function ResultBox({ record, unit, additionalText, supplementaryI
           </ul>
         </div>
       ) : (
-        <div className='mt-4 text-xl font-bold'>ノーミスですごい！</div>
+        <div className='mt-4 text-xl font-bold'>{translater.noMissMassage}</div>
       )}
     </div>
   )

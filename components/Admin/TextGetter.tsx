@@ -87,7 +87,7 @@ export default function TextGetter({
         const fetchDeckData = async () => {
             const _deckData = await getDeckListByUser(userID);
             setDeckData(_deckData);
-            console.log(_deckData)
+            // console.log(_deckData)
         }
         fetchDeckData();
     }, [userID]);
@@ -97,7 +97,7 @@ export default function TextGetter({
         const filteredDecks = deckData.filter((deck: any) => deck.title === deckTitle);
         if (filteredDecks.length > 0) {
             const deckID = filteredDecks[0].deck_id;
-            console.log(deckID)
+            // console.log(deckID)
             const resJSON = await getTextListByDeck(
                 deckID,
                 nSelect,

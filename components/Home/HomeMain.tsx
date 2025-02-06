@@ -8,7 +8,7 @@ import Link from 'next/link';
 export default function HomeMain() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
 
-  const categoryBoxClass = 'p-4 flex flex-row flex-wrap justify-center'
+  const categoryBoxClass = 'p-4 flex flex-col flex-wrap text-center'
   const categoryTitleClass = 'mb-4 text-blue-500 text-4xl font-bold'
   const appBoxClass = 'flex flex-row flex-wrap justify-center'
   const tbDefault = ''
@@ -31,7 +31,8 @@ export default function HomeMain() {
 
         <div className={categoryBoxClass} >
           <h1 className="mb-4 my-8 text-blue-800 text-6xl font-bold">{translater.catchCopy}</h1>
-          <div className="mt-2 text-2xl">{translater.conceptExplanation}</div>
+          <div className="mt-2 text-2xl">{translater.conceptExplanation_1}</div>
+          <div className="mt-2 text-2xl">{translater.conceptExplanation_2}</div>
         </div>
 
         <div className={categoryBoxClass} >
@@ -39,7 +40,7 @@ export default function HomeMain() {
         </div>
 
         <div className={appBoxClass}>
-          <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
+          <PreparationCard isReady={false} onclickMessage="この機能は現在開発中です。">
             <AppCard
               href='./typing/basic_typing'
               title={translater.basicTypingTitle}
@@ -54,7 +55,7 @@ export default function HomeMain() {
               recomendedFor={translater.recomendedFixedPhrase}
             ></AppCard>
           </PreparationCard>
-          <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。">
+          <PreparationCard isReady={false} onclickMessage="この機能は現在開発中です。">
             <AppCard
               href='./typing/custom_typing'
               title={translater.customTypingTitle}
@@ -69,7 +70,7 @@ export default function HomeMain() {
               recomendedFor={translater.recomendedFixedPhrase}
             ></AppCard>
           </PreparationCard>
-          {/* <PreparationCard isReady={false} alertMessage="この機能は現在開発中です。"> */}
+          {/* <PreparationCard isReady={false} onclickMessage="この機能は現在開発中です。"> */}
           <AppCard
             href='./typing/category_typing'
             title={translater.categoryTypingTitle}

@@ -12,9 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { endpoint, data, method } = req.body
   const url = `${fastAPIURL}${endpoint}`
 
-  console.log('*** Process START ***')
-  console.log('URL:', url)
-  console.log('body:', req.body)
+  // console.log('*** Process START ***')
+  // console.log('URL:', url)
+  // console.log('body:', req.body)
 
   // Create the query string if it's a GET request
   const queryString = data ? createQueryString(data) : '' // dataがある場合のみクエリを作成
@@ -33,10 +33,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     options.body = JSON.stringify(data)
   }
 
-  console.log('Requesting URL:', fullUrl)
-  console.log('Request Data:', options)
-  console.log('Request Method:', method)
-  console.log('Request Endpoint:', endpoint)
+  // console.log('Requesting URL:', fullUrl)
+  // console.log('Request Data:', options)
+  // console.log('Request Method:', method)
+  // console.log('Request Endpoint:', endpoint)
   // console.log('Data being sent to create_record_time:', data)
   // Execute fetch request and handle errors
   try {
