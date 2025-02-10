@@ -75,7 +75,7 @@ export default function TypingFree(
   const mdScrenWordNum = 30;
   const smScrenWordNum = 15;
   const verySmallScrenWordNum = 10;
-  const missSound = new Audio('/sounds/beep-03.mp3');
+  // const missSound = new Audio('/sounds/beep-03.mp3');
 
   let sentenceNum: number = 0
 

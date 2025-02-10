@@ -91,7 +91,7 @@ export default function TypingEnglish(
   const mdScrenWordNum = 30;
   const smScrenWordNum = 15;
   const verySmallScrenWordNum = 10;
-  const missSound = new Audio('/sounds/mistyped_sound.mp3');
+  // const missSound = new Audio('/sounds/mistyped_sound.mp3');
 
   useEffect(() => {
     // Attach the event listener to the window to handle key press globally
@@ -153,8 +153,8 @@ export default function TypingEnglish(
       } else {
         isCorrects.current[countCharWithin] = false;
         setMistake((prevMistake) => prevMistake + 1);
-        missSound.currentTime = 0;
-        missSound.play();
+        // missSound.currentTime = 0;
+        // missSound.play();
 
         if (nextKey) {
           setErrorKeys((prevErrorKeys) => ({

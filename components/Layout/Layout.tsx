@@ -10,7 +10,6 @@ import { useUserContext } from '@contexts/UserContext';
 import { HeaderLink, HamburgerMenu } from './'
 import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
 
-
 const siteTitle = 'Obgames'
 const headerAttrs = {
   className: 'bg-blue-600 text-white flex justify-between px-4', // justify-aroundをjustify-betweenに変更し、paddingを追加
@@ -23,11 +22,14 @@ const headerBox = {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { signOut } = useAuth();
-  const { locale: routerLocale } = useRouter(); // Rename locale to routerLocale
-  const locale = routerLocale || 'ja'; // Set default locale to 'ja'
+  // const { locale: routerLocale } = useRouter(); // Rename locale to routerLocale
+  // const locale = routerLocale || 'ja'; // Set default locale to 'ja'
+  // const { userData, setUserData } = useUserContext();
+  const router = useRouter();
+  const locale = router.locale ?? 'ja'; // デフォルトを'ja'に設定
+  const { userData = { loginStatus: false } } = useUserContext(); // 安全なデフォルト値をセット
 
   // get userData from context (local storage)
-  const { userData, setUserData } = useUserContext();
   // console.log('userData', userData);
 
   return (
@@ -68,7 +70,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         <div {...headerBox}>
           {/* <HamburgerMenu userData={userData} signOut={() => signOut()} /> サインイン抜き処理 */}
-          <Link href='' locale={locale === 'ja' ? 'en' : 'ja'} passHref>
+          <Link href={router.asPath} locale={locale === 'ja' ? 'en' : 'ja'} passHref>
             <a className='block p-1'>
               {locale === 'ja' ? 'English' : '日本語'}
             </a>

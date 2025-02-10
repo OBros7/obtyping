@@ -101,6 +101,11 @@ export default function ResultDefault({
 
   const mistypeTableHeader = [translater.key, translater.count]
 
+  // 以下三つはサインイン抜き処理で追加。以下三つはサインインの処理を戻したら消す
+  const buttonClassCommon = 'w-32 h-10 rounded-md text-white font-bold mx-1 text-lg'
+  const playAgainButtonClass = buttonClassCommon + ' bg-blue-500 hover:bg-blue-700'
+  const backToStartButtonClass = buttonClassCommon + ' bg-red-500 hover:bg-red-700'
+
   // get user records
   useEffect(() => {
     if (userData.loginStatus === true) {
@@ -202,12 +207,21 @@ export default function ResultDefault({
 
   return (
     <div className='flex flex-col items-center justify-center h-full'>
-      <ResultButtons
+      {/* <ResultButtons
         handleSave={handleSave}
         handlePlayAgain={handlePlayAgain}
         handleBackToHome={handleBackToHome}
         saved={saved}
-      />
+      /> サインイン抜き処理 */}
+
+      <div className='flex flex-row items-center justify-center'>
+        <button className={playAgainButtonClass} onClick={handlePlayAgain}>
+          Play Again
+        </button>
+        <button className={backToStartButtonClass} onClick={handleBackToHome}>
+          Back to Home
+        </button>
+      </div>
 
       <ResultBox
         record={record}
