@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from '@/MyCustomHooks'
-import langDict from './langDict'; // langDictをインポート
+import langDict from './langDict'
 
 interface UnderConstructionOverlayProps {
   isReady?: boolean;

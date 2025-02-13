@@ -21,9 +21,8 @@ export default function WaitingScreen({ status, setStatus }: ReadyScreenProps) {
 
   useEffect(() => {
     if (timePassed > 3000 && status === 'ready') {
-      // statusを'running'に変更
       setStatus('running');
-      setReset(!reset); // タイマーをリセット
+      setReset(!reset);
     }
   }, [finished, timePassed, status, setStatus, setReset, setTimePassed, reset]);
 

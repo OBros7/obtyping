@@ -51,7 +51,6 @@ export default function TypingPageBase({
     const [reset, setReset] = useState(true)
     const [remainingTime, setRemainingTime] = useState(60)
     const attrsParentTimer = { className: 'flex flex-col items-center justify-center text-5xl' }
-    // let timeLimit = hms2ms(0, 7, 0, 0)
     const [timeLimit, setTimeLimit] = useState(hms2ms(0, 0, 1, 0))
     const timeLimitDic: { [key: number]: number } = {
         1: hms2ms(0, 0, 1, 0),
@@ -116,9 +115,8 @@ export default function TypingPageBase({
 
     useEffect(() => {
         if (timePassed > 3000 && status === 'ready') {
-            // statusを'running'に変更
             setStatus('running');
-            setReset(!reset); // タイマーをリセット
+            setReset(!reset);
         }
     }, [finished, timePassed, status, setStatus, setReset, setTimePassed, reset]);
 
@@ -157,7 +155,6 @@ export default function TypingPageBase({
                     <>
                         <div className="w-full text-center text-5xl mt-8 mb-0">
                             <TimerBase
-                                // totalTime={totalTime}
                                 totalTime={timeLimit}
                                 timePassed={timePassed}
                                 setTimePassed={setTimePassed}

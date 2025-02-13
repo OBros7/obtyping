@@ -27,10 +27,6 @@ let langDict = {
     ja: 'ベーシックモード',
     en: 'Basic mode',
   },
-  // basicTypingTitle: {
-  //   ja: '基本タイピング',
-  //   en: 'Basic typing',
-  // },
   basicTypingDescription: {
     ja: '基本的なタイピング練習です。',
     en: 'This is a basic typing practice. It is best for training your basic skills.',

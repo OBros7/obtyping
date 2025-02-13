@@ -22,7 +22,6 @@ interface TypingEnglishProps {
 const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
   let potentialEndIndex = startIndex + charsPerLine;
 
-  // If the potential end index is beyond the string length, just return it.
   if (potentialEndIndex >= str.length) {
     return potentialEndIndex;
   }
@@ -223,7 +222,6 @@ export default function TypingEnglish(
         const entries = Object.entries(errorKeys);
         if (entries.length === 0) return [];
 
-        // キーを誤打回数で降順にソート
         entries.sort((a, b) => b[1] - a[1]);
 
         // 上位3つを取得
@@ -231,41 +229,8 @@ export default function TypingEnglish(
       };
 
       setMostMistakenKeys(getTopMistakenKeys());
-      // console.log('Top Mistaken Keys:', mostMistakenKeys);
     }
   }, [remainingTime, errorKeys]); // errorKeysも依存配列に追加
-
-  // useEffect(() => {
-  //   if (status === 'result' && mistake > 0) {
-
-  //     // 日本語で入力中の文字分のスコアを更新
-  //     // if (isCorrects.current.length > 0) {
-  //     //   let addNum: number = 0
-  //     //   let missNum: number = 0
-  //     //   for (let i = 0; i < isCorrects.current.length; i++) {
-  //     //     if (isCorrects.current[i]) {
-  //     //       addNum += 1
-  //     //     } else {
-  //     //       missNum += 1
-  //     //     }
-  //     //   }
-  //     //   setScore(score + addNum)
-  //     //   setMistake(mistake + missNum)
-  //     // }
-
-  //     // 最も誤打回数が多いキーを特定
-  //     const getMostMistakenKey = (): string | null => {
-  //       const entries = Object.entries(errorKeys);
-  //       if (entries.length === 0) return null;
-  //       entries.sort((a, b) => b[1] - a[1]);
-  //       return entries[0][0];
-  //     };
-
-  //     // const mostMistakenKey = getMostMistakenKey();
-  //     setMostMistakenKey(getMostMistakenKey() || '');
-  //     console.log('Most Mistaken Key:', mostMistakenKey);
-  //   }
-  // }, [status])
 
   return (
     <>

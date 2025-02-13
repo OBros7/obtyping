@@ -29,7 +29,6 @@ const LoginWithGoogle = () => {
     // }, [access_token, router]);
 
     const handleLogin = async () => {
-        // console.log('login');
         try {
             console.log('url: ', url);
             const res = await axios.get(url);
@@ -37,7 +36,6 @@ const LoginWithGoogle = () => {
         } catch (err) {
             console.error(err);
         }
-        // console.log('login with google');
     };
 
     return (
