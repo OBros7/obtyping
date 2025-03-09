@@ -8,7 +8,6 @@ import {
 } from '@/MyLib/UtilsAPITyping'
 import { useTranslation } from '@/MyCustomHooks'
 import { ResultDefault } from '@/CommonPage/Result'
-// import { useNavigate } from 'react-router-dom';
 
 interface TypingProps {
     deckId: number
@@ -29,7 +28,6 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     const [recordScore, setRecordScore] = useState(0)
     const [mostMistakenKeys, setMostMistakenKeys] = useState<{ key: string; count: number }[]>([]);
 
-    // let navigate = useNavigate();
 
     useEffect(() => {
         async function fetchTextList() {
@@ -78,7 +76,6 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                 const calculatedAccuracy = score / (score + mistake);
                 // 小数点第二位で四捨五入
                 const roundedAccuracy = Math.round(calculatedAccuracy * 100) / 100;
-                // %表示のために100倍
                 setAccuracy(roundedAccuracy * 100);
             } else {
                 setCpm(0);
@@ -107,10 +104,6 @@ export default function Typing({ deckId, minutes }: TypingProps) {
         setAccuracy(0);
         setRecordScore(0);
     }
-
-    // const handleBackToHome = () => {
-    //     navigate('/')
-    // }
 
     const handleBackToHome = () => {
         window.location.href = '/';
@@ -165,8 +158,6 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                     </>
                     :
                     <ResultDefault
-                        // urlPost={'/api/typing/post'}
-                        // urlGet={'/api/typing/get'}
                         deckId={deckId}
                         minutes={minutes}
                         record={recordScore}

@@ -101,7 +101,7 @@ export default function ResultDefault({
 
   const mistypeTableHeader = [translater.key, translater.count]
 
-  // 以下三つはサインイン抜き処理で追加。以下三つはサインインの処理を戻したら消す
+  // 以下三つはサインイン一時停止で追加。以下三つはサインインの処理を戻したら消す
   const buttonClassCommon = 'w-32 h-10 rounded-md text-white font-bold mx-1 text-lg'
   const playAgainButtonClass = buttonClassCommon + ' bg-blue-500 hover:bg-blue-700'
   const backToStartButtonClass = buttonClassCommon + ' bg-red-500 hover:bg-red-700'
@@ -212,7 +212,7 @@ export default function ResultDefault({
         handlePlayAgain={handlePlayAgain}
         handleBackToHome={handleBackToHome}
         saved={saved}
-      /> サインイン抜き処理 */}
+      /> サインイン一時停止 */}
 
       <div className='flex flex-row items-center justify-center'>
         <button className={playAgainButtonClass} onClick={handlePlayAgain}>
@@ -273,7 +273,7 @@ export default function ResultDefault({
         </>
       ) : (
         <button className='text-white text-3xl font-bold bg-green-500 hover:bg-green-700 p-4 rounded m-4' onClick={() => signIn()}> {translater.signinToRecord}</button>
-      )} サインイン抜き処理 */}
+      )} サインイン一時停止 */}
     </div>
   )
 }

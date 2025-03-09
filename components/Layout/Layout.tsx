@@ -8,28 +8,24 @@ import React, { useContext, useEffect, useState } from 'react'
 // import { GlobalContext } from 'context/GlobalContext'
 import { useUserContext } from '@contexts/UserContext';
 import { HeaderLink, HamburgerMenu } from './'
-import useAuth from '@/MyCustomHooks/useAuth'; // Import the custom hook
+import useAuth from '@/MyCustomHooks/useAuth';
 
 const siteTitle = 'Obgames'
 const headerAttrs = {
-  className: 'bg-blue-600 text-white flex justify-between px-4', // justify-aroundをjustify-betweenに変更し、paddingを追加
+  className: 'bg-blue-600 text-white flex justify-between px-4'
 }
 const footerAttrs = headerAttrs
 const headerBox = {
-  className: 'flex flex-row items-center mx-4', // marginを追加
+  className: 'flex flex-row items-center mx-4'
 }
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { signOut } = useAuth();
-  // const { locale: routerLocale } = useRouter(); // Rename locale to routerLocale
-  // const locale = routerLocale || 'ja'; // Set default locale to 'ja'
-  // const { userData, setUserData } = useUserContext();
   const router = useRouter();
-  const locale = router.locale ?? 'ja'; // デフォルトを'ja'に設定
-  const { userData = { loginStatus: false } } = useUserContext(); // 安全なデフォルト値をセット
+  const locale = router.locale ?? 'ja';
+  const { userData = { loginStatus: false } } = useUserContext();
 
-  // get userData from context (local storage)
   // console.log('userData', userData);
 
   return (
@@ -66,10 +62,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           ) : (
             <HeaderLink href='/account/signin' text='SignIn' addClass='outline outline-white outline-2' />
           )}
-        </div> */}
+        </div> サインイン一時停止 */}
 
         <div {...headerBox}>
-          {/* <HamburgerMenu userData={userData} signOut={() => signOut()} /> サインイン抜き処理 */}
+          {/* <HamburgerMenu userData={userData} signOut={() => signOut()} /> サインイン一時停止 */}
           <Link href={router.asPath} locale={locale === 'ja' ? 'en' : 'ja'} passHref>
             <a className='block p-1'>
               {locale === 'ja' ? 'English' : '日本語'}
