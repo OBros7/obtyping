@@ -1,121 +1,183 @@
-// components/MyCustomHook/useAuth.tsx:
-import { useState, useEffect, useCallback } from 'react';
+// userAuth.tsx
+
+import { useCallback } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
 import { useUserContext } from '@contexts/UserContext';
+import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
 
-interface User {
-    user_id: number;
-    user_name?: string;
-    is_paid_user?: boolean;
-    exp?: number;
-    iat?: number;
+interface AuthCredentials {
+    email: string;
+    password: string;
 }
-const backendURL = process.env.FASTAPI_URL
-const useAuth = () => {
+
+interface AuthResponse {
+    user?: {
+        user_id: number | string;
+        user_name?: string;
+        is_paid_user?: boolean;
+        exp?: number | string;
+        iat?: number | string;
+    };
+    access_token?: string;
+    token_type?: string;
+    detail?: string; // Possibly an error message
+}
+
+const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL || '';
+const sessionURL = `${backendURL}/api/user/session`;
+const logoutURL = `${backendURL}/api/user/logout`;
+const signupURL = `${backendURL}/api/user/signup`;
+const signinURL = `${backendURL}/api/user/signin`;
+
+export default function useAuth() {
+    const { setUserData } = useUserContext();
     const router = useRouter();
-    const { userData, setUserData } = useUserContext();
 
-    const fetchUser = async () => {
-        try {
-            const response = await axios.get(backendURL + '/api/users/session', { withCredentials: true });
-            if (response.data && response.data.user) {
-                const user = response.data.user;
-                localStorage.setItem('userID', user.user_id.toString());
-                localStorage.setItem('userName', user.user_name ? user.user_name : '')
-                localStorage.setItem('loginStatus', 'true')
-                localStorage.setItem('subscriptionStatus', user.is_paid_user ? 'true' : 'false')
-                if (user.exp !== undefined) {
-                    localStorage.setItem('expToken', user.exp.toString());
-                }
-                if (user.iat !== undefined) {
-                    localStorage.setItem('iatToken', user.iat.toString());
-                }
+    /**
+     * handleAuthResponse
+     *
+     * Common helper to:
+     *   - Parse JSON,
+     *   - Throw error on non-OK status,
+     *   - Store access token (if any),
+     *   - Update our React user context with returned user data.
+     */
+    const handleAuthResponse = useCallback(
+        async (resp: Response, defaultErrorMsg: string) => {
+            const data: AuthResponse = await resp.json();
 
-                setUserData({
-                    userID: user.user_id.toString(),
-                    userName: user.user_name ? user.user_name : '',
-                    loginStatus: true,
-                    subscriptionStatus: user.is_paid_user ? true : false,
-                    expToken: user.exp ? user.exp.toString() : '',
-                    iatToken: user.iat ? user.iat.toString() : '',
-                });
-                console.log('User fetched:', user);
-
-            } else {
-                throw new Error('User not authenticated');
+            if (!resp.ok) {
+                throw new Error(data.detail || defaultErrorMsg);
             }
-        } catch (error) {
-            console.error('Error fetching user:', error);
-        }
-    };
-    useEffect(() => {
-        if (userData.loginStatus === true) {
-            fetchUser();
-        }
-    }, []);
 
-    const refreshUserSession = async () => {
-        await fetchUser();
-    };
+            // If we have an access_token, store it
+            if (data.access_token) {
+                localStorage.setItem('accessToken', data.access_token);
+            }
 
-    // const signOut = useCallback((setUserData: any) => {
-    const signOut = useCallback(async () => {
-        console.log('Signing out...');
-        console.log('BACKEND_API_KEY', process.env.BACKEND_API_KEY);
-        try {
-            const response = await fetch(backendURL + '/api/users/logout', {
-                method: 'POST',
-                credentials: 'include', // ここを追加
-                headers: {
-                    ...(process.env.BACKEND_API_KEY && { 'X-API-Key': process.env.BACKEND_API_KEY }),
-                },
-            });
-            if (response.ok) {
-                // Here, you can clear the stored access token or perform any other cleanup tasks
-                // After that, update the user state on the client side.
-                // ログアウト成功時の処理
-                localStorage.clear(); // 一括削除
-                // localStorage.removeItem('userID');
-                // localStorage.removeItem('userName');
-                // localStorage.removeItem('loginStatus');
-                // localStorage.removeItem('subscriptionStatus');
-                // localStorage.removeItem('expToken');
-                // localStorage.removeItem('iatToken');
+            // If we have user data, update context
+            if (data.user) {
+                const { user } = data;
                 setUserData({
-                    userID: '',
-                    userName: '',
-                    loginStatus: false,
-                    subscriptionStatus: false,
-                    expToken: '',
-                    iatToken: '',
+                    userID: String(user.user_id),
+                    userName: user.user_name || '',
+                    loginStatus: true,
+                    subscriptionStatus: !!user.is_paid_user,
+                    expToken: user.exp ? String(user.exp) : '',
+                    iatToken: user.iat ? String(user.iat) : '',
                 });
-                console.log('Sign out successful');
-                router.push('/account/signin');
-            } else {
-                console.error('Sign out failed:', response.statusText);
-                // localStorage.removeItem('userID');
-                // localStorage.removeItem('userName');
-                // localStorage.removeItem('loginStatus');
-                // localStorage.removeItem('subscriptionStatus');
-                // localStorage.removeItem('expToken');
-                // localStorage.removeItem('iatToken');
-                // setUserData({
-                //     userID: '',
-                //     userName: '',
-                //     loginStatus: false,
-                //     subscriptionStatus: false,
-                //     expToken: '',
-                //     iatToken: '',
-                // });
+            }
+
+            return data; // In case you need the data after
+        },
+        [setUserData]
+    );
+
+    /**
+     * signUp
+     */
+    const signUp = useCallback(
+        async (credentials: AuthCredentials) => {
+            try {
+                const resp = await fetchWithAuth(signupURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: credentials.email,
+                        password: credentials.password,
+                    }),
+                });
+
+                await handleAuthResponse(resp, 'SignUp error');
+                router.push('/');
+            } catch (error) {
+                console.error('SignUp error:', error);
+                throw error;
+            }
+        },
+        [handleAuthResponse, router]
+    );
+
+    /**
+     * signIn
+     */
+    const signIn = useCallback(
+        async (credentials: AuthCredentials) => {
+            try {
+                const resp = await fetchWithAuth(signinURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(credentials),
+                });
+
+                await handleAuthResponse(resp, 'SignIn error');
+                router.push('/');
+            } catch (error) {
+                console.error('SignIn error:', error);
+                throw error;
+            }
+        },
+        [handleAuthResponse, router]
+    );
+
+    /**
+     * refreshUserSession
+     *
+     * We use the same handleAuthResponse to parse, but
+     * we don't redirect if it fails—just catch the error.
+     */
+    const refreshUserSession = useCallback(async () => {
+        try {
+            console.log('Refreshing user session...');
+            const resp = await fetchWithAuth(sessionURL, {
+                method: 'GET',
+            });
+            await handleAuthResponse(resp, 'Failed to get current user session.');
+            console.log('User session refreshed.');
+            // No redirect on error; we just console.error
+        } catch (error) {
+            console.error('Error refreshing user session:', error);
+            // Optionally, you can handle logout if 401 occurs, etc.
+        }
+    }, [handleAuthResponse]);
+
+    /**
+     * signOut
+     */
+    const signOut = useCallback(async () => {
+        try {
+            const resp = await fetchWithAuth(logoutURL, {
+                method: 'POST',
+            });
+            if (!resp.ok) {
+                console.error('Sign out failed:', resp.statusText);
             }
         } catch (error) {
             console.error('Error signing out:', error);
         }
 
-    }, [router]);
+        // Clear localStorage
+        localStorage.removeItem('accessToken');
 
-    return { signOut, refreshUserSession };
-};
+        // Reset context
+        setUserData({
+            userID: '',
+            userName: '',
+            loginStatus: false,
+            subscriptionStatus: false,
+            expToken: '',
+            iatToken: '',
+        });
 
-export default useAuth;
+        // Redirect to sign in
+        router.push('/account/signin');
+    }, [router, setUserData]);
+
+    // Return your methods
+    return {
+        signUp,
+        signIn,
+        signOut,
+        refreshUserSession,
+    };
+}

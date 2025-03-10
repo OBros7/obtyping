@@ -1,33 +1,36 @@
-// OAuthCallback.tsx
+// --- obtyping/components/Account/OAuthCallback.tsx ---
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import useAuth from '@/MyCustomHooks/useAuth';
-import { useUserContext } from '@contexts/UserContext';
-
 
 const OAuthCallback = () => {
-    const router = useRouter();
-    const { provider } = router.query;
     const { refreshUserSession } = useAuth();
-    const { userData, setUserData } = useUserContext();
 
     useEffect(() => {
-        if (provider) {
-            // If signed out, redirect to signin page. Otherwise, redirect to the home page or a dashboard.
-            refreshUserSession();
-            // console.log('userData.loginStatus:', userData.loginStatus);
-            // console.log('userData.:', userData)
-            if (userData.loginStatus === false) {
-                router.push('/account/signin');
+        if (typeof window !== 'undefined') {
+            const cookies = document.cookie.split(';');
+            const tokenCookie = cookies.find(c => c.trim().startsWith('access_token='));
+            if (tokenCookie) {
+                const localAccessToken = tokenCookie.split('=')[1];
+                console.log('Local access token stored in localStorage');
+                document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+                (async () => {
+                    try {
+                        await refreshUserSession();
+                        window.location.href = '/'; // or router.push('/')
+                    } catch (err) {
+                        console.log('Google OAuth callback error:', err);
+                    }
+                })();
             } else {
-                router.push('/');
+                console.log('No local access token found in cookies');
             }
         }
-    }, [provider, router, userData.loginStatus]);
+
+    }, [refreshUserSession]);
 
     return (
         <div>
-            <p>Processing {provider} login...</p>
+            <p>Processing Google OAuth...</p>
         </div>
     );
 };

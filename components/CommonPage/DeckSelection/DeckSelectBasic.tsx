@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
 import { langDict, DeckListButton } from './'
-import { useAuth, useTranslation } from '@/MyCustomHooks'
+import { useTranslation } from '@/MyCustomHooks'
 import {
     getDeckListBasic,
     ReceivedDeck,

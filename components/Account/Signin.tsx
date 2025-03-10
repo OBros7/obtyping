@@ -4,22 +4,11 @@ import { Layout, MainContainer } from '@/Layout';
 import { useTranslation } from '@/MyCustomHooks';
 import TabSwitcher from './TabSwitcher';
 
-const boxClass = 'outline outline-2 rounded m-4 p-4';
 const signinButtonClass = 'btn-third';
-const switchButtonClass = 'btn-primary';
-
-// import { useSession, signIn, signOut } from 'next-auth/react'
-
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? ''
-const fastAPIURL = process.env.FASTAPI_URL
-
-const url = process.env.FASTAPI_URL + '/api/users/oauth_google';
 
 export default function Signin() {
   const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string,];
   const [newUser, setNewUser] = useState(false);
-
-  console.log('url: ', url)
 
   return (
     <Layout>
