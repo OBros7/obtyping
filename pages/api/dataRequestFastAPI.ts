@@ -33,12 +33,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     options.body = JSON.stringify(data)
   }
 
-  // console.log('Requesting URL:', fullUrl)
-  // console.log('Request Data:', options)
-  // console.log('Request Method:', method)
-  // console.log('Request Endpoint:', endpoint)
-  // console.log('Data being sent to create_record_time:', data)
-  // Execute fetch request and handle errors
   try {
     const response = await fetch(fullUrl, options)
     console.log('FastAPI Response Status:', response.status)

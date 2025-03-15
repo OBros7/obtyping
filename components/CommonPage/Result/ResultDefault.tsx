@@ -112,7 +112,7 @@ export default function ResultDefault({
       const nSelect = recentK;
       const orderBy = 'score';
 
-      getRecordTime(userData.userID, deckId, nSelect, orderBy)
+      getRecordTime(deckId, nSelect, orderBy)
         .then((data) => {
           if (data && data.detail) {
             console.error('Error fetching data:', data.detail);
@@ -166,7 +166,6 @@ export default function ResultDefault({
   const handleSave = () => {
     // Note: only record will be sent as a json object to the server. userID & setting info must be included in the url
     const data: PostRecordTime = {
-      user_id: Number(userData.userID),
       deck_id: deckId,
       // needs to be fixed based on the results from typing game!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       score: record,
@@ -207,21 +206,14 @@ export default function ResultDefault({
 
   return (
     <div className='flex flex-col items-center justify-center h-full'>
-      {/* <ResultButtons
+      <ResultButtons
         handleSave={handleSave}
         handlePlayAgain={handlePlayAgain}
         handleBackToHome={handleBackToHome}
         saved={saved}
-      /> サインイン一時停止 */}
+      />
 
-      <div className='flex flex-row items-center justify-center'>
-        <button className={playAgainButtonClass} onClick={handlePlayAgain}>
-          Play Again
-        </button>
-        <button className={backToStartButtonClass} onClick={handleBackToHome}>
-          Back to Home
-        </button>
-      </div>
+
 
       <ResultBox
         record={record}
@@ -236,7 +228,7 @@ export default function ResultDefault({
         mistakenKeys={mostMistakenKeys}
       />
 
-      {/* {mistake > 0 ? (
+      {mistake > 0 ? (
         <MistakenKeyTable
           headers={mistypeTableHeader}
           data={mostMistakenKeys.map(({ key, count }) => [key, count])}
@@ -245,9 +237,9 @@ export default function ResultDefault({
       ) : (
         <p className='text-xl font-bold mb-1'>{translater.noMissMassage}</p>
       )
-      } */}
+      }
 
-      {/* {userData.loginStatus === true ? (
+      {userData.loginStatus === true ? (
         <>
           {rank === 'best' ? (
             <div className='my-2 outline outline-red-500 p-4 rounded bg-red-100 text-center'>
@@ -273,7 +265,7 @@ export default function ResultDefault({
         </>
       ) : (
         <button className='text-white text-3xl font-bold bg-green-500 hover:bg-green-700 p-4 rounded m-4' onClick={() => signIn()}> {translater.signinToRecord}</button>
-      )} サインイン一時停止 */}
+      )}
     </div>
   )
 }

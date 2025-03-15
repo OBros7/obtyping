@@ -111,7 +111,6 @@ export default function TextSetter({
         let json: any
         if (deckID === -1) {// create new deck and text
             const data: PostTextDeck = {
-                user_id: userID,
                 // about text
                 title: title,
                 text11: text1,
@@ -134,7 +133,6 @@ export default function TextSetter({
 
         } else {// create new text and add it to an existing deck
             const data: PostTextOnly = {
-                user_id: userID,
                 title: title,
                 text11: text1,
                 text12: null,

@@ -34,8 +34,11 @@ const langDict = {
   frequentlyMistypedKeys: {
     ja: 'よく間違えるキー:',
     en: 'Frequently Mistyped Keys:',
-  }
-
+  },
+  mistakeKeyInfoMessage: {
+    ja: 'placeholder',
+    en: 'placeholder',
+  },
 }
 
 export default langDict
