@@ -3,10 +3,6 @@
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
 
-/**
- * In your .env (or .env.local), you might have something like:
- * NEXT_PUBLIC_BACKEND_URL="http://localhost:8000"
- */
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // ---------------- Interfaces for responses ----------------

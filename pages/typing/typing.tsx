@@ -2,7 +2,7 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import { Typing } from '@/Typing'
 
-// http://localhost:3000/typing/typing?deckid=123&minutes=10
+// <url>/typing/typing?deckid=123&minutes=10
 
 export default function TypingPage() {
     const router = useRouter()
