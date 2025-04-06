@@ -5,7 +5,7 @@ import { Layout, MainContainer } from '@/Layout';
 import { MyInputNumber, MySelect } from '@/Basics'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY + '/api/typing/'
 const dataTypeList = ['text', 'deck']
 const minibox = 'flex flex-row  justify-center items-center'
 
