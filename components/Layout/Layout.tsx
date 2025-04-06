@@ -50,9 +50,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
         </div>
-        <div {...headerBox}>
+        {/* <div {...headerBox}>
           <HeaderLink href='/admin' text='Admin' addClass='outline outline-white outline-2' />
-        </div>
+        </div> */}
         <div {...headerBox}>
           {userData.loginStatus === true ? (
             // if paid user show nothing, else show payment link

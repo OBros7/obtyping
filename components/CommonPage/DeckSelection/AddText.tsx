@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
 import langDict from './langDict'
 import { useTranslation } from '@/MyCustomHooks'
-import { TextGetter, TextSetter, DeckGetter, DeckSetter } from '@/Admin'
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 
 import { MySelect } from '@/Basics'
@@ -44,7 +43,6 @@ const urlListGetText = [
 
 const saveButtonClass = 'btn-second '
 const visibilityOptions = Object.keys(visibility2int)
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
 const langOptions = Object.keys(lang2int)
 
 
