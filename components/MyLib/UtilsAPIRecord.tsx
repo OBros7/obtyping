@@ -1,76 +1,57 @@
-// const fastAPIURL = process.env.FASTAPI_URL + 'typing/'
-const BACKEND_API_KEY = process.env.BACKEND_API_KEY || ''
+// components/MyLib/UtilsAPIRecord.tsx
+
+import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const CREATERECORD_URL = `${BACKEND_URL}/api/typing/create_record_time`;
+const GETRECORD_URL = `${BACKEND_URL}/api/typing/get_record_time_by_deckid`;
 
 interface PostRecordTime {
-    user_id: number,
-    deck_id: number,
-    score: number,
-    wpm: number,
-    cpm: number,
-    accuracy: number,
-    seconds: number | null,// only for Time
+    deck_id: number;
+    score: number;
+    wpm: number;
+    cpm: number;
+    accuracy: number;
+    seconds: number | null;
 }
 
 const createRecordTime = async (data: PostRecordTime) => {
-    // const response = await fetch('/api/typing/typingPost', {
-    // console.log('Data being sent to create_record_time:', data);
-    const response = await fetch('/api/dataRequestFastAPI', {
+    // POST /api/typing/create_record_time
+    const response = await fetchWithAuth(CREATERECORD_URL, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ method: 'POST', endpoint: 'create_record_time', data: data }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
     });
-    const result = await response.json();
-    return result;
-}
+    if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+    return response.json();
+};
 
 const getRecordTime = async (
-    userId: string | number | null,
     deckId: number,
     nSelect: number,
     orderby: string,
 ) => {
-    const data = {
-        // user_id: userId,
-        deck_id: deckId,
-        n_select: nSelect,
+    // Instead of sending POST => Next.js => method: 'GET'
+    // we do a direct GET request to /api/typing/get_record_time_by_deckid/
+    const qs = new URLSearchParams({
+        deck_id: String(deckId),
+        n_select: String(nSelect),
         order_by: orderby,
-    }
-    // const response = await fetch('/api/typing/typingGet', {
-    const response = await fetch('/api/dataRequestFastAPI', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ method: 'GET', endpoint: 'get_record_time_by_deckid', data: data }),
+    }).toString();
+
+    const url = `${GETRECORD_URL}/?${qs}`;
+    // or simply: `${BACKEND_URL}/api/typing/get_record_time_by_deckid?${qs}`
+
+    const response = await fetchWithAuth(url, {
+        method: 'GET'
     });
-    const result = await response.json();
-    return result;
-}
+    if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+    return response.json();
+};
 
-// これはクライアント→fastAPIへのリクエストを送る関数
-// const createRecordTime = async (data: PostRecordTime) => {
-//     const url = fastAPIURL + 'create_record_time/'
-//     const res = await fetch(url, {
-//         method: 'POST',
-//         headers: {
-//             'X-API-Key': BACKEND_API_KEY,
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(data),
-//         mode: 'cors',
-//     })
-//     const json = await res.json()
-//     return json
-// }
-
-
-export type {
-    PostRecordTime
-}
-
-export {
-    createRecordTime,
-    getRecordTime
-}
+export type { PostRecordTime }
+export { createRecordTime, getRecordTime }

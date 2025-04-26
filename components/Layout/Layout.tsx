@@ -4,8 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useContext, useEffect, useState } from 'react'
-// import { useSession, signIn, signOut } from 'next-auth/react'
-// import { GlobalContext } from 'context/GlobalContext'
 import { useUserContext } from '@contexts/UserContext';
 import { HeaderLink, HamburgerMenu } from './'
 import useAuth from '@/MyCustomHooks/useAuth';
@@ -21,12 +19,12 @@ const headerBox = {
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { signOut } = useAuth();
   const router = useRouter();
   const locale = router.locale ?? 'ja';
-  const { userData = { loginStatus: false } } = useUserContext();
+  const { signOut } = useAuth();
+  const { userData } = useUserContext();
 
-  // console.log('userData', userData);
+  console.log('userData', userData);
 
   return (
     // <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
@@ -49,23 +47,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Image src='/images/logoIcon.png' height={32} width={32} alt='img' />
           <HeaderLink href='/' text='TypingNLearning' addClass='text-xl font-bold mr-4' />
         </div>
-        {/* <div {...headerBox}>
+        <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
-        </div> */}
+        </div>
         {/* <div {...headerBox}>
           <HeaderLink href='/admin' text='Admin' addClass='outline outline-white outline-2' />
         </div> */}
-        {/* <div {...headerBox}>
+        <div {...headerBox}>
           {userData.loginStatus === true ? (
             // if paid user show nothing, else show payment link
             < HeaderLink href='/payment/payment_page' text='Subscribe' addClass='outline outline-white outline-2' />
           ) : (
             <HeaderLink href='/account/signin' text='SignIn' addClass='outline outline-white outline-2' />
           )}
-        </div> サインイン一時停止 */}
+        </div>
 
         <div {...headerBox}>
-          {/* <HamburgerMenu userData={userData} signOut={() => signOut()} /> サインイン一時停止 */}
+          <HamburgerMenu userData={userData} signOut={() => signOut()} />
           <Link href={router.asPath} locale={locale === 'ja' ? 'en' : 'ja'} passHref>
             <a className='block p-1'>
               {locale === 'ja' ? 'English' : '日本語'}

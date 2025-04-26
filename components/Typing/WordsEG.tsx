@@ -100,7 +100,6 @@ const WordsEG = [
     "deep",
     "develop",
     "did",
-    "didn\u2019t",
     "different",
     "do",
     "does",

@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { createQueryString } from './utils'
 
 // Access environment variables on the server side
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/typing/'
 const BACKEND_API_KEY = process.env.BACKEND_API_KEY
 
 // Main API handler function with properly typed parameters
@@ -33,12 +33,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     options.body = JSON.stringify(data)
   }
 
-  // console.log('Requesting URL:', fullUrl)
-  // console.log('Request Data:', options)
-  // console.log('Request Method:', method)
-  // console.log('Request Endpoint:', endpoint)
-  // console.log('Data being sent to create_record_time:', data)
-  // Execute fetch request and handle errors
   try {
     const response = await fetch(fullUrl, options)
     console.log('FastAPI Response Status:', response.status)

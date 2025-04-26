@@ -7,11 +7,8 @@ import { FormatCategory } from '@/CommonPage/DeckSelection'
 import {
     getDeckListByUser,
     getDeckListBasic,
-    getDeckListSelective,
     getDeckListPrivate,
     getDeckListByCategory,
-    getDeckListBySearch,
-    getDeckListByDeck,
 } from '@/MyLib/UtilsAPITyping'
 
 const visibilityOptions = Object.keys(visibility2int)
@@ -88,21 +85,18 @@ export default function DeckGetter(
                 orderBy,
             )
         } else if (url.includes('get_decklist_selective')) {
-            resJSON = await getDeckListSelective(
-                userID,
-                lang1,
-                nSelect,
-                orderBy,
-            )
+            // resJSON = await getDeckListSelective(
+            //     lang1,
+            //     nSelect,
+            //     orderBy,
+            // )
         } else if (url.includes('get_decklist_private')) {
             resJSON = await getDeckListPrivate(
-                userID,
                 nSelect,
-                orderBy,
+                // orderBy,
             )
         } else if (url.includes('get_decklist_by_category')) {
             resJSON = await getDeckListByCategory(
-                userID,
                 category,
                 subcategory,
                 level,
@@ -110,12 +104,11 @@ export default function DeckGetter(
                 orderBy,
             )
         } else if (url.includes('get_decklist_by_search')) {
-            resJSON = await getDeckListBySearch(
-                userID,
-                'search_text',
-                nSelect,
-                orderBy,
-            )
+            // resJSON = await getDeckListBySearch(
+            //     'search_text',
+            //     nSelect,
+            //     orderBy,
+            // )
             // } else if (url.includes('get_decklist_by_deck')) {
             //     resJSON = await getDeckListByDeck(
             //         userID,

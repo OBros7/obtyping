@@ -1,20 +1,33 @@
-// contexts/UserContext.tsx
+// --- obtyping/contexts/UserContext.tsx ---
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { UserData, UserContextType } from '@models/user';
 
-const defaultState = {
-    userData: {
-        userID: '',
-        userName: '',
-        loginStatus: false,
-        subscriptionStatus: false,
-        expToken: '',
-        iatToken: '',
-    },
-    setUserData: () => { },
+export interface UserData {
+    userID: string;
+    userName: string;
+    loginStatus: boolean;
+    subscriptionStatus: boolean;
+    expToken: string;
+    iatToken: string;
+}
+
+export interface UserContextType {
+    userData: UserData;
+    setUserData: (data: UserData) => void;
+}
+
+const defaultUserData: UserData = {
+    userID: '',
+    userName: '',
+    loginStatus: false,
+    subscriptionStatus: false,
+    expToken: '',
+    iatToken: '',
 };
 
-const UserContext = createContext<UserContextType>(defaultState);
+const UserContext = createContext<UserContextType>({
+    userData: defaultUserData,
+    setUserData: () => { },
+});
 
 export const useUserContext = () => useContext(UserContext);
 
@@ -23,25 +36,26 @@ interface UserProviderProps {
 }
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-    const [userData, setUserData] = useState<UserData>(defaultState.userData);
+    const [userData, setUserDataState] = useState<UserData>(defaultUserData);
 
+    // 1) On mount, read from localStorage if available
     useEffect(() => {
-        const userID = localStorage.getItem('userID') || '';
-        const userName = localStorage.getItem('userName') || '';
-        const loginStatus = localStorage.getItem('loginStatus') === 'true';
-        const subscriptionStatus = localStorage.getItem('subscriptionStatus') === 'true';
-        const expToken = localStorage.getItem('expToken') || '';
-        const iatToken = localStorage.getItem('iatToken') || '';
-
-        setUserData({
-            userID,
-            userName,
-            loginStatus,
-            subscriptionStatus,
-            expToken,
-            iatToken,
-        });
+        try {
+            const stored = localStorage.getItem('userData');
+            if (stored) {
+                const parsed = JSON.parse(stored) as UserData;
+                setUserDataState(parsed);
+            }
+        } catch (error) {
+            console.error('Error parsing userData from localStorage', error);
+        }
     }, []);
+
+    // 2) Provide a function that updates both context and localStorage
+    const setUserData = (data: UserData) => {
+        setUserDataState(data);
+        localStorage.setItem('userData', JSON.stringify(data));
+    };
 
     return (
         <UserContext.Provider value={{ userData, setUserData }}>

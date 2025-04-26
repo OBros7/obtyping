@@ -3,7 +3,7 @@ import { Layout, MainContainer } from '@/Layout'
 import { SearchBox, DeckListButton } from './'
 import {
     getDeckListByCategory,
-    getDeckListBySearch,
+    // getDeckListBySearch,
     ReceivedDeck,
 } from '@/MyLib/UtilsAPITyping'
 import ContentLoader from 'react-content-loader'
@@ -27,7 +27,6 @@ export default function DeckSelectCategory() {
         let userID = 1
         if (searchType === 'category') {
             resJSON = await getDeckListByCategory(
-                userID,
                 category,
                 subcategory,
                 level,
@@ -35,12 +34,11 @@ export default function DeckSelectCategory() {
                 orderBy,
             )
         } else if (searchType === 'text') {
-            resJSON = await getDeckListBySearch(
-                userID,
-                'search_text',
-                nSelect,
-                orderBy,
-            )
+            // resJSON = await getDeckListBySearch(
+            //     'search_text',
+            //     nSelect,
+            //     orderBy,
+            // )
         } else {
             console.log('url not found')
             return

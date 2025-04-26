@@ -13,7 +13,7 @@ import { FormatCategory } from '@/CommonPage/DeckSelection'
 
 const langOptions = Object.keys(lang2int)
 
-const fastAPIURL = process.env.FASTAPI_URL + '/api/typing/'
+const fastAPIURL = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY + '/api/typing/'
 const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
 const classChildDivDefault = 'w-full'
 
@@ -111,7 +111,6 @@ export default function TextSetter({
         let json: any
         if (deckID === -1) {// create new deck and text
             const data: PostTextDeck = {
-                user_id: userID,
                 // about text
                 title: title,
                 text11: text1,
@@ -134,7 +133,6 @@ export default function TextSetter({
 
         } else {// create new text and add it to an existing deck
             const data: PostTextOnly = {
-                user_id: userID,
                 title: title,
                 text11: text1,
                 text12: null,
