@@ -1,22 +1,18 @@
-import React, { useState } from 'react'
-import { MySelect, MyTextbox } from '@/Basics'
-import { visibility2int, lang2int } from '@/MyLib/Mapper'
-// import { FormatCategory } from './'
-import { FormatCategory } from '@/CommonPage/DeckSelection'
-import { createDeck } from '@/MyLib/UtilsAPITyping'
-const langOptions = Object.keys(lang2int)
+'use client';
+import React, { useState } from 'react';
+import { MySelect, MyTextbox } from '@/Basics';
+import { visibility2int, lang2int } from '@/MyLib/Mapper';
+import { FormatCategory } from '@/CommonPage/DeckSelection';
+import { createDeck } from '@/MyLib/UtilsAPITyping';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { showError } from 'utils/toast';
+import { ApiError } from '@/MyLib/apiError';
 
-const fastAPIURL = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY + '/api/typing/'
-
-// const classParDivDefault = 'search-container'
-const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
-const classChildDivDefault = 'w-full'
-
-const orderByList = [
-    'random',
-    'title',
-    'like',
-]
+/* --- 省略していた定数を維持 --- */
+const langOptions = Object.keys(lang2int);
+const classParDivDefault = 'flex flex-col items-start space-y-4 w-full';
+const classChildDivDefault = 'w-full';
+const orderByList = ['random', 'title', 'like'];
 
 interface DeckSetterProps {
     userID: number
@@ -41,96 +37,95 @@ interface DeckSetterProps {
     classChildDiv?: string
 }
 
-export default function DeckSetter({
-    userID,
-    visibilityInt,
-    title,
-    setTitle,
-    description,
-    setDescription,
-    lang1,
-    setLang1,
-    lang2,
-    setLang2,
-    category,
-    setCategory,
-    subcategory,
-    setSubcategory,
-    level,
-    setLevel,
-    orderBy,
-    setOrderBy,
-    classParDiv = classParDivDefault,
-    classChildDiv = classChildDivDefault,
-}: DeckSetterProps) {
-    const [isLangLearn, setIsLangLearn] = useState(false)
-    const [msg, setMsg] = useState('')
+export default function DeckSetter(props: DeckSetterProps) {
+    /* -------- props 展開 -------- */
+    const {
+        userID,
+        visibilityInt,
+        title,
+        setTitle,
+        description,
+        setDescription,
+        lang1,
+        setLang1,
+        lang2,
+        setLang2,
+        category,
+        setCategory,
+        subcategory,
+        setSubcategory,
+        level,
+        setLevel,
+        orderBy,
+        setOrderBy,
+        classParDiv = classParDivDefault,
+        classChildDiv = classChildDivDefault,
+    } = props;
 
-    const onClick = async () => {
-        // check if title and text1 are filled
-        if (title === '') {
-            setMsg('Please fill in the title')
-            return
-        }
+    /* -------- ローカル state -------- */
+    const [isLangLearn, setIsLangLearn] = useState(false);
+    const [msg, setMsg] = useState('');
 
+    /* -------- React Query mutation -------- */
+    const queryClient = useQueryClient();
 
-        const lang1_int = lang2int(lang1) as number
-        let lang2_int: number | null = null
-        if (!isLangLearn) {
-            lang2_int = lang2int(lang2)
-        }
+    const deckMutation = useMutation({
+        /* ❶ リクエスト本体 */
+        mutationFn: async () => {
+            if (!title) throw new ApiError('Please fill in the title', 400);
 
-        const data = {
-            user_id: userID,
-            title: title,
-            description: description,
-            category: category,
-            subcategory: subcategory,
-            level: level,
-            lang1_int: lang1_int,
-            lang2_int: lang2_int,
-            visibility_int: visibilityInt,
-        }
-        const json = await createDeck(data)
-        // console.log('Returned json: ', json)
-        setMsg(JSON.stringify(json))
-    }
+            const lang1_int = lang2int(lang1) as number;
+            const lang2_int = !isLangLearn ? lang2int(lang2) : null;
 
+            const payload = {
+                user_id: userID,
+                title,
+                description,
+                category,
+                subcategory,
+                level,
+                lang1_int,
+                lang2_int,
+                visibility_int: visibilityInt,
+            };
+            return createDeck(payload);
+        },
+
+        /* ❷ 成功時 */
+        onSuccess: (json) => {
+            setMsg(JSON.stringify(json));
+            // 例: ユーザーのデッキ一覧を再フェッチ
+            queryClient.invalidateQueries({ queryKey: ['decks', userID] });
+        },
+
+        /* ❸ 失敗時 */
+        onError: (e) => {
+            const err = e as ApiError;
+            showError(`${err.message} (status ${err.status ?? '??'})`);
+            setMsg('Error');
+        },
+    });
+
+    /* -------- JSX -------- */
     return (
         <div className={classParDiv}>
-            {/* <div className={classChildDiv}>
-                Deck:
-                <MySelect
-                    state={deckID}
-                    setState={setDeckID}
-                    optionValues={deckData.map((deck: any) => deck.deck_id)}
-                    optionTexts={deckData.map((deck: any) => deck.title)}
-                />
-            </div> */}
             <div className={classChildDiv}>
                 Title:
-                <MyTextbox
-                    state={title}
-                    setState={setTitle}
-                />
+                <MyTextbox state={title} setState={setTitle} />
             </div>
+
             <div className={classChildDiv}>
                 Description:
-                <MyTextbox
-                    state={description}
-                    setState={setDescription}
-                />
+                <MyTextbox state={description} setState={setDescription} />
             </div>
-            {orderBy !== undefined && setOrderBy !== undefined ?
+
+            {orderBy && setOrderBy && (
                 <div className={`${classChildDiv} items-start`}>
                     OrderBy:
-                    <MySelect
-                        state={orderBy}
-                        setState={setOrderBy}
-                        optionValues={orderByList}
-                    />
+                    <MySelect state={orderBy} setState={setOrderBy} optionValues={orderByList} />
                 </div>
-                : null}
+            )}
+
             <FormatCategory
                 category={category}
                 setCategory={setCategory}
@@ -139,14 +134,12 @@ export default function DeckSetter({
                 level={level}
                 setLevel={setLevel}
             />
+
             <div className={classChildDiv}>
                 Language 1:
-                <MySelect
-                    state={lang1}
-                    setState={setLang1}
-                    optionValues={langOptions}
-                />
+                <MySelect state={lang1} setState={setLang1} optionValues={langOptions} />
             </div>
+
             <div className={classChildDiv}>
                 Translation :
                 <MySelect
@@ -155,32 +148,24 @@ export default function DeckSetter({
                     optionValues={['true', 'false']}
                 />
             </div>
-            {isLangLearn ?
 
+            {isLangLearn && (
                 <div className={classChildDiv}>
                     Language 2:
-                    <MySelect
-                        state={lang2}
-                        setState={setLang2}
-                        optionValues={langOptions}
-                    />
+                    <MySelect state={lang2} setState={setLang2} optionValues={langOptions} />
                 </div>
-                :
-
-                null
-            }
-
+            )}
 
             <div className={`${classChildDiv} flex item-center justify-center py-6`}>
                 <button
-                    onClick={onClick}
-                    className="btn-primary"
+                    onClick={() => deckMutation.mutate()}
+                    className='btn-primary'
+                    disabled={deckMutation.isPending}
                 >
-                    Submit
-                </button>{msg}
+                    {deckMutation.isPending ? 'Saving…' : 'Submit'}
+                </button>
+                {msg}
             </div>
-
-
-        </div >
-    )
+        </div>
+    );
 }

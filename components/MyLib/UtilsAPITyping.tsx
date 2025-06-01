@@ -1,9 +1,14 @@
 // components/MyLib/UtilsAPITyping.tsx
 
+// -----------------------------------------------------
+// 残課題：複数の外部ファイルからインポートされる型を別ファイルに分けるか
+// -----------------------------------------------------
+
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
 import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+import { apiFetch } from '@/MyLib/apiFetch'
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';     // ★ フォールバック
 
 // ---------------- Interfaces for responses ----------------
 interface ReceivedText {
@@ -46,154 +51,7 @@ interface ReceivedDeck {
 //     search_text?: string | null,
 // }
 
-/** Build a query string from an object, skipping undefined/null values. */
-const createQueryString = (data: Record<string, any>) => {
-    return Object.entries(data)
-        .filter(([_, value]) => value !== undefined && value !== null)
-        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
-        .join('&');
-};
-
-// ---------------- API: GET routes ----------------
-
-/**
- * GET /api/typing/get_decklist_by_user
- */
-const getDeckListByUser = async (
-    userID: number | null,
-    nSelect: number = 10,
-    orderBy: string = 'title',
-) => {
-    // Build query
-    const data = {
-        n_select: nSelect,
-        order_by: orderBy,
-        // current_user is determined by your JWT, so userID
-        // might not be required if your backend is ignoring the input user_id.
-        // But if your FastAPI endpoint expects user_id in the query, include it:
-        user_id: userID,
-    };
-    const qs = createQueryString(data);
-    const url = `${BACKEND_URL}/api/typing/get_decklist_by_user?${qs}`;
-
-    const response = await fetchWithAuth(url, {
-        method: 'GET',
-    });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
-
-/**
- * GET /api/typing/get_decklist_basic
- */
-const getDeckListBasic = async (
-    lang1: string,
-    nSelect: number = 10,
-    orderBy: string = 'title',
-) => {
-    const data = {
-        lang1_int: lang2int(lang1),
-        n_select: nSelect,
-        order_by: orderBy,
-    };
-    const qs = createQueryString(data);
-    const url = `${BACKEND_URL}/api/typing/get_decklist_basic?${qs}`;
-
-    const response = await fetchWithAuth(url, { method: 'GET' });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
-
-/**
- * GET /api/typing/get_decklist_private
- */
-const getDeckListPrivate = async (
-    userID: number | null,
-    nSelect: number = 10,
-    orderBy: string = 'title',
-) => {
-    const data = {
-        user_id: userID,
-        n_select: nSelect,
-        order_by: orderBy,
-    };
-    const qs = createQueryString(data);
-    const url = `${BACKEND_URL}/api/typing/get_decklist_private?${qs}`;
-
-    const response = await fetchWithAuth(url, { method: 'GET' });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
-
-/**
- * GET /api/typing/get_decklist_by_category
- */
-const getDeckListByCategory = async (
-    category: string,
-    subcategory: string,
-    level: string,
-    nSelect: number = 10,
-    orderBy: string = 'title',
-) => {
-    const data = {
-        category,
-        subcategory,
-        level,
-        n_select: nSelect,
-        order_by: orderBy,
-    };
-    const qs = createQueryString(data);
-    const url = `${BACKEND_URL}/api/typing/get_decklist_by_category?${qs}`;
-
-    const response = await fetchWithAuth(url, { method: 'GET' });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
-
-
-/**
- * GET /api/typing/get_textlist_by_deck
- */
-const getTextListByDeck = async (
-    deckID: number,
-    nSelect: number = 10,
-    orderBy: string = 'title',
-) => {
-    const data = {
-        deck_id: deckID,
-        n_select: nSelect,
-        order_by: orderBy,
-    };
-    const qs = createQueryString(data);
-    const url = `${BACKEND_URL}/api/typing/get_textlist_by_deck?${qs}`;
-
-    const response = await fetchWithAuth(url, { method: 'GET' });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
-
-/**
- * GET /api/typing/get_categories_subcategories_levels
- */
-const getCategoriesSubcategoriesLevels = async () => {
-    const url = `${BACKEND_URL}/api/typing/get_categories_subcategories_levels`;
-    const response = await fetchWithAuth(url, { method: 'GET' });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
-
+// ---------------- Interfaces for responses ----------------
 // ---------------- API: POST routes ----------------
 interface PostTextOnly {
     // user_id: number,
@@ -238,71 +96,83 @@ interface PostDeck {
     shuffle?: boolean,
 }
 
-/**
- * POST /api/typing/create_text_only
- */
-const createTextOnly = async (data: PostTextOnly) => {
-    const url = `${BACKEND_URL}/api/typing/create_text_only`;
-    const response = await fetchWithAuth(url, {
+/** クエリ文字列生成 */
+const qs = (o: Record<string, any>) =>
+    Object.entries(o)
+        .filter(([, v]) => v !== undefined && v !== null)
+        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+        .join('&');
+
+/* ============ GET APIs ============ */
+
+/** GET /api/typing/get_decklist_by_user */
+export const getDeckListByUser = (userID: number | null, nSelect = 10, orderBy = 'title') =>
+    apiFetch<ReceivedDeck[]>(
+        `${BACKEND}/api/typing/get_decklist_by_user?${qs({ user_id: userID, n_select: nSelect, order_by: orderBy })}`,
+    );
+
+/** GET /api/typing/get_decklist_basic */
+export const getDeckListBasic = (lang1: string, nSelect = 10, orderBy = 'title') =>
+    apiFetch<ReceivedDeck[]>(
+        `${BACKEND}/api/typing/get_decklist_basic?${qs({
+            lang1_int: lang2int(lang1),
+            n_select: nSelect,
+            order_by: orderBy,
+        })}`,
+    );
+
+/** 以下同じパターンで… */
+export const getDeckListPrivate = (userID: number | null, nSelect = 10, orderBy = 'title') =>
+    apiFetch<ReceivedDeck[]>(
+        `${BACKEND}/api/typing/get_decklist_private?${qs({ user_id: userID, n_select: nSelect, order_by: orderBy })}`,
+    );
+
+export const getDeckListByCategory = (
+    category: string,
+    subcategory: string,
+    level: string,
+    nSelect = 10,
+    orderBy = 'title',
+) =>
+    apiFetch<ReceivedDeck[]>(
+        `${BACKEND}/api/typing/get_decklist_by_category?${qs({ category, subcategory, level, n_select: nSelect, order_by: orderBy })}`,
+    );
+
+export const getTextListByDeck = (deckID: number, nSelect = 10, orderBy = 'title') =>
+    apiFetch(
+        `${BACKEND}/api/typing/get_textlist_by_deck?${qs({ deck_id: deckID, n_select: nSelect, order_by: orderBy })}`,
+    );
+
+export const getCategoriesSubcategoriesLevels = () =>
+    apiFetch(`${BACKEND}/api/typing/get_categories_subcategories_levels/`);
+
+/* ============ POST APIs ============ */
+
+export const createTextOnly = (data: PostTextOnly) =>
+    apiFetch(`${BACKEND}/api/typing/create_text_only`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
 
-/**
- * POST /api/typing/create_text_deck
- */
-const createTextDeck = async (data: PostTextDeck) => {
-    const url = `${BACKEND_URL}/api/typing/create_text_deck`;
-    const response = await fetchWithAuth(url, {
+export const createTextDeck = (data: PostTextDeck) =>
+    apiFetch(`${BACKEND}/api/typing/create_text_deck`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
 
-/**
- * POST /api/typing/create_deck
- */
-const createDeck = async (data: PostDeck) => {
-    const url = `${BACKEND_URL}/api/typing/create_deck`;
-    const response = await fetchWithAuth(url, {
+export const createDeck = (data: PostDeck) =>
+    apiFetch(`${BACKEND}/api/typing/create_deck`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
-    if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-    return response.json();
-};
 
-// -------------- Export everything --------------
 export type {
     ReceivedText,
     ReceivedDeck,
     PostTextOnly,
     PostTextDeck,
     PostDeck,
-};
-export {
-    createDeck,
-    createTextOnly,
-    createTextDeck,
-    getDeckListByUser,
-    getDeckListBasic,
-    getDeckListPrivate,
-    getDeckListByCategory,
-    getTextListByDeck,
-    getCategoriesSubcategoriesLevels,
-    createQueryString,
 };

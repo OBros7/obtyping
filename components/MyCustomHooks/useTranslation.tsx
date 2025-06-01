@@ -1,30 +1,26 @@
-import { useRouter } from 'next/router'
-import { useEffect, useRef, useState } from 'react'
+// components/MyCustomHooks/useTranslation.tsx
+import { useRouter } from 'next/router';
+import { useMemo } from 'react';
 
-/*
-Add i18n next.config.js:
-https://btj0.com/blog/react/nextjs-i18n/
-https://zenn.dev/steelydylan/articles/nextjs-with-i18n
-official 
-https://nextjs-ja-translation-docs.vercel.app/docs/advanced-features/i18n-routing
-*/
+/** ja / en の 2 局面を持つ辞書をフラット化した型 */
+type FlatDict<T> = { [K in keyof T]: string };
 
-export default function useTranslation(langDictjson: object) {
-  const { locale } = useRouter()
-  const [langDict, setLangDict] = useState<{ [key in keyof typeof langDictjson]: string }>({})
-  // const langDict = useRef<{ [key in keyof typeof langDictjson]: string }>({})
+/**
+ * i18n helper
+ * @param dict - { key: { ja:'...', en:'...' } } 形式の辞書
+ * @returns   [ 現在言語だけを抽出したフラット辞書, locale ]
+ */
+export default function useTranslation<
+  T extends Record<string, { ja: string; en: string }>
+>(dict: T): [FlatDict<T>, string] {
+  const { locale } = useRouter();        // 'ja' | 'en' | undefined
+  const lang = (locale ?? 'en') as 'ja' | 'en';
 
-  useEffect(() => {
-    // use useEffect to prevent this from being executed at every rendering
-    type langDictKeys = keyof typeof langDictjson
-    let _langDict: { [key in langDictKeys]: string } = {}
-    for (const key in langDictjson) {
-      _langDict[key as langDictKeys] = langDictjson[key as langDictKeys][locale as string]
-    }
-    setLangDict(_langDict)
-    // langDict.current = _langDict
-  }, [locale])
+  /** フラット化はメモ化して再計算コストを節約 */
+  const flat = useMemo(() => {
+    const pairs = Object.entries(dict).map(([k, v]) => [k, v[lang]]);
+    return Object.fromEntries(pairs) as FlatDict<T>;
+  }, [dict, lang]);
 
-  return [langDict, locale]
-  // return [langDict.current, locale]
+  return [flat, lang];
 }

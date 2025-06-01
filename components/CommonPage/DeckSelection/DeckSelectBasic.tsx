@@ -7,10 +7,6 @@ import {
     ReceivedDeck,
 } from '@/MyLib/UtilsAPITyping'
 
-
-
-
-
 export default function DeckSelectBasic() {
     const [translater, locale] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
     const [lang1, setLang1] = useState(locale)
