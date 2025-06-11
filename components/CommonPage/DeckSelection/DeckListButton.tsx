@@ -12,12 +12,6 @@ interface DeckListProps {
 }
 
 export default function DeckList({ deckList, setLanguage }: DeckListProps) {
-    // if (!Array.isArray(deckList)) {
-    //     console.log('deckList:', deckList);
-    //     return <div>No deck data available</div>;
-    // }
-    console.log('***deckList***', deckList);
-
     return (
         <>
             {deckList.map(deck => (

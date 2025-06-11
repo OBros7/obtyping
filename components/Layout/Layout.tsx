@@ -24,8 +24,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { signOut } = useAuth();
   const { userData } = useUserContext();
 
-  console.log('userData', userData);
-
   return (
     // <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
     <div key={userData.loginStatus === true ? 'loggedIn' : 'loggedOut'} className='min-h-screen flex flex-col'>

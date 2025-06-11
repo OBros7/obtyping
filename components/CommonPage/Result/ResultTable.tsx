@@ -30,10 +30,12 @@ export default function ResultTable({ recordTopK, topK }: ResultTableProps) {
         </thead>
         <tbody>
           {recordTopK.map((record: any, i: number) => (
-            <tr key={record.id}>
+            <tr key={record.record_id}>
               <td className={tdClass}>{i + 1}</td>
               <td className={tdClass}>{record.score}</td>
-              <td className={tdClass}>{record.timestamp.slice(0, 10)}</td>
+              <td className={tdClass}>
+                {record.timestamp.slice(0, 10)}
+              </td>
             </tr>
           ))}
         </tbody>

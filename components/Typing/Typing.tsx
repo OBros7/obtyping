@@ -78,7 +78,7 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     useEffect(() => {
         if (status === 'result') {
             if (score > 0) {
-                const tempCpm = Math.round((score / minutes) * 100) / 100;
+                const tempCpm = Math.round(score / minutes);
                 setCpm(tempCpm);
                 const acc = score / (score + mistake);
                 setAccuracy(Math.round(acc * 10000) / 100);

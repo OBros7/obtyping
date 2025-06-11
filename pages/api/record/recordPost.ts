@@ -33,8 +33,6 @@ const recordPost = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    console.log('recordPostProcess')
-    console.log('data:', data)
     const response = await fetch(url, {
       method: 'POST',
       headers: {

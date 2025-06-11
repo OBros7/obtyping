@@ -22,7 +22,6 @@ interface Props {
 
 export default function FormatCategory(props: Props) {
   const { category, setCategory, subcategory, setSubcategory, level, setLevel, classParent = minibox } = props
-  const { locale } = useRouter() // （いまは未使用）
 
   /* ---------- React Query で API 取得 ---------- */
   // 新 (v5 スタイル)
@@ -38,7 +37,6 @@ export default function FormatCategory(props: Props) {
     if (isError && error) {
       const err = error as ApiError;
       showError(`${err.message} (status ${err.status ?? '??'})`);
-      console.log('失敗')
     }
   }, [isError, error]);
 
@@ -46,6 +44,27 @@ export default function FormatCategory(props: Props) {
   const categories = data ? Object.keys(data.cat_subcat) : []
   const levelList = data?.levels ?? []
   const subcategoryList = data ? data.cat_subcat[category] ?? [] : []
+
+  // ★ 1) API でデータが取れた瞬間に category を決める
+  useEffect(() => {
+    if (data && categories.length && category === '') {
+      setCategory(categories[0]);           // ← 最初のカテゴリを自動セット
+    }
+  }, [data, categories, category]);
+
+  // ★ 2) category が決まった後に subcategory を決める
+  useEffect(() => {
+    if (subcategoryList.length && subcategory === '') {
+      setSubcategory(subcategoryList[0]);   // ← 最初のサブカテゴリを自動セット
+    }
+  }, [subcategoryList, subcategory]);
+
+  // ★ 3) level も同様
+  useEffect(() => {
+    if (levelList.length && level === '') {
+      setLevel(levelList[0]);               // ← 最初のレベルを自動セット
+    }
+  }, [levelList, level]);
 
   // category が変わったら subcategory リストをリセット
   useEffect(() => { props.setSubcategory('') }, [category])
