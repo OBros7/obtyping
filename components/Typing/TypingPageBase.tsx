@@ -65,23 +65,7 @@ export default function TypingPageBase({
         0: 'free'
     }
 
-    // useEffect(() => {// shuffle
-    //     console.log('textList', textList, textList[0].text11)
-    //     if (textListLength === 0) {
-    //       setStatus('menu select')
-    //     } else {
-    //       // shuffle the list of text and create a list of random sentences
-    //       // create a list of random numbers from 1 to textListLength
-    //       const randomList = Array.from({ length: textListLength }, (_, i) => i);
-    //       // shuffle the list
-    //       for (let i = randomList.length - 1; i > 0; i--) {
-    //         const j = Math.floor(Math.random() * (i + 1));
-    //         [randomList[i], randomList[j]] = [randomList[j], randomList[i]];
-    //       }
-    //       setOrderList(randomList)
-    //       setCurrentTextIndex(randomList[0])
-    //     }
-    //   }, [])
+
     const getQueryParameter = (param: string): string | null => {
         const url = new URL(window.location.href);
         return url.searchParams.get(param);
@@ -96,7 +80,6 @@ export default function TypingPageBase({
         if (setLanguageType && resolvedLanguageType) {
             setLanguageType(resolvedLanguageType);
         }
-
     }, [])
 
     useEffect(() => {
@@ -155,6 +138,7 @@ export default function TypingPageBase({
                     <>
                         <div className="w-full text-center text-5xl mt-8 mb-0">
                             <TimerBase
+                                key={timeLimit}
                                 totalTime={timeLimit}
                                 timePassed={timePassed}
                                 setTimePassed={setTimePassed}

@@ -1,76 +1,93 @@
-import React, { useEffect, useState } from 'react'
+// components/DeckSelectCategory.tsx
+'use client'
+import React, { useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
 import { SearchBox, DeckListButton } from './'
-import {
-    getDeckListByCategory,
-    // getDeckListBySearch,
-    ReceivedDeck,
-} from '@/MyLib/UtilsAPITyping'
+import { getDeckListByCategory, ReceivedDeck } from '@/MyLib/UtilsAPITyping'
 import ContentLoader from 'react-content-loader'
+import { useMutation } from '@tanstack/react-query'
+import { showError } from 'utils/toast'
+import { ApiError } from '@/MyLib/apiError'
 
 const parentClass = 'flex flex-col items-center justify-center p-4 rounded-md'
-
 const buttonClass = 'btn-primary rounded-md m-4 mt-8'
 
 export default function DeckSelectCategory() {
-    const [searchType, setSearchType] = useState<'category' | 'text'>('category')
+    /* -------- 検索条件（フォーム状態） -------- */
     const [category, setCategory] = useState('')
     const [subcategory, setSubcategory] = useState('')
     const [level, setLevel] = useState('')
     const [nSelect, setNSelect] = useState(10)
     const [orderBy, setOrderBy] = useState('title')
+
+    /* -------- 検索結果 -------- */
     const [deckList, setDeckList] = useState<ReceivedDeck[]>([])
 
-    const searchOnClick = async () => {
-        // send get request
-        let resJSON
-        let userID = 1
-        if (searchType === 'category') {
-            resJSON = await getDeckListByCategory(
-                category,
-                subcategory,
-                level,
-                nSelect,
-                orderBy,
-            )
-        } else if (searchType === 'text') {
-            // resJSON = await getDeckListBySearch(
-            //     'search_text',
-            //     nSelect,
-            //     orderBy,
-            // )
-        } else {
-            console.log('url not found')
-            return
+    /* -------- React Query mutation -------- */
+    const deckSearch = useMutation({
+        // 1. 叩きたい API を mutationFn に
+        mutationFn: (p: {
+            category: string
+            subcategory: string
+            level: string
+            nSelect: number
+            orderBy: string
+        }) =>
+            getDeckListByCategory(
+                p.category,
+                p.subcategory,
+                p.level,
+                p.nSelect,
+                p.orderBy,
+            ),
+
+        // 2. 成功時はステートに結果をセット
+        onSuccess: (data) => setDeckList(data),
+
+        // 3. 失敗時はトースト表示
+        onError: (e) => {
+            const err = e as unknown
+            if (err instanceof ApiError)
+                showError(`${err.message} (status ${err.status ?? '??'})`)
+            else showError('通信に失敗しました')
+        },
+    })
+
+    /* -------- ボタンを押したら mutate() -------- */
+    // const onSearch = () =>
+    //     deckSearch.mutate({ category, subcategory, level, nSelect, orderBy })
+
+    const onSearch = async () => {
+        try {
+            deckSearch.mutate({ category, subcategory, level, nSelect, orderBy })
+        } catch (e) {
+            // ここに来るとしたら mutateAsync を使っているか provider が無い
+            console.error('unhandled!!!', e)
         }
-
-        setDeckList(resJSON)
-        console.log(resJSON)
     }
-
-    const SkeltonDeckSelectCategory = () => {
-        return (
-            <div className='flex flex-col items-center justify-center p-4 rounded-md'>
-                <ContentLoader
-                    speed={2}
-                    width={400}
-                    height={160}
-                    viewBox='0 0 400 160'
-                    backgroundColor='#f3f3f3'
-                    foregroundColor='#ecebeb'
-                >
-                    <rect x='0' y='0' rx='3' ry='3' width='400' height='10' />
-                    <rect x='0' y='20' rx='3' ry='3' width='400' height='10' />
-                    <rect x='0' y='40' rx='3' ry='3' width='400' height='10' />
-                </ContentLoader>
-            </div>
-        )
-    }
+    /* -------- Skeleton コンポーネント -------- */
+    //   const Skeleton = () => (
+    //     <div className='flex flex-col items-center justify-center p-4 rounded-md'>
+    //       <ContentLoader
+    //         speed={2}
+    //         width={400}
+    //         height={160}
+    //         viewBox='0 0 400 160'
+    //         backgroundColor='#f3f3f3'
+    //         foregroundColor='#ecebeb'
+    //       >
+    //         <rect x='0' y='0' rx='3' ry='3' width='400' height='10' />
+    //         <rect x='0' y='20' rx='3' ry='3' width='400' height='10' />
+    //         <rect x='0' y='40' rx='3' ry='3' width='400' height='10' />
+    //       </ContentLoader>
+    //     </div>
+    //   )
 
     return (
         <Layout>
             <MainContainer addClass='p-4'>
                 <div className={parentClass}>
+                    {/* 入力フォーム */}
                     <SearchBox
                         category={category}
                         setCategory={setCategory}
@@ -79,7 +96,16 @@ export default function DeckSelectCategory() {
                         level={level}
                         setLevel={setLevel}
                     />
-                    <button className={buttonClass} onClick={searchOnClick}> Search </button>
+
+                    {/* 検索ボタン */}
+                    <button
+                        className={buttonClass}
+                        onClick={onSearch}
+                        disabled={deckSearch.isPending}
+                    >
+                        {deckSearch.isPending ? 'Loading…' : 'Search'}
+                    </button>
+
                     <DeckListButton deckList={deckList} />
                 </div>
             </MainContainer>

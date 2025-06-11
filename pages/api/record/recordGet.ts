@@ -42,7 +42,6 @@ const recordGet = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    console.log('recordGetProcess')
     const response = await fetch(fullUrl, options)
 
     if (!response.ok) {

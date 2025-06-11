@@ -128,15 +128,12 @@ export default function useAuth() {
      */
     const refreshUserSession = useCallback(async () => {
         try {
-            console.log('Refreshing user session...');
             const resp = await fetchWithAuth(sessionURL, {
                 method: 'GET',
             });
             await handleAuthResponse(resp, 'Failed to get current user session.');
-            console.log('User session refreshed.');
             // No redirect on error; we just console.error
         } catch (error) {
-            console.error('Error refreshing user session:', error);
             // Optionally, you can handle logout if 401 occurs, etc.
         }
     }, [handleAuthResponse]);

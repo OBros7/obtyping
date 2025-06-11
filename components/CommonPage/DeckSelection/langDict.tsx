@@ -71,6 +71,18 @@ const langDict = {
         ja: 'レベル',
         en: 'Level',
     },
+    fillTitleAndText: {
+        ja: 'タイトルと本文を入力してください',
+        en: 'Please fill in the title and text',
+    },
+    selectDeck: {
+        ja: 'デッキを選択してください',
+        en: 'Please select a deck',
+    },
+    loading: {
+        ja: '読み込み中…',
+        en: 'Loading…',
+    },
 
 }
 
