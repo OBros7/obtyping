@@ -27,8 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Execute fetch request and handle errors
   try {
-    console.log('TypingUrl:', url)
-    console.log('TypingPostProcess')
     const response = await fetch(url, options)
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`)

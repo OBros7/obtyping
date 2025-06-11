@@ -12,10 +12,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { endpoint, data, method } = req.body
   const url = `${fastAPIURL}${endpoint}`
 
-  // console.log('*** Process START ***')
-  // console.log('URL:', url)
-  // console.log('body:', req.body)
-
   // Create the query string if it's a GET request
   const queryString = data ? createQueryString(data) : '' // dataがある場合のみクエリを作成
   // const queryString = createQueryString(data) // ここで生成されるクエリがFastAPI側で期待するものと一致するように注意
@@ -35,7 +31,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const response = await fetch(fullUrl, options)
-    console.log('FastAPI Response Status:', response.status)
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`)
     }

@@ -1,61 +1,76 @@
 // components/MyLib/UtilsAPIUser.tsx
-let isRefreshing = false;
+import { apiFetch } from '@/MyLib/apiFetch';
+import {
+    useMutation,
+    useQuery,
+    useQueryClient,
+    UseMutationOptions,
+    UseQueryOptions,
+} from '@tanstack/react-query';
 
-/**
- * fetchWithAuth
- *
- * - Attaches "Authorization: Bearer <token>" header if we have one.
- * - If the server responds with 401, it attempts to refresh the token.
- * - If refresh fails, it throws an error and we can log out.
- */
-export async function fetchWithAuth(input: RequestInfo, init: RequestInit = {}): Promise<Response> {
-    init.headers = init.headers || {};
+/* ---------- 既存の fetchWithAuth はそのまま ---------- */
+export { fetchWithAuth } from './fetchWithAuth'; // ★既存ファイル名に応じて修正
 
-    const accessToken = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
-    if (accessToken) {
-        (init.headers as Record<string, string>)['Authorization'] = `Bearer ${accessToken}`;
-    }
-
-    // Always include credentials so the refresh cookie is sent if needed.
-    init.credentials = 'include';
-
-    let response = await fetch(input, init);
-
-    // If we get a 401, try refreshing the token once.
-    if (response.status === 401 && !isRefreshing) {
-        console.log('response.status === 401... refreshing token...');
-        isRefreshing = true;
-        const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user/refresh`, {
-            method: 'POST',
-            credentials: 'include',
-        });
-        if (refreshResponse.ok) {
-            // Successfully refreshed
-            console.log('Token refreshed successfully');
-            const refreshData = await refreshResponse.json();
-            // Save the new access token
-            localStorage.setItem('accessToken', refreshData.access_token);
-            isRefreshing = false;
-
-            // Retry the original request with the new access token
-            const retryInit: RequestInit = {
-                ...init,
-                headers: {
-                    ...init.headers,
-                    Authorization: `Bearer ${refreshData.access_token}`,
-                },
-            };
-            response = await fetch(input, retryInit);
-        } else {
-            // Refresh token failed => log out
-            console.error('Token refresh failed... logging out');
-            localStorage.removeItem('accessToken');
-            isRefreshing = false;
-            throw new Error('Session has expired. Please log in again.');
-
-        }
-    }
-
-    return response;
+/* ---------- 型 ---------- */
+export interface LoginPayload {
+    email: string;
+    password: string;
 }
 
+export interface LoginResponse {
+    access_token: string;
+}
+
+export interface User {
+    id: number;
+    username: string;
+    email: string;
+    // …必要に応じて追加
+}
+
+/* ---------- フェッチ関数 ---------- */
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';
+
+export const loginUser = (data: LoginPayload) =>
+    apiFetch<LoginResponse>(
+        `${BACKEND}/api/user/login`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        },
+        { withAuth: false }, // ← 第 3 引数へ
+    );
+
+export const fetchCurrentUser = () =>
+    apiFetch<User>(`${BACKEND}/api/user/me`); // 例: /api/user/me が自分を返す想定
+
+/* ---------- React Query フック ---------- */
+
+/** ログイン */
+export const useLogin = (
+    options: UseMutationOptions<LoginResponse, Error, LoginPayload, unknown> = {},
+) => {
+    const qc = useQueryClient();
+
+    return useMutation({
+        mutationFn: loginUser,
+        onSuccess: (data) => {
+            // 新しいトークンを保存して /me をリフェッチ
+            localStorage.setItem('accessToken', data.access_token);
+            qc.invalidateQueries({ queryKey: ['currentUser'] });
+        },
+        ...options,
+    });
+};
+
+/** 現在ログイン中のユーザー */
+export const useCurrentUser = (
+    options: Omit<UseQueryOptions<User, Error>, 'queryKey' | 'queryFn'> = {},
+) =>
+    useQuery({
+        queryKey: ['currentUser'],
+        queryFn: fetchCurrentUser,
+        staleTime: 5 * 60 * 1000, // 5 分はキャッシュ
+        ...options,
+    });

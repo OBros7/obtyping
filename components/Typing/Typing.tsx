@@ -1,82 +1,87 @@
-import React, { useEffect, useState } from 'react'
-import { Layout, MainContainer } from '@/Layout'
-import { TypingPageBase, ReadyScreen, langDict } from './'
-import { creteRandomDeck } from './UtilsTyping'
+'use client';
+import React, { useEffect, useState } from 'react';
+import { Layout, MainContainer } from '@/Layout';
+import { TypingPageBase, ReadyScreen, langDict } from './';
+import { creteRandomDeck } from './UtilsTyping';
 import {
     ReceivedText,
     getTextListByDeck,
-} from '@/MyLib/UtilsAPITyping'
-import { useTranslation } from '@/MyCustomHooks'
-import { ResultDefault } from '@/CommonPage/Result'
+} from '@/MyLib/UtilsAPITyping';
+import { useTranslation } from '@/MyCustomHooks';
+import { ResultDefault } from '@/CommonPage/Result';
+import { useQuery } from '@tanstack/react-query';
+import { showError } from 'utils/toast';
+import { ApiError } from '@/MyLib/apiError';
 
+/* ---------- props ---------- */
 interface TypingProps {
-    deckId: number
-    minutes: number
+    deckId: number;
+    minutes: number;
 }
 
-
 export default function Typing({ deckId, minutes }: TypingProps) {
-    const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
-    const [textList, setTextList] = useState<ReceivedText[]>([])
-    const [status, setStatus] = useState<'waiting' | 'ready' | 'setting' | 'running' | 'result'>('waiting')
-    const [score, setScore] = useState(0)
-    const [mistake, setMistake] = useState(0)
-    const [languageType, setLanguageType] = useState<'english' | 'japanese' | 'free'>('english')
-    const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m')
-    const [cpm, setCpm] = useState(0)
-    const [accuracy, setAccuracy] = useState(0)
-    const [recordScore, setRecordScore] = useState(0)
+    /* --- i18n --- */
+    const [trans] = useTranslation(langDict);
+
+    /* --- React Query: テキスト取得 --- */
+    const {
+        data: textList = [],
+        isLoading,
+        isError,
+        error,
+    } = useQuery<ReceivedText[], ApiError>({
+        queryKey: ['texts', deckId, minutes],
+        queryFn: () =>
+            deckId < 0
+                ? Promise.resolve(creteRandomDeck(deckId, minutes))
+                : getTextListByDeck(deckId, 10, 'title'),
+        staleTime: 5 * 60 * 1000,
+    });
+
+    /* --- エラーならトースト表示 --- */
+    useEffect(() => {
+        if (isError && error) {
+            showError(`${error.message} (status ${error.status ?? '??'})`);
+        }
+    }, [isError, error]);
+
+    /* --- UI / 計測 states（旧コードを維持） --- */
+    const [status, setStatus] = useState<'waiting' | 'ready' | 'setting' | 'running' | 'result'>(
+        'waiting',
+    );
+    const [score, setScore] = useState(0);
+    const [mistake, setMistake] = useState(0);
+    const [languageType, setLanguageType] = useState<'english' | 'japanese' | 'free'>('english');
+    const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m');
+    const [cpm, setCpm] = useState(0);
+    const [accuracy, setAccuracy] = useState(0);
+    const [recordScore, setRecordScore] = useState(0);
     const [mostMistakenKeys, setMostMistakenKeys] = useState<{ key: string; count: number }[]>([]);
 
-
+    /* --- データ取得後に waiting へ遷移 --- */
     useEffect(() => {
-        async function fetchTextList() {
-            let receivedTexts: ReceivedText[] = [];
-
-            if (deckId < 0) {
-                receivedTexts = creteRandomDeck(deckId, minutes);
-            } else {
-                receivedTexts = await getTextListByDeck(deckId, 10, 'title');
-            }
-
-            setTextList(receivedTexts);
-            if (receivedTexts.length > 0) {
-                setStatus('waiting');
-            }
+        if (!isLoading && textList.length > 0) {
+            setStatus('waiting');
         }
+    }, [isLoading, textList]);
 
-        // console.log('deckId', deckId, 'minutes', minutes);
-        fetchTextList();
-    }, [deckId, minutes]);
-
+    /* --- スペースキーで ready 回送 --- */
     useEffect(() => {
-        // console.log('textlist', textList)
-    }, [textList])
-
-    useEffect(() => {
-        const handleSpacePress = (event: KeyboardEvent) => {
-            if (event.code === "Space" && status === 'waiting') {
-                setStatus('ready');
-            }
+        const handleSpacePress = (e: KeyboardEvent) => {
+            if (e.code === 'Space' && status === 'waiting') setStatus('ready');
         };
-
         window.addEventListener('keydown', handleSpacePress);
+        return () => window.removeEventListener('keydown', handleSpacePress);
+    }, [status]);
 
-        return () => {
-            window.removeEventListener('keydown', handleSpacePress);
-        };
-    }, [status, setStatus]);
-
+    /* --- 結果計算ロジック（旧コードそのまま） --- */
     useEffect(() => {
-        if (status === "result") {
+        if (status === 'result') {
             if (score > 0) {
-                // console.log('score', score, 'mistake', mistake, 'minutes', minutes)
-                const tempCpm = Math.round((score / minutes) * 100) / 100;
+                const tempCpm = Math.round(score / minutes);
                 setCpm(tempCpm);
-                const calculatedAccuracy = score / (score + mistake);
-                // 小数点第二位で四捨五入
-                const roundedAccuracy = Math.round(calculatedAccuracy * 100) / 100;
-                setAccuracy(roundedAccuracy * 100);
+                const acc = score / (score + mistake);
+                setAccuracy(Math.round(acc * 10000) / 100);
             } else {
                 setCpm(0);
                 setAccuracy(0);
@@ -85,99 +90,78 @@ export default function Typing({ deckId, minutes }: TypingProps) {
         }
     }, [status, score, minutes, mistake]);
 
-    // cpmとaccuracyが更新された後にrecordScoreを更新
     useEffect(() => {
-        if (status === "result" && score > 0) {
-            setRecordScore(Math.round(cpm * accuracy / 100));
+        if (status === 'result' && score > 0) {
+            setRecordScore(Math.round((cpm * accuracy) / 100));
         }
     }, [cpm, accuracy, score, status]);
 
+    /* --- ハンドラ --- */
     const handleReset = () => {
-        allReset();
-        setStatus('waiting');
-    }
-
-    const allReset = () => {
         setScore(0);
         setMistake(0);
         setCpm(0);
         setAccuracy(0);
         setRecordScore(0);
-    }
+        setStatus('waiting');
+    };
 
-    const handleBackToHome = () => {
-        window.location.href = '/';
-    }
+    const handleBackToHome = () => (window.location.href = '/');
+
+    /* ---------- JSX ---------- */
     return (
         <Layout>
             <MainContainer addClass='p-4'>
-                {/* <button
-                    onClick={() => setStatus(status === "running" ? "result" : "running")}
-                    className='btn-second'
-                >Toggle Status</button> */}
-
-                {status === 'waiting' ? (
-                    // <div className="w-full text-center text-5xl mt-48 mb-48">
-                    <div className="flex w-full justify-center items-center text-center text-5xl h-96">
-                        {translater.pleasePressSpace}
+                {isLoading ? (
+                    <div className='flex w-full justify-center items-center text-center text-5xl h-96'>
+                        {trans.loading}
+                    </div>
+                ) : status === 'waiting' ? (
+                    <div className='flex w-full justify-center items-center text-center text-5xl h-96'>
+                        {trans.pleasePressSpace}
                     </div>
                 ) : status === 'ready' ? (
-                    <div className="flex w-full justify-center items-center text-center text-5xl h-96">
-                        <ReadyScreen
+                    <div className='flex w-full justify-center items-center text-center text-5xl h-96'>
+                        <ReadyScreen status={status} setStatus={setStatus} />
+                    </div>
+                ) : status === 'running' ? (
+                    textList.length > 0 && (
+                        <TypingPageBase
+                            textList={textList}
                             status={status}
                             setStatus={setStatus}
+                            score={score}
+                            setScore={setScore}
+                            mistake={mistake}
+                            setMistake={setMistake}
+                            languageType={languageType}
+                            setLanguageType={setLanguageType}
+                            mode={mode}
+                            mostMistakenKeys={mostMistakenKeys}
+                            setMostMistakenKeys={setMostMistakenKeys}
                         />
-                    </div>
-                ) : status === 'running' ?
-                    <>
-                        {/* <div>
-                            <p>Minutes: {minutes}</p>
-                            <p>Text List: </p>
-                            Check if textList is not empty before mapping
-                            {textList && textList.length > 0 && textList.map((text, index) => (
-                                <p key={index}>{text.text11}</p>
-                            ))}
-                        </div> */}
-
-                        {textList && textList.length > 0 && (
-                            <TypingPageBase
-                                textList={textList}
-                                status={status}
-                                setStatus={setStatus}
-                                score={score}
-                                setScore={setScore}
-                                mistake={mistake}
-                                setMistake={setMistake}
-                                languageType={languageType}
-                                setLanguageType={setLanguageType}
-                                mode={mode}
-                                mostMistakenKeys={mostMistakenKeys}
-                                setMostMistakenKeys={setMostMistakenKeys}
-                            />
-                        )}
-                    </>
-                    :
+                    )
+                ) : (
                     <ResultDefault
                         deckId={deckId}
                         minutes={minutes}
                         record={recordScore}
-                        unit={''}
-                        resultBoxText={'Your typing speed is '}
-                        supplementaryItem1={"Accuracy : "}
+                        unit=''
+                        resultBoxText='Your typing speed is '
+                        supplementaryItem1='Accuracy : '
                         supplementaryRecord1={accuracy}
-                        supplementaryUnit1={"%"}
-                        supplementaryItem2={"cpm : "}
+                        supplementaryUnit1='%'
+                        supplementaryItem2='cpm : '
                         supplementaryRecord2={cpm}
-                        handlePlayAgain={() => handleReset()}
-                        handleBackToHome={() => handleBackToHome()}
-                        higherBetter={true}
+                        handlePlayAgain={handleReset}
+                        handleBackToHome={handleBackToHome}
+                        higherBetter
                         mostMistakenKeys={mostMistakenKeys}
                         setMostMistakenKeys={setMostMistakenKeys}
                         mistake={mistake}
                     />
-
-                }
+                )}
             </MainContainer>
         </Layout>
-    )
+    );
 }
