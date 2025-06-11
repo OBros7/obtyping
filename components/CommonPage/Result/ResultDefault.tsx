@@ -20,7 +20,6 @@ import {
   ReceivedRecordTime,
 } from '@/MyLib/UtilsAPIRecord';
 import { useQueryClient } from '@tanstack/react-query';
-import { signIn } from 'next-auth/react';
 import type { ChartOptions } from 'chart.js';
 
 /* ----- Chart.js グローバルオプション ----- */
@@ -288,7 +287,7 @@ export default function ResultDefault({
       ) : (
         <button
           className="text-white text-3xl font-bold bg-green-500 hover:bg-green-700 p-4 rounded m-4"
-          onClick={() => signIn()}
+        // onClick={() => ()}
         >
           {translater.signinToRecord}
         </button>
