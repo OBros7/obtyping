@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useUserContext } from '@contexts/UserContext';
 import { useTranslation } from '@/MyCustomHooks';
-
+import { useRouter } from 'next/router';
 import {
   ResultBox,
   ResultTable,
@@ -84,6 +84,7 @@ export default function ResultDefault({
   ];
   const { userData } = useUserContext();
   const qc = useQueryClient();
+  const Router = useRouter();
 
   /* ---------------- React-Query (取得系) ---------------- */
   const { data: recentRecords = [] } = useRecentRecords(
@@ -287,7 +288,7 @@ export default function ResultDefault({
       ) : (
         <button
           className="text-white text-3xl font-bold bg-green-500 hover:bg-green-700 p-4 rounded m-4"
-        // onClick={() => ()}
+          onClick={() => Router.push('/account/signin')}
         >
           {translater.signinToRecord}
         </button>
