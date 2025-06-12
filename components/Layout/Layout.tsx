@@ -50,11 +50,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div {...headerBox}>
-          {userData.loginStatus === true ? (
-            < HeaderLink href='/payment/payment' text='Subscribe!' addClass='outline outline-white outline-2 font-bold' />
-          ) : (
-            <HeaderLink href='/account/signin' text='SignIn!' addClass='outline outline-white outline-2 font-bold' />
-          )}
+          {userData.loginStatus === false ? (
+            <HeaderLink
+              href='/account/signin'
+              text='SignIn!'
+              addClass='outline outline-white outline-2 font-bold'
+            />
+          ) : userData.subscriptionStatus === false ? (
+            <HeaderLink
+              href='/payment/payment'
+              text='Subscribe!'
+              addClass='outline outline-white outline-2 font-bold'
+            />
+          ) : null}
           <HamburgerMenu userData={userData} signOut={() => signOut()} />
 
         </div>

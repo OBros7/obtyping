@@ -8,7 +8,7 @@ interface Props {
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
-export default function ManagePortalButton({ className = 'btn-secondary' }: Props) {
+export default function ManagePortalButton({ className = 'btn-primary' }: Props) {
     const [loading, setLoading] = useState(false);
 
     const openPortal = async () => {
