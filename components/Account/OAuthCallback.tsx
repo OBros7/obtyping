@@ -14,8 +14,10 @@ const OAuthCallback = () => {
             // debug
             console.log('OAuthCallback cookies:', cookies);
             const tokenCookie = cookies.find(c => c.trim().startsWith('access_token='));
+
             if (tokenCookie) {
                 const localAccessToken = tokenCookie.split('=')[1];
+                localStorage.setItem('accessToken', localAccessToken);
                 // delete access_token cookie
                 // document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
                 (async () => {
