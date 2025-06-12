@@ -21,12 +21,11 @@ export default function HomeMain() {
           <button
             className="m-20 bg-blue-500 hover:bg-blue-700 text-white text-4xl font-bold py-6 px-16 rounded bg-center bg-cover">
             <Link href={trialUrl}>
-              <a>{translater.startNow}</a>
+              {translater.startNow}
             </Link>
           </button>
         </div>
       </div>
-
       <MainContainer addClass='p-4'>
 
         <div className={categoryBoxClass} >
@@ -88,5 +87,5 @@ export default function HomeMain() {
         </div>
       </MainContainer>
     </Layout>
-  )
+  );
 }

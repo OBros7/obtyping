@@ -34,12 +34,14 @@ export default function HamburgerMenu({ userData, signOut }: HamburgerMenuProp) 
             >
                 <GiHamburgerMenu size={32} />
             </button>
-
             {isOpen && (
                 <ul className='absolute right-0 mt-2 bg-white text-black p-2 rounded shadow-md z-50'>
                     <li className='mb-1'>
-                        <Link href='/account/setting'>
-                            <a onClick={() => setIsOpen(false)} className='block p-1'>Settings</a>
+                        <Link
+                            href='/account/setting'
+                            onClick={() => setIsOpen(false)}
+                            className='block p-1'>
+                            Settings
                         </Link>
                     </li>
                     {/* {session && session.user && paymentStatus !== 'paid' && (
@@ -50,15 +52,19 @@ export default function HamburgerMenu({ userData, signOut }: HamburgerMenuProp) 
                         </li>
                     )} */}
                     <li>
-                        <Link href='/record'>
-                            <a onClick={() => setIsOpen(false)} className='block p-1'>Record</a>
+                        <Link href='/record' onClick={() => setIsOpen(false)} className='block p-1'>
+                            Record
                         </Link>
                     </li>
                     <li>
-                        <Link href='' locale={locale === 'ja' ? 'en' : 'ja'} passHref>
-                            <a className='block p-1'>
-                                {locale === 'ja' ? 'English' : '日本語'}
-                            </a>
+                        <Link
+                            href=''
+                            locale={locale === 'ja' ? 'en' : 'ja'}
+                            passHref
+                            className='block p-1'>
+
+                            {locale === 'ja' ? 'English' : '日本語'}
+
                         </Link>
                     </li>
                     {userData.loginStatus === true ? (
@@ -74,5 +80,5 @@ export default function HamburgerMenu({ userData, signOut }: HamburgerMenuProp) 
             )
             }
         </div >
-    )
+    );
 }
