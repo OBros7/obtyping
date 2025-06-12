@@ -2,7 +2,7 @@ import React from 'react'
 import { AppCard, langDict, MenuCard, PreparationCard } from './'
 import { Layout, MainContainer } from '@/Layout'
 import { useTranslation } from '@/MyCustomHooks'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import Link from 'next/link';
 
 export default function HomeMain() {
