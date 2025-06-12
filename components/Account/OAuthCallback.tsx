@@ -11,6 +11,8 @@ const OAuthCallback = () => {
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const cookies = document.cookie.split(';');
+            // debug
+            console.log('OAuthCallback cookies:', cookies);
             const tokenCookie = cookies.find(c => c.trim().startsWith('access_token='));
             if (tokenCookie) {
                 const localAccessToken = tokenCookie.split('=')[1];

@@ -19,7 +19,7 @@ export default function Signin() {
               <GoogleLogin />
             </div>
             <div className=' rounded m-4 p-4'>
-              <TabSwitcher text1='Login' text2='Signin' isSwitch={newUser} setIsSwitch={setNewUser} />
+              <TabSwitcher text1='Login' text2='Signup' isSwitch={newUser} setIsSwitch={setNewUser} />
               {newUser ? (
                 <>
                   <SignupForm btnClass={signinButtonClass} />
