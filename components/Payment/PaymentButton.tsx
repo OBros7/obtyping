@@ -1,17 +1,23 @@
-import React, { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
+// --- components/Payment/PaymentButton.tsx ---
+import { useState } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
+import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
 
 interface PaymentButtonProps {
+    /** The Stripe Price-ID of the plan the user is buying */
     priceId: string;
     text: string;
     className?: string;
 }
 
-const url = process.env.NEXT_PUBLIC_BACKEND_URL + '/api/stripe/create_checkout_session'
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
 
-
-export default function PaymentButton({ priceId, text, className = 'btn-primary' }: PaymentButtonProps) {
+export default function PaymentButton({
+    priceId,
+    text,
+    className = 'btn-primary',
+}: PaymentButtonProps) {
     const [loading, setLoading] = useState(false);
 
     const redirectToCheckout = async () => {
@@ -19,45 +25,38 @@ export default function PaymentButton({ priceId, text, className = 'btn-primary'
 
         const stripe = await loadStripe(STRIPE_PUBLIC_KEY);
         if (!stripe) {
+            console.error('Stripe not initialised');
             setLoading(false);
             return;
         }
 
-        const data = {// rewrite data to match the backend
-            // user_id: userID
-            price_id: priceId
-        }
-
-        const response = await fetch(`${url}?price_id=${encodeURIComponent(priceId)}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        // 1️⃣ Call your FastAPI endpoint *with auth*
+        const res = await fetchWithAuth(
+            `${BACKEND_URL}/api/stripe/create-checkout-session`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ price_id: priceId }),
             },
-        });
+        );
 
-
-        if (response.ok) {
-            const session = await response.json();
-            const { error } = await stripe.redirectToCheckout({
-                sessionId: session.id,
-            });
-
-            if (error) {
-                console.error("Error redirecting to checkout:", error.message);
-            }
-        } else {
-            console.error("Error creating checkout session:", await response.text());
+        if (!res.ok) {
+            console.error('Checkout session error', await res.text());
+            setLoading(false);
+            return;
         }
 
-        setLoading(false);
-    };
+        // 2️⃣ FastAPI returns { checkout_url }
+        const { checkout_url } = (await res.json()) as { checkout_url: string };
+        window.location.href = checkout_url; // client-side redirect
 
+        // No need to call stripe.redirectToCheckout because FastAPI already
+        // gives us the hosted URL.
+    };
 
     return (
         <button onClick={redirectToCheckout} disabled={loading} className={className}>
-            {loading ? "Loading..." : text}
+            {loading ? 'Redirecting…' : text}
         </button>
     );
-};
-
-
+}
