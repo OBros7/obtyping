@@ -13,8 +13,8 @@ export default function HeaderLink({ href, text, addClass = '', attrs = {} }: He
   return (
     <div className={addClass} {...attrs}>
       <Link href={href}>
-        <a>{text}</a>
+        {text}
       </Link>
     </div>
-  )
+  );
 }

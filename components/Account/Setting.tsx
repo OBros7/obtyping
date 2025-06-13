@@ -3,6 +3,15 @@ import ToggleButton from './ToggleButton'
 import { langDict } from './'
 import { Layout, MainContainer } from '@/Layout'
 import { useTranslation } from '@/MyCustomHooks'
+import { useUserContext } from '@contexts/UserContext';
+
+/* 
+Please modify the following code:
+Show login status and subscription status based on the following userData structure:
+- userName: string;
+- loginStatus: boolean;
+- subscriptionStatus: boolean;
+*/
 
 
 export default function Setting() {
@@ -11,6 +20,7 @@ export default function Setting() {
     const [isKeyboardAndHands, setIsKeyboardAndHands] = useState<boolean>();
     const [isHardMode, setIsHardMode] = useState<boolean>();
     const [isEnglishDisplay, setIsEnglishDisplay] = useState<boolean>();
+    const { userData } = useUserContext();
 
     useEffect(() => {
         if (localStorage.getItem('isKeyboardAndHands')) {
@@ -44,12 +54,6 @@ export default function Setting() {
         <Layout>
             <MainContainer>
                 <div className="headline p-4 text-4xl font-bold">{translater.settingTitle}</div>
-                <div className="headline p-4 pl-8 text-3xl font-bold">{translater.memberInformation}</div>
-                <div className="pl-16 pu-2 text-2xl flex flex-col">
-                    <div className='py-4'>{translater.loginStatus} : login</div>
-                    <div className='py-4'>{translater.mailAddress} : ***@gmail.com</div>
-                    <div className='py-4'>{translater.plan} : free member</div>
-                </div>
                 <div className="headline p-4 pl-8 text-3xl font-bold">{translater.typingSetting}</div>
                 <div className="pl-16 pu-2 text-2xl flex flex-col">
                     <div className='py-4'>{translater.degreeOfDifficulty}
@@ -83,7 +87,20 @@ export default function Setting() {
                         />
                     </div>
                 </div>
-
+                <div className="headline p-4 pl-8 text-3xl font-bold">{translater.memberInformation}</div>
+                <div className="pl-16 pu-2 text-2xl flex flex-col">
+                    <div className='py-4'>{translater.loginStatus} : {userData?.loginStatus ? 'Logged in' : 'Logged out'}</div>
+                    <div className='py-4'>{translater.mailAddress} : {userData?.userName || 'N/A'}</div>
+                    <div className='py-4'>{translater.plan} : {userData?.subscriptionStatus ? 'Premium member' : 'Free member'}</div>
+                    {userData?.loginStatus === true ?
+                        // if user is logged in, show the button to go to payment page: href='/payment/payment'
+                        <button className="btn-second mt-4"
+                            onClick={() => window.location.href = '/payment/payment'}>
+                            Manage Subscription
+                        </button>
+                        : null
+                    }
+                </div>
             </MainContainer>
         </Layout>
     )

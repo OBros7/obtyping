@@ -1,6 +1,6 @@
 //components/Layout/Layout.tsx:
 import Head from 'next/head'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useContext, useEffect, useState } from 'react'
@@ -48,25 +48,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div {...headerBox}>
           <Image priority src='/images/profile.png' height={32} width={32} alt='img' />
         </div>
-        {/* <div {...headerBox}>
-          <HeaderLink href='/admin' text='Admin' addClass='outline outline-white outline-2' />
-        </div> */}
-        <div {...headerBox}>
-          {userData.loginStatus === true ? (
-            // if paid user show nothing, else show payment link
-            < HeaderLink href='/payment/payment_page' text='Subscribe' addClass='outline outline-white outline-2' />
-          ) : (
-            <HeaderLink href='/account/signin' text='SignIn' addClass='outline outline-white outline-2' />
-          )}
-        </div>
 
         <div {...headerBox}>
+          {userData.loginStatus === false ? (
+            <HeaderLink
+              href='/account/signin'
+              text='SignIn!'
+              addClass='outline outline-white outline-2 font-bold'
+            />
+          ) : userData.subscriptionStatus === false ? (
+            <HeaderLink
+              href='/payment/payment'
+              text='Subscribe!'
+              addClass='outline outline-white outline-2 font-bold'
+            />
+          ) : null}
           <HamburgerMenu userData={userData} signOut={() => signOut()} />
-          <Link href={router.asPath} locale={locale === 'ja' ? 'en' : 'ja'} passHref>
-            <a className='block p-1'>
-              {locale === 'ja' ? 'English' : '日本語'}
-            </a>
-          </Link>
+
         </div>
       </header>
       <main className="flex-grow">{children}</main>
@@ -79,5 +77,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div> */}
       </footer>
     </div>
-  )
+  );
 }

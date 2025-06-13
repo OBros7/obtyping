@@ -28,14 +28,14 @@ export default function AppCard({ href = '/#', title, description, thumbnail, bg
 
   return (
     <Link href={href}>
-      <a>
-        <div className={classParent}>
-          <div className={classImg}>{thumbnail}</div>
-          <div className={classTitle}>{title}</div>
-          <div className={classDescription}>{description}</div>
-        </div>
-      </a>
+
+      <div className={classParent}>
+        <div className={classImg}>{thumbnail}</div>
+        <div className={classTitle}>{title}</div>
+        <div className={classDescription}>{description}</div>
+      </div>
+
     </Link>
-  )
+  );
 
 }
