@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const GAUTH_URL = `${BACKEND_URL}/api/user/google-oauth`;

@@ -132,7 +132,7 @@ export default function DeckSelectCustom() {
 
           {pageType === 'EditMode' ? (
             /* --- 画面上部のモード選択 --- */
-            <div className='flex flex-col items-center'>
+            (<div className='flex flex-col items-center'>
               <div className='flex space-x-32 pb-4'>
                 <MySelect
                   state={selectedAction}
@@ -147,11 +147,10 @@ export default function DeckSelectCustom() {
                   optionTexts={['choose deck or text', 'Deck', 'Text']}
                 />
               </div>
-
               {/* ------ ここから分岐レンダリング ------ */}
               {selectedAction === 'create' && dataType === 'text' ? (
                 /* 例：TextGetter を表示 */
-                <TextGetter
+                (<TextGetter
                   userID={userID}
                   url={fastAPIURL + url}
                   title={title}
@@ -177,7 +176,7 @@ export default function DeckSelectCustom() {
                   setNSelect={setNSelect}
                   setReturnedData={setReturnedData}
                   orderBy={orderBy}
-                />
+                />)
               ) : selectedAction === 'create' && dataType === 'deck' ? (
                 <DeckGetter
                   url={fastAPIURL + url}
@@ -247,13 +246,13 @@ export default function DeckSelectCustom() {
               ) : (
                 <p>Please select whether to create / edit, text / deck.</p>
               )}
-            </div>
+            </div>)
           ) : pageType === 'YourDeck' ? (
             /* Your Deck 一覧表示 */
-            <DeckListButton
+            (<DeckListButton
               deckList={fetchedDecks}
               setLanguage={() => { }}
-            />
+            />)
           ) : null}
         </div>
       </MainContainer>
