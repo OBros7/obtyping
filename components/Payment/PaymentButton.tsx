@@ -1,7 +1,8 @@
 // --- components/Payment/PaymentButton.tsx ---
 import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+// import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+import { apiFetch } from '@/MyLib/apiFetch';
 
 interface PaymentButtonProps {
     /** The Stripe Price-ID of the plan the user is buying */
@@ -31,7 +32,7 @@ export default function PaymentButton({
         }
 
         // 1️⃣ Call your FastAPI endpoint *with auth*
-        const res = await fetchWithAuth(
+        const res = await apiFetch(
             `${BACKEND_URL}/api/stripe/create-checkout-session`,
             {
                 method: 'POST',

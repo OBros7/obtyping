@@ -3,7 +3,8 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useUserContext } from '@contexts/UserContext';
-import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+// import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+import { apiFetch } from '@/MyLib/apiFetch'
 
 interface AuthCredentials {
     email: string;
@@ -79,7 +80,7 @@ export default function useAuth() {
     const signUp = useCallback(
         async (credentials: AuthCredentials) => {
             try {
-                const resp = await fetchWithAuth(signupURL, {
+                const resp = await apiFetch(signupURL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -104,7 +105,7 @@ export default function useAuth() {
     const signIn = useCallback(
         async (credentials: AuthCredentials) => {
             try {
-                const resp = await fetchWithAuth(signinURL, {
+                const resp = await apiFetch(signinURL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(credentials),
@@ -128,7 +129,7 @@ export default function useAuth() {
      */
     const refreshUserSession = useCallback(async () => {
         try {
-            const resp = await fetchWithAuth(sessionURL, {
+            const resp = await apiFetch(sessionURL, {
                 method: 'GET',
             });
             await handleAuthResponse(resp, 'Failed to get current user session.');
@@ -143,7 +144,7 @@ export default function useAuth() {
      */
     const signOut = useCallback(async () => {
         try {
-            const resp = await fetchWithAuth(logoutURL, {
+            const resp = await apiFetch(logoutURL, {
                 method: 'POST',
             });
             if (!resp.ok) {

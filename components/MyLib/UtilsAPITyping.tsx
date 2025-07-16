@@ -5,7 +5,7 @@
 // -----------------------------------------------------
 
 import { visibility2int, lang2int } from '@/MyLib/Mapper'
-import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+// import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
 import { apiFetch } from '@/MyLib/apiFetch'
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';     // ★ フォールバック
