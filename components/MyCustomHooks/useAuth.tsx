@@ -3,7 +3,8 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useUserContext } from '@contexts/UserContext';
-import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+// import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+import { apiFetch } from '@/MyLib/apiFetch'
 
 interface AuthCredentials {
     email: string;
@@ -43,24 +44,37 @@ export default function useAuth() {
      *   - Update our React user context with returned user data.
      */
     const handleAuthResponse = useCallback(
-        async (resp: Response, defaultErrorMsg: string) => {
-            const data: AuthResponse = await resp.json();
+        async (
+            raw: Response | AuthResponse,          // ➊ accept either shape
+            defaultErrorMsg: string,
+        ): Promise<AuthResponse> => {
+            let data: AuthResponse;
 
-            if (!resp.ok) {
-                throw new Error(data.detail || defaultErrorMsg);
+            // ----------- decide what we got -----------
+            if (raw instanceof Response) {
+                // `raw` is a fetch Response –­ parse it ourselves
+                data = await raw.json();
+
+                if (!raw.ok) {
+                    // non-2xx → bubble up a helpful error
+                    throw new Error(data.detail || defaultErrorMsg);
+                }
+            } else {
+                // `raw` is already the plain object (apiFetch parsed it)
+                data = raw;
+                // apiFetch would have thrown on non-OK, so no status check needed
             }
 
-            // If we have an access_token, store it
+            // ----------- side-effects -----------
             if (data.access_token) {
                 localStorage.setItem('accessToken', data.access_token);
             }
 
-            // If we have user data, update context
             if (data.user) {
                 const { user } = data;
                 setUserData({
                     userID: String(user.user_id),
-                    userName: user.user_name || '',
+                    userName: user.user_name ?? '',
                     loginStatus: true,
                     subscriptionStatus: !!user.is_paid_user,
                     expToken: user.exp ? String(user.exp) : '',
@@ -68,9 +82,9 @@ export default function useAuth() {
                 });
             }
 
-            return data; // In case you need the data after
+            return data; // so callers can still chain on it
         },
-        [setUserData]
+        [setUserData],
     );
 
     /**
@@ -79,7 +93,7 @@ export default function useAuth() {
     const signUp = useCallback(
         async (credentials: AuthCredentials) => {
             try {
-                const resp = await fetchWithAuth(signupURL, {
+                const resp = await apiFetch(signupURL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -104,7 +118,7 @@ export default function useAuth() {
     const signIn = useCallback(
         async (credentials: AuthCredentials) => {
             try {
-                const resp = await fetchWithAuth(signinURL, {
+                const resp = await apiFetch(signinURL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(credentials),
@@ -128,7 +142,7 @@ export default function useAuth() {
      */
     const refreshUserSession = useCallback(async () => {
         try {
-            const resp = await fetchWithAuth(sessionURL, {
+            const resp = await apiFetch(sessionURL, {
                 method: 'GET',
             });
             await handleAuthResponse(resp, 'Failed to get current user session.');
@@ -143,7 +157,7 @@ export default function useAuth() {
      */
     const signOut = useCallback(async () => {
         try {
-            const resp = await fetchWithAuth(logoutURL, {
+            const resp = await apiFetch(logoutURL, {
                 method: 'POST',
             });
             if (!resp.ok) {

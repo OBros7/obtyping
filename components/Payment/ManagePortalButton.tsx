@@ -1,6 +1,7 @@
 // --- components/Payment/ManagePortalButton.tsx ---
 import { useState } from 'react';
-import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+// import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+import { apiFetch } from '@/MyLib/apiFetch';
 
 interface Props {
     className?: string;
@@ -13,7 +14,7 @@ export default function ManagePortalButton({ className = 'btn-primary' }: Props)
 
     const openPortal = async () => {
         setLoading(true);
-        const res = await fetchWithAuth(`${BACKEND_URL}/api/stripe/create-portal-session`, {
+        const res = await apiFetch(`${BACKEND_URL}/api/stripe/create-portal-session`, {
             method: 'POST',
         });
         if (res.ok) {
