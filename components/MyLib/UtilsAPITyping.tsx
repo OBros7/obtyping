@@ -53,20 +53,26 @@ interface ReceivedDeck {
 
 // ---------------- Interfaces for responses ----------------
 // ---------------- API: POST routes ----------------
-interface PostTextOnly {
-    // user_id: number,
+// interface PostText {
+//     // user_id: number,
+//     title: string,
+//     text11: string,
+//     text12?: string | null,
+//     text21?: string | null,
+//     text22?: string | null,
+//     visibility_int: number,
+//     deck_id: number,
+// }
+
+// バックエンドに合わせる
+interface PostText {
     title: string,
     text11: string,
     text12?: string | null,
-    text21?: string | null,
-    text22?: string | null,
-    visibility_int: number,
     deck_id: number,
 }
 
 interface PostTextDeck {
-    // user_id: number;
-    // text property
     title: string;
     text11: string;
     text12?: string | null,
@@ -84,17 +90,43 @@ interface PostTextDeck {
     visibility_int: number;
 }
 
+// 元々
+// interface PostDeck {
+//     title: string,
+//     description?: string | null,
+//     category?: string | null,
+//     subcategory?: string | null,
+//     level?: string,
+//     lang1_int: number,
+//     lang2_int?: number | null,
+//     visibility_int: number,
+//     shuffle?: boolean,
+// }
+
+// バックエンドに合わせる
 interface PostDeck {
     title: string,
     description?: string | null,
-    category?: string | null,
-    subcategory?: string | null,
-    level?: string,
-    lang1_int: number,
-    lang2_int?: number | null,
-    visibility_int: number,
+    lang: string,
+    visibility: string,
+    typing_mode: string,
+    category_id?: number | null,
+    subcategory_id?: number | null,
+    level_id?: number | null,
     shuffle?: boolean,
 }
+
+// deck_id / visibility_int は後から補完するので一旦消しておく
+type NewTextForDeck = Omit<PostText, 'deck_id' | 'visibility_int'> & {
+    visibility_int?: number;
+};
+
+interface CreateDeckWithTextsArgs {
+    deck: PostDeck;
+    texts: NewTextForDeck[];
+    defaultTextVisibility?: number;
+}
+
 
 /** クエリ文字列生成 */
 const qs = (o: Record<string, any>) =>
@@ -124,7 +156,7 @@ export const getDeckListBasic = (lang1: string, nSelect = 10, orderBy = 'title')
 /** 以下同じパターンで… */
 export const getDeckListPrivate = (userID: number | null, nSelect = 10, orderBy = 'title') =>
     apiFetch<ReceivedDeck[]>(
-        `${BACKEND}/api/typing/get_decklist_private?${qs({ user_id: userID, n_select: nSelect, order_by: orderBy })}`,
+        `${BACKEND}/api/typing/get_decklist_custom_by_user?${qs({ user_id: userID, n_select: nSelect, order_by: orderBy })}`,
     );
 
 export const getDeckListByCategory = (
@@ -140,7 +172,7 @@ export const getDeckListByCategory = (
 
 export const getTextListByDeck = (deckID: number, nSelect = 10, orderBy = 'title') =>
     apiFetch(
-        `${BACKEND}/api/typing/get_textlist_by_deck?${qs({ deck_id: deckID, n_select: nSelect, order_by: orderBy })}`,
+        `${BACKEND}/api/typing/get_textlist_by_deckid?${qs({ deck_id: deckID, n_select: nSelect, order_by: orderBy })}`,
     );
 
 export const getCategoriesSubcategoriesLevels = () =>
@@ -148,8 +180,8 @@ export const getCategoriesSubcategoriesLevels = () =>
 
 /* ============ POST APIs ============ */
 
-export const createTextOnly = (data: PostTextOnly) =>
-    apiFetch(`${BACKEND}/api/typing/create_text_only`, {
+export const createText = (data: PostText) =>
+    apiFetch(`${BACKEND}/api/typing/create_text`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -169,10 +201,36 @@ export const createDeck = (data: PostDeck) =>
         body: JSON.stringify(data),
     });
 
+export const createDeckWithTexts = async ({
+    deck,
+    texts,
+}: CreateDeckWithTextsArgs): Promise<ReceivedDeck> => {
+    console.log("Creating deck :", deck);
+    // 1. デッキ作成
+    const createdDeck = await createDeck(deck);
+    console.log("deck created");
+    console.log("Created text:", texts);
+    // 2. テキスト一括登録
+    await Promise.all(
+        texts.map((t) =>
+            createText({
+                ...t,
+                deck_id: createdDeck.deck_id,
+            }),
+        ),
+    );
+    console.log("Texts created for deck:", createdDeck.deck_id);
+    return createdDeck;
+};
+
+
+
 export type {
     ReceivedText,
     ReceivedDeck,
-    PostTextOnly,
+    PostText,
     PostTextDeck,
     PostDeck,
+    NewTextForDeck,
+    CreateDeckWithTextsArgs,
 };

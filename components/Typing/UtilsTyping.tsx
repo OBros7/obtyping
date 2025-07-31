@@ -51,8 +51,50 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
         }
     } else if (randomID === -4) {
         randomDeck[0].text11 = shuffleArray(WordsEG).slice(0, length).join(' ');
-    }
-    else if (randomID === -100) {
+        /* ---------------- 新規: -10 (deck in edit) ---------------- */
+    } else if (randomID === -10) {
+        randomDeck = [];
+        let raw: string | null = null;
+        if (typeof window !== 'undefined') raw = sessionStorage.getItem('typingDraft');
+
+        if (raw) {
+            try {
+                const draft = JSON.parse(raw) as { deckName?: string; texts?: { name: string; content: string }[] };
+                const texts = draft.texts ?? [];
+                if (texts.length === 0) throw new Error('No texts in draft');
+
+                randomDeck = texts.map((t, idx) => ({
+                    text_id: -(idx + 1),
+                    title: t.name,
+                    text11: t.content,
+                    text12: null,
+                    text21: null,
+                    text22: null,
+                    visibility_int: 1,
+                }));
+            } catch (e) {
+                randomDeck.push({
+                    text_id: -999,
+                    title: 'Draft load error',
+                    text11: 'Could not parse typingDraft from sessionStorage.',
+                    text12: null,
+                    text21: null,
+                    text22: null,
+                    visibility_int: 1,
+                });
+            }
+        } else {
+            randomDeck.push({
+                text_id: -998,
+                title: 'No draft found',
+                text11: 'typingDraft not found in sessionStorage.',
+                text12: null,
+                text21: null,
+                text22: null,
+                visibility_int: 1,
+            });
+        }
+    } else if (randomID === -100) {
         const nTexts = Math.floor(Math.random() * (10 - 5 + 1) + 5)
         let nWords = Math.floor(Math.random() * (300 - 5 + 1) + 5)
         randomDeck[0].text11 = shuffleArray(WordsEG).slice(0, nWords).join(' ');

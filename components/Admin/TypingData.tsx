@@ -18,7 +18,7 @@ const urlListGetDeck = [
     'get_decklist_by_user',
     'get_decklist_basic',
     'get_decklist_selective',
-    'get_decklist_private',
+    'gget_decklist_custom_by_user',
     'get_decklist_by_category',
     'get_decklist_by_search'
 ]
@@ -27,7 +27,7 @@ const urlListGetText = [
     // 'get_textlist_basic',
     // 'get_textlist_selective',
     // 'get_textlist_private',
-    'get_textlist_by_deck',
+    'get_textlist_by_deckid',
     // 'get_textlist_by_decklist',
     // 'get_textlist_by_category',
     // 'get_textlist_by_search',

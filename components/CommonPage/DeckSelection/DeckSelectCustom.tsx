@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   TextGetter,
   TextSetter,
@@ -10,14 +10,16 @@ import { Layout, MainContainer } from '@/Layout';
 import { MyInputNumber, MySelect } from '@/Basics';
 import { visibility2int, lang2int } from '@/MyLib/Mapper';
 import {
-  DeckListButton,
+  DeckListButton, DeckUploadForm
 } from '.';
 import {
   ReceivedDeck,
+  createDeck,
   getDeckListByUser,
+  PostDeck
 } from '@/MyLib/UtilsAPITyping';
-import { useQuery } from '@tanstack/react-query';
-import { showError } from 'utils/toast';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { showError, showSuccess } from 'utils/toast';
 import { ApiError } from '@/MyLib/apiError';
 
 /* ---------- 定数 ---------- */
@@ -62,32 +64,14 @@ export default function DeckSelectCustom() {
   /* meta & menu state（元コードを維持） */
   const [selectedAction, setSelectedAction] = useState<'none' | 'create' | 'edit'>('none');
   const [dataType, setDataType] = useState<'none' | 'deck' | 'text'>('none');
-  const [pageType, setPageType] = useState<'EditMode' | 'YourDeck'>('YourDeck');
+  const [pageType, setPageType] = useState<'EditMode' | 'Practice'>('Practice');
 
   /* user & query key */
   const [userID, setUserID] = useState(1)
 
   const [url, setUrl] = useState(urlListGetText[0])
   const [urlList, setUrlList] = useState(urlListGetText)
-
-  /* ---------- ① デッキ一覧を React Query で取得 ---------- */
-  const {
-    data: fetchedDecks = [],             // キャッシュされた一覧
-    isLoading: deckLoading,
-    isError: deckIsError,
-    error: deckErr,
-  } = useQuery<ReceivedDeck[], ApiError>({
-    queryKey: ['decks', userID],
-    queryFn: () => getDeckListByUser(userID),
-    staleTime: 5 * 60 * 1000,
-  });
-
-  /* エラーはトースト表示 */
-  useEffect(() => {
-    if (deckIsError && deckErr) {
-      showError(`${deckErr.message} (status ${deckErr.status ?? '??'})`);
-    }
-  }, [deckIsError, deckErr]);
+  const [isLangLearn, setIsLangLearn] = useState(false);
 
   /* ---------- ② この画面用のローカル state ---------- */
   /* （元コードと同じ。例：lang1, title, text1 など） */
@@ -117,6 +101,79 @@ export default function DeckSelectCustom() {
   /////////// menu ///////////
   const [deckList, setDeckList] = useState<ReceivedDeck[]>([])
   const [language, setLanguage] = useState<'not selected' | 'japanese' | 'english' | 'free'>('not selected')
+  /* ---------- ① デッキ一覧を React Query で取得 ---------- */
+  const {
+    data: fetchedDecks = [],             // キャッシュされた一覧
+    isLoading: deckLoading,
+    isError: deckIsError,
+    error: deckErr,
+  } = useQuery<ReceivedDeck[], ApiError>({
+    queryKey: ['decks', userID],
+    queryFn: () => getDeckListByUser(userID),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  /* エラーはトースト表示 */
+  useEffect(() => {
+    if (deckIsError && deckErr) {
+      showError(`${deckErr.message} (status ${deckErr.status ?? '??'})`);
+    }
+  }, [deckIsError, deckErr]);
+
+  const queryClient = useQueryClient();
+
+  const saveMutation = useMutation({
+    /* ❶ リクエスト本体 */
+    mutationFn: async () => {
+      if (!title) throw new ApiError('Please fill in the title', 400);
+
+      const lang1_int = lang2int(lang1) as number;
+      const lang2_int = !isLangLearn ? lang2int(lang2) : null;
+
+      const postData: PostDeck = {
+        title,
+        description,
+        lang: lang1,
+        visibility: "private",
+        typing_mode: "custom", // ここは適宜変更
+        category_id: null,
+        subcategory_id: null,
+        level_id: null,
+        shuffle: true, // デフォルトは true とする
+      };
+      return createDeck(postData);
+    },
+
+    /* ❷ 成功時 */
+    onSuccess: (json) => {
+      showSuccess('デッキを保存しました');
+      queryClient.invalidateQueries({ queryKey: ['decks', userID] });
+    },
+
+    /* ❸ 失敗時 */
+    onError: (e) => {
+      const err = e as ApiError;
+      showError(`${err.message} (status ${err.status ?? '??'})`);
+    },
+  });
+
+  /* ---------- DeckUploadForm 呼び出し ---------- */
+  const handleSave = useCallback(
+    (payload: any) => saveMutation.mutate(payload),
+    [saveMutation],
+  );
+
+  // 保存ロジック (handleSave) のあとに追記
+  const handleTest = useCallback(
+    (payload: { deckName: string; texts: { name: string; content: string }[] }) => {
+      // ① sessionStorage に保存
+      sessionStorage.setItem('typingDraft', JSON.stringify(payload));
+
+      // ② 新しいタブ (or ウィンドウ) で練習画面を開く
+      window.open('/typing/practice', '_blank');
+    },
+    [],
+  );
 
   /* ---------- JSX ---------- */
   return (
@@ -126,128 +183,16 @@ export default function DeckSelectCustom() {
           <MySelect
             state={pageType}
             setState={setPageType}
-            optionValues={['YourDeck', 'EditMode']}
+            optionValues={['Practice', 'EditMode']}
             optionTexts={['Your Original Deck', 'Edit Mode']}
           />
 
           {pageType === 'EditMode' ? (
             /* --- 画面上部のモード選択 --- */
-            (<div className='flex flex-col items-center'>
-              <div className='flex space-x-32 pb-4'>
-                <MySelect
-                  state={selectedAction}
-                  setState={setSelectedAction}
-                  optionValues={['none', 'create', 'edit']}
-                  optionTexts={['choose create or edit', 'Create', 'Edit']}
-                />
-                <MySelect
-                  state={dataType}
-                  setState={setDataType}
-                  optionValues={['none', 'deck', 'text']}
-                  optionTexts={['choose deck or text', 'Deck', 'Text']}
-                />
-              </div>
-              {/* ------ ここから分岐レンダリング ------ */}
-              {selectedAction === 'create' && dataType === 'text' ? (
-                /* 例：TextGetter を表示 */
-                (<TextGetter
-                  userID={userID}
-                  url={fastAPIURL + url}
-                  title={title}
-                  setTitle={setTitle}
-                  visibility={visibility}
-                  setVisibility={setVisibility}
-                  visibilityOptions={visibilityOptions}
-                  text1={text1}
-                  setText1={setText1}
-                  text2={text2}
-                  setText2={setText2}
-                  lang1={lang1}
-                  setLang1={setLang1}
-                  lang2={lang2}
-                  setLang2={setLang2}
-                  category={category}
-                  setCategory={setCategory}
-                  subcategory={subcategory}
-                  setSubcategory={setSubcategory}
-                  level={level}
-                  setLevel={setLevel}
-                  nSelect={nSelect}
-                  setNSelect={setNSelect}
-                  setReturnedData={setReturnedData}
-                  orderBy={orderBy}
-                />)
-              ) : selectedAction === 'create' && dataType === 'deck' ? (
-                <DeckGetter
-                  url={fastAPIURL + url}
-                  userID={userID}
-                  title={title}
-                  setTitle={setTitle}
-                  description={description}
-                  setDescription={setDescription}
-                  lang1={lang1}
-                  setLang1={setLang1}
-                  lang2={lang2}
-                  setLang2={setLang2}
-                  category={category}
-                  setCategory={setCategory}
-                  subcategory={subcategory}
-                  setSubcategory={setSubcategory}
-                  level={level}
-                  setLevel={setLevel}
-                  nSelect={nSelect}
-                  setNSelect={setNSelect}
-                  setReturnedData={setReturnedData}
-                  orderBy={orderBy}
-                />
-              ) : selectedAction === 'edit' && dataType === 'text' ? (
-                <TextSetter
-                  userID={userID}
-                  visibilityInt={visibility2int[visibility]}
-                  title={title}
-                  setTitle={setTitle}
-                  visibility={visibility}
-                  setVisibility={setVisibility}
-                  visibilityOptions={visibilityOptions}
-                  text1={text1}
-                  setText1={setText1}
-                  text2={text2}
-                  setText2={setText2}
-                  category={category}
-                  setCategory={setCategory}
-                  subcategory={subcategory}
-                  setSubcategory={setSubcategory}
-                  level={level}
-                  setLevel={setLevel}
-                  deck={deck}
-                  setDeck={setDeck}
-                />
-              ) : selectedAction === 'edit' && dataType === 'deck' ? (
-                <DeckSetter
-                  userID={userID}
-                  visibilityInt={visibility2int[visibility]}
-                  title={title}
-                  setTitle={setTitle}
-                  description={description}
-                  setDescription={setDescription}
-                  lang1={lang1}
-                  setLang1={setLang1}
-                  lang2={lang2}
-                  setLang2={setLang2}
-                  category={category}
-                  setCategory={setCategory}
-                  subcategory={subcategory}
-                  setSubcategory={setSubcategory}
-                  level={level}
-                  setLevel={setLevel}
-                  orderBy={orderBy}
-                  setOrderBy={setOrderBy}
-                />
-              ) : (
-                <p>Please select whether to create / edit, text / deck.</p>
-              )}
-            </div>)
-          ) : pageType === 'YourDeck' ? (
+            <DeckUploadForm
+              deckOptions={fetchedDecks.map((d) => d.title ?? d.title ?? '')}
+            />
+          ) : pageType === 'Practice' ? (
             /* Your Deck 一覧表示 */
             (<DeckListButton
               deckList={fetchedDecks}

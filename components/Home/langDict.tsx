@@ -40,8 +40,8 @@ let langDict = {
     en: 'You can practice typing with the text you created.',
   },
   categoryTypingTitle: {
-    ja: 'カテゴリータイピング',
-    en: 'Category typing',
+    ja: 'トピックタイピング',
+    en: 'Topic typing',
   },
   categoryTypingDescription: {
     ja: '様々なカテゴリからテキストを選ぶことができ、勉強をしながらタイピングを鍛えよう！',

@@ -21,7 +21,7 @@ export default function index() {
             </Link>
             <Link href="./admin/test/categorydeckselection">
 
-                <h1>Category Deck Selection</h1>
+                <h1>Topic Deck Selection</h1>
 
             </Link>
         </>
