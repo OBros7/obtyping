@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import {
     TypingEnglish,
     TypingJapanese,
@@ -65,6 +65,15 @@ export default function TypingPageBase({
         0: 'free'
     }
 
+    const isJapaneseEntry = (
+        t: ReceivedText
+    ): t is ReceivedText & { text12: string } =>
+        typeof t.text12 === 'string' && t.text12.length > 0;
+
+    const jpList = useMemo(
+        () => textList.filter(isJapaneseEntry),
+        [textList]
+    );
 
     const getQueryParameter = (param: string): string | null => {
         const url = new URL(window.location.href);
@@ -166,7 +175,20 @@ export default function TypingPageBase({
                             />
                         )
                             : languageType === 'japanese' ? (
-                                <TypingJapanese />
+                                <TypingJapanese
+                                    textList={jpList}
+                                    status={status}
+                                    setStatus={setStatus}
+                                    score={score}
+                                    setScore={setScore}
+                                    mistake={mistake}
+                                    setMistake={setMistake}
+                                    languageType={languageType}
+                                    mode={mode}
+                                    remainingTime={remainingTime}
+                                    mostMistakenKeys={mostMistakenKeys}
+                                    setMostMistakenKeys={setMostMistakenKeys}
+                                />
                             ) : (
                                 <TypingFree
                                     textList={textList}

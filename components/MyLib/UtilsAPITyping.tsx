@@ -223,7 +223,19 @@ export const createDeckWithTexts = async ({
     return createdDeck;
 };
 
+export const updateText = (textID: number, data: Partial<PostText>) =>
+    apiFetch(`${BACKEND}/api/typing/update_text/${textID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
 
+export const updateDeck = (deckID: number, data: Partial<PostDeck>) =>
+    apiFetch(`${BACKEND}/api/typing/update_deck/${deckID}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
 
 export type {
     ReceivedText,

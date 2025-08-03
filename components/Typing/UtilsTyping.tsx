@@ -113,6 +113,57 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
             }
             randomDeck.push(text);
         }
+    } else if (randomID === -101) {
+        // 日本語テスト用デッキ（text11: 日本語、text12: ローマ字）
+        // ※ ローマ字は ASCII / 小文字のみを使用（判定をシンプルにするため）
+        const JP_SAMPLES: { jp: string; roma: string }[] = [
+            { jp: "今日は良い天気ですね。", roma: "kyou wa yoi tenki desu ne." },
+            { jp: "明日も頑張りましょう！", roma: "ashita mo ganbarimashou!" },
+            { jp: "プログラミングは楽しい。", roma: "puroguramingu wa tanoshii." },
+            { jp: "正確にタイプしてください。", roma: "seikaku ni taipu shite kudasai." },
+            { jp: "コーヒーを一杯飲みたい。", roma: "koohii wo ippai nomitai." },
+            { jp: "時間を計って練習します。", roma: "jikan wo hakatte renshuu shimasu." },
+            { jp: "ホームポジションを意識する。", roma: "hoomu pojishon wo ishiki suru." },
+            { jp: "指を大きく動かさない。", roma: "yubi wo ookiku ugokasanai." },
+            { jp: "深呼吸して落ち着こう。", roma: "shinkokyuu shite ochitsukou." },
+            { jp: "エンターキーで次へ進む。", roma: "entaa kii de tsugi e susumu." },
+            { jp: "間違えても気にしない。", roma: "machigaete mo ki ni shinai." },
+            { jp: "休憩を取りながら続けよう。", roma: "kyuukei wo torinagara tsudzukeyou." },
+            { jp: "猫はキーボードの上が好き。", roma: "neko wa kiiboodo no ue ga suki." },
+            { jp: "日本語のローマ字入力を練習中。", roma: "nihongo no roomaji nyuuryoku wo renshuu chuu." },
+            { jp: "今日はカレーを作った。", roma: "kyou wa karee wo tsukutta." },
+            { jp: "短い文から始めよう。", roma: "mijikai bun kara hajimeyou." },
+        ];
+
+        // 目標のローマ字総文字数（他の分岐と同じ length 変数を利用）
+        // 例: minutes=1 => 100 文字分くらいになるまでサンプルを追加
+        const targetRomanLength = length;
+
+        // 既定の配列を作り直す
+        randomDeck = [];
+
+        let acc = 0;
+        let i = 0;
+        // 1件もないと困るので最低1件は入れる。targetRomanLength をおおよそ満たすまで繰り返し。
+        while (acc < targetRomanLength || randomDeck.length === 0) {
+            const s = JP_SAMPLES[i % JP_SAMPLES.length];
+            const roma = s.roma.toLowerCase(); // 念のため小文字化を徹底
+
+            randomDeck.push({
+                text_id: -10100 - i, // 衝突を避けるために負の連番
+                title: `JP Test ${i + 1}`,
+                text11: s.jp,
+                text12: roma,
+                text21: null,
+                text22: null,
+                visibility_int: 1,
+            });
+
+            acc += roma.length;
+            i++;
+            // 念のためのセーフティ（極端な minutes による無限増加回避）
+            if (i > 100) break;
+        }
 
     } else {
         text = 'Error: randomID is not valid';

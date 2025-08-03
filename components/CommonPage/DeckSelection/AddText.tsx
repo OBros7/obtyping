@@ -82,9 +82,9 @@ export default function AddText({
         title: textTitle,
         text11: text,
         text12: null,
-        text21: '',
-        text22: null,
-        visibility_int: visibility2int.public,
+        // text21: '',
+        // text22: null,
+        // visibility_int: visibility2int.public,
         deck_id: selectedDeckId as number,
       };
       return createText(payload);

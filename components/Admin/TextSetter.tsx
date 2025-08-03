@@ -144,9 +144,9 @@ export default function TextSetter(props: TextSetterProps) {
                     title,
                     text11: text1,
                     text12: null,
-                    text21: text2,
-                    text22: null,
-                    visibility_int: visibilityInt,
+                    // text21: text2,
+                    // text22: null,
+                    // visibility_int: visibilityInt,
                     deck_id: deckID,
                 };
                 return createText(data);
