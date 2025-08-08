@@ -114,55 +114,52 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
             randomDeck.push(text);
         }
     } else if (randomID === -101) {
-        // 日本語テスト用デッキ（text11: 日本語、text12: ローマ字）
-        // ※ ローマ字は ASCII / 小文字のみを使用（判定をシンプルにするため）
-        const JP_SAMPLES: { jp: string; roma: string }[] = [
-            { jp: "今日は良い天気ですね。", roma: "kyou wa yoi tenki desu ne." },
-            { jp: "明日も頑張りましょう！", roma: "ashita mo ganbarimashou!" },
-            { jp: "プログラミングは楽しい。", roma: "puroguramingu wa tanoshii." },
-            { jp: "正確にタイプしてください。", roma: "seikaku ni taipu shite kudasai." },
-            { jp: "コーヒーを一杯飲みたい。", roma: "koohii wo ippai nomitai." },
-            { jp: "時間を計って練習します。", roma: "jikan wo hakatte renshuu shimasu." },
-            { jp: "ホームポジションを意識する。", roma: "hoomu pojishon wo ishiki suru." },
-            { jp: "指を大きく動かさない。", roma: "yubi wo ookiku ugokasanai." },
-            { jp: "深呼吸して落ち着こう。", roma: "shinkokyuu shite ochitsukou." },
-            { jp: "エンターキーで次へ進む。", roma: "entaa kii de tsugi e susumu." },
-            { jp: "間違えても気にしない。", roma: "machigaete mo ki ni shinai." },
-            { jp: "休憩を取りながら続けよう。", roma: "kyuukei wo torinagara tsudzukeyou." },
-            { jp: "猫はキーボードの上が好き。", roma: "neko wa kiiboodo no ue ga suki." },
-            { jp: "日本語のローマ字入力を練習中。", roma: "nihongo no roomaji nyuuryoku wo renshuu chuu." },
-            { jp: "今日はカレーを作った。", roma: "kyou wa karee wo tsukutta." },
-            { jp: "短い文から始めよう。", roma: "mijikai bun kara hajimeyou." },
+        // 日本語テスト用デッキ（text11: かな / text12: 原文）
+        const JP_SAMPLES: { jp: string; kana: string }[] = [
+            { jp: "今日は良い天気ですね。", kana: "きょうはよいてんきですね。" },
+            { jp: "明日も頑張りましょう！", kana: "あしたもがんばりましょう！" },
+            { jp: "プログラミングは楽しい。", kana: "ぷろぐらみんぐはたのしい。" },
+            { jp: "正確にタイプしてください。", kana: "せいかくにたいぷしてください。" },
+            { jp: "コーヒーを一杯飲みたい。", kana: "こーひーをいっぱいのみたい。" },
+            { jp: "時間を計って練習します。", kana: "じかんをはかってれんしゅうします。" },
+            { jp: "ホームポジションを意識する。", kana: "ほーむぽじしょんをいしきする。" },
+            { jp: "指を大きく動かさない。", kana: "ゆびをおおきくうごかさない。" },
+            { jp: "深呼吸して落ち着こう。", kana: "しんこきゅうしておちつこう。" },
+            { jp: "エンターキーで次へ進む。", kana: "えんたーきーでつぎへすすむ。" },
+            { jp: "間違えても気にしない。", kana: "まちがえてもきにしない。" },
+            { jp: "休憩を取りながら続けよう。", kana: "きゅうけいをとりながらつづけよう。" },
+            { jp: "猫はキーボードの上が好き。", kana: "ねこはきーぼーどのうえがすき。" },
+            { jp: "日本語のローマ字入力を練習中。", kana: "にほんごのろーまじにゅうりょくをれんしゅうちゅう。" },
+            { jp: "今日はカレーを作った。", kana: "きょうはかれーをつくった。" },
+            { jp: "短い文から始めよう。", kana: "みじかいぶんからはじめよう。" },
         ];
 
-        // 目標のローマ字総文字数（他の分岐と同じ length 変数を利用）
-        // 例: minutes=1 => 100 文字分くらいになるまでサンプルを追加
-        const targetRomanLength = length;
+        // 目標の「かな」総文字数（従来の length を流用）
+        const targetKanaLength = length;
 
-        // 既定の配列を作り直す
+        // シャッフルしてから必要量になるまで追加
+        const pool = shuffleArray([...JP_SAMPLES]);
+
         randomDeck = [];
-
         let acc = 0;
         let i = 0;
-        // 1件もないと困るので最低1件は入れる。targetRomanLength をおおよそ満たすまで繰り返し。
-        while (acc < targetRomanLength || randomDeck.length === 0) {
-            const s = JP_SAMPLES[i % JP_SAMPLES.length];
-            const roma = s.roma.toLowerCase(); // 念のため小文字化を徹底
+
+        while (acc < targetKanaLength || randomDeck.length === 0) {
+            const s = pool[i % pool.length];
 
             randomDeck.push({
-                text_id: -10100 - i, // 衝突を避けるために負の連番
+                text_id: -10100 - i,   // 衝突回避のための負の連番
                 title: `JP Test ${i + 1}`,
-                text11: s.jp,
-                text12: roma,
+                text11: s.kana,        // ← かな（判定用ベース）
+                text12: s.jp,          // ← 原文（表示用）
                 text21: null,
                 text22: null,
                 visibility_int: 1,
             });
 
-            acc += roma.length;
+            acc += s.kana.length;
             i++;
-            // 念のためのセーフティ（極端な minutes による無限増加回避）
-            if (i > 100) break;
+            if (i > 100) break; // 極端な minutes への保険
         }
 
     } else {

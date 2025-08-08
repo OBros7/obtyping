@@ -56,10 +56,10 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
 
     /* helper: 動的ローマ字列 */
     const getDynamicDisplay = () => {
-        const typed = matcher.getTypedString();
-        const currentWord = matcher.getCurrentDisplayWord();
-        const rest = matcher.getRemainingTokensDisplay();
-        return typed + currentWord + rest;
+        const typedPart = matcher.getTypedString(); // ← 新規 API (実装済みと仮定)
+        const currentCand = matcher.getCurrentCandidateRemaining(); // 残り文字列 (現在トークン)
+        const rest = matcher.getRemainingTokensDisplay(); // これ以降表示
+        return typedPart + currentCand + rest;
     };
 
     /* keydown */
@@ -68,7 +68,6 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
             if (status !== 'running') return;
             if (e.key.length !== 1 || !/^[ -~]$/.test(e.key)) return;
             e.preventDefault();
-            console.log("key info:", matcher.getTypedString(), matcher.getCurrentCandidateWord(), matcher.getRemainingTokensDisplay())
 
             const ch = e.key.toLowerCase();
             const res = matcher.feed(ch);
@@ -94,7 +93,8 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
                 correctnessRef.current = [];
             }
 
-            const rep = matcher.getPreferredNextKey() ?? null;
+            const set = matcher.getNextAllowedKeys();
+            const rep = set.size ? Array.from(set)[0] : null;
             setNextKey(rep);
             setPressKey(rep);
         },
@@ -108,7 +108,8 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
 
     /* matcher 更新時 (文切替) */
     useEffect(() => {
-        const rep = matcher.getPreferredNextKey() ?? null;
+        const set = matcher.getNextAllowedKeys();
+        const rep = set.size ? Array.from(set)[0] : null;
         setNextKey(rep);
         setPressKey(rep);
     }, [matcher]);

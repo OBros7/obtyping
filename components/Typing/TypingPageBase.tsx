@@ -67,8 +67,9 @@ export default function TypingPageBase({
 
     const isJapaneseEntry = (
         t: ReceivedText
-    ): t is ReceivedText & { text12: string } =>
-        typeof t.text12 === 'string' && t.text12.length > 0;
+    ): t is ReceivedText & { text11: string; text12: string } =>
+        typeof t.text11 === 'string' && t.text11.trim().length > 0 &&
+        typeof t.text12 === 'string' && t.text12.trim().length > 0;
 
     const jpList = useMemo(
         () => textList.filter(isJapaneseEntry),
