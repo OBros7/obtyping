@@ -1,5 +1,6 @@
 // components/MyLib/UtilsAPIUser.tsx
 import { apiFetch } from '@/MyLib/apiFetch';
+// export { fetchWithAuth } from './fetchWithAuth'; // ★既存ファイル名に応じて修正
 import {
     useMutation,
     useQuery,
@@ -8,10 +9,7 @@ import {
     UseQueryOptions,
 } from '@tanstack/react-query';
 
-/* ---------- 既存の fetchWithAuth はそのまま ---------- */
-export { fetchWithAuth } from './fetchWithAuth'; // ★既存ファイル名に応じて修正
 
-/* ---------- 型 ---------- */
 export interface LoginPayload {
     email: string;
     password: string;
