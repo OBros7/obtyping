@@ -39,6 +39,7 @@ export default function PaymentButton({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ price_id: priceId }),
             },
+            { parseJson: false } // We handle the response manually
         );
 
         if (!res.ok) {
