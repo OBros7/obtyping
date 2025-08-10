@@ -178,12 +178,22 @@ export default function TypingEnglish(
     setNextText(textList[(countTextIndex + 1) % textListLength].text11);
   }, [countTextIndex]);
 
+  // useEffect(() => {
+  //   const first = currentText[0] ?? null;
+  //   setCurrentLine(0);  // Reset the current line
+  //   setCurrentTextLength(currentText.length);
+  //   setNextKey(currentText[0]);
+  //   setPressKey(first);
+  //   isCorrects.current = [];
+  // }, [currentText]);
   useEffect(() => {
-    setCurrentLine(0);  // Reset the current line
-    setNextKey(currentText[0]);
-    setCurrentTextLength(currentText.length);
+    const first = textList[countTextIndex % textListLength].text11[0] ?? null;
+    setNextKey(first);
+    setPressKey(first);
+    setCountCharWithin(0);
+    setCurrentLine(0);
     isCorrects.current = [];
-  }, [currentText]);
+  }, [countTextIndex]);   // ← currentText ではなく countTextIndex を監視
 
   useEffect(() => {
     const handleResize = () => {

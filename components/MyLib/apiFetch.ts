@@ -49,7 +49,22 @@ export async function apiFetch<T = any>(
     }
 
     /* ----- non‑200s still count as failures ----- */
-    if (!res.ok) throw new ApiError('Request failed', res.status, res)
+    // if (!res.ok) throw new ApiError('Request failed', res.status, res)
+    if (!res.ok) {
+      let errorPayload: any = null
+      try {
+        const ct = res.headers.get('content-type') || ''
+        if (ct.includes('application/json')) {
+          errorPayload = await res.json()
+        } else {
+          errorPayload = await res.text()
+        }
+      } catch (_) {
+        // 本文が空/読めない場合は無視
+      }
+      // ApiError のコンストラクタに body を渡せるなら渡す
+      throw new ApiError(`Request failed: ${res.status} ${res.statusText}`, res.status, errorPayload || res)
+    }
 
     return (parseJson ? await res.json() : res) as T
   } catch (err: any) {

@@ -10,10 +10,10 @@ import {
     lang2int,
 } from '@/MyLib/Mapper';
 import {
-    PostTextOnly,
+    PostText,
     PostTextDeck,
     getDeckListByUser,
-    createTextOnly,
+    createText,
     createTextDeck,
     ReceivedDeck,
 } from '@/MyLib/UtilsAPITyping';
@@ -140,16 +140,16 @@ export default function TextSetter(props: TextSetterProps) {
                 };
                 return createTextDeck(data);
             } else {
-                const data: PostTextOnly = {
+                const data: PostText = {
                     title,
                     text11: text1,
                     text12: null,
-                    text21: text2,
-                    text22: null,
-                    visibility_int: visibilityInt,
+                    // text21: text2,
+                    // text22: null,
+                    // visibility_int: visibilityInt,
                     deck_id: deckID,
                 };
-                return createTextOnly(data);
+                return createText(data);
             }
         },
 

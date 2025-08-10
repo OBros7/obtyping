@@ -29,7 +29,7 @@ const langDict = {
   },
   noMissMassage: {
     ja: '素晴らしい！今回ミスタイプは1度もありませんでした',
-    en: 'Amazing! There were no typos this time.',
+    en: 'Amazing! There were no types this time.',
   },
   frequentlyMistypedKeys: {
     ja: 'よく間違えるキー:',

@@ -8,8 +8,8 @@ import { visibility2int, lang2int } from '@/MyLib/Mapper';
 import {
   ReceivedDeck,
   getDeckListByUser,
-  createTextOnly,
-  PostTextOnly,
+  createText,
+  PostText,
 } from '@/MyLib/UtilsAPITyping';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormatCategory } from '@/CommonPage/DeckSelection';
@@ -78,16 +78,16 @@ export default function AddText({
 
       if (selectedDeckId === '') throw new ApiError(trans.selectDeck, 400);
 
-      const payload: PostTextOnly = {
+      const payload: PostText = {
         title: textTitle,
         text11: text,
         text12: null,
-        text21: '',
-        text22: null,
-        visibility_int: visibility2int.public,
+        // text21: '',
+        // text22: null,
+        // visibility_int: visibility2int.public,
         deck_id: selectedDeckId as number,
       };
-      return createTextOnly(payload);
+      return createText(payload);
     },
 
     onSuccess: () => {

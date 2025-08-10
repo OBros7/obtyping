@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useRouter } from "next/router";
 import { Layout, MainContainer } from '@/Layout';
 import { TypingPageBase, ReadyScreen, langDict } from './';
 import { creteRandomDeck } from './UtilsTyping';
@@ -19,9 +20,12 @@ interface TypingProps {
     minutes: number;
 }
 
+type LanguageType = "english" | "japanese" | "free";
+
 export default function Typing({ deckId, minutes }: TypingProps) {
     /* --- i18n --- */
     const [trans] = useTranslation(langDict);
+    const router = useRouter();
 
     /* --- React Query: テキスト取得 --- */
     const {
@@ -51,12 +55,28 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     );
     const [score, setScore] = useState(0);
     const [mistake, setMistake] = useState(0);
-    const [languageType, setLanguageType] = useState<'english' | 'japanese' | 'free'>('english');
+    const [languageType, setLanguageType] = useState<LanguageType>('english');
     const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m');
     const [cpm, setCpm] = useState(0);
     const [accuracy, setAccuracy] = useState(0);
     const [recordScore, setRecordScore] = useState(0);
     const [mostMistakenKeys, setMostMistakenKeys] = useState<{ key: string; count: number }[]>([]);
+
+    useEffect(() => {
+        if (!router.isReady) return;
+
+        const langParam = Array.isArray(router.query.lang)
+            ? router.query.lang[0]
+            : router.query.lang;
+
+        // 型ガード関数でチェック
+        const isLanguageType = (value: any): value is LanguageType =>
+            value === "english" || value === "japanese" || value === "free";
+
+        if (langParam && isLanguageType(langParam)) {
+            setLanguageType(langParam); // 型が保証される
+        }
+    }, [router.isReady, router.query.lang]);
 
     /* --- データ取得後に waiting へ遷移 --- */
     useEffect(() => {
