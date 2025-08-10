@@ -1,29 +1,84 @@
-import React from 'react';
+import React, { useState, forwardRef } from 'react';
+import type { InputHTMLAttributes, Dispatch, SetStateAction } from 'react';
 
-interface MyPasswordInputProps {
+type AutocompleteMode = 'new-password' | 'current-password';
+
+interface MyPasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
     state: string;
-    setState: React.Dispatch<React.SetStateAction<any>>;
+    setState: Dispatch<SetStateAction<string>>;
     inputClass?: string;
+    id?: string;
+    name?: string;
+    describedById?: string;
+    autoCompleteMode?: AutocompleteMode; // default: 'new-password'
+    showToggle?: boolean;                // default: true
+    minLength?: number;                  // default: 12
+    maxLength?: number;                  // default: 128
 }
 
 const defaultClass = 'password-input';
 
-export default function MyPasswordInput({
-    state,
-    setState,
-    inputClass = defaultClass,
-}: MyPasswordInputProps) {
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setState(e.target.value);
-    };
+const MyPasswordInput = forwardRef<HTMLInputElement, MyPasswordInputProps>(
+    (
+        {
+            state,
+            setState,
+            inputClass = defaultClass,
+            id = 'password',
+            name = 'password',
+            describedById,
+            autoCompleteMode = 'new-password',
+            showToggle = true,
+            minLength = 12,
+            maxLength = 128,
+            ...rest
+        },
+        ref
+    ) => {
+        const [revealed, setRevealed] = useState(false);
 
-    return (
-        <input
-            type="password"
-            className={inputClass}
-            value={state}
-            onChange={handleChange}
-            required
-        />
-    );
-}
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            // Allow spaces & Unicode; don't trim here
+            setState(e.target.value);
+        };
+
+        return (
+            <div className="relative">
+                <input
+                    ref={ref}
+                    id={id}
+                    name={name}
+                    type={revealed ? 'text' : 'password'}
+                    className={inputClass}
+                    value={state}
+                    onChange={handleChange}
+                    autoComplete={autoCompleteMode}
+                    inputMode="text"
+                    autoCorrect="off"
+                    autoCapitalize="none"
+                    spellCheck={false}
+                    aria-describedby={describedById}
+                    minLength={minLength}
+                    maxLength={maxLength}
+                    required
+                    {...rest}
+                />
+
+                {showToggle && (
+                    <button
+                        type="button"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-sm px-2 py-1 rounded"
+                        aria-label={revealed ? 'Hide password' : 'Show password'}
+                        aria-pressed={revealed}
+                        onClick={() => setRevealed(v => !v)}
+                    >
+                        {revealed ? 'Hide' : 'Show'}
+                    </button>
+                )}
+            </div>
+        );
+    }
+);
+
+MyPasswordInput.displayName = 'MyPasswordInput';
+export default MyPasswordInput;
