@@ -75,7 +75,7 @@ export default function DeckCreateForm() {
         description: deckDescription.trim() || null,
         lang: language === 'english' ? 'en' : 'others',
         visibility: 'public', // デフォルトは公開
-        typing_mode: 'topic', // ここは適宜変更
+        typing_mode: 'custom', // ここは適宜変更
         category_id: null,
         subcategory_id: null,
         level_id: null,
