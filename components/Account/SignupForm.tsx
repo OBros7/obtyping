@@ -1,75 +1,107 @@
 // --- obtyping/components/Account/SignupForm.tsx ---
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MyEmailInput, MyPasswordInput } from '@/Basics';
 import useAuth from '@/MyCustomHooks/useAuth';
+
+const MIN_LEN = 8;
+const MAX_LEN = 128;
+
+function validate(email: string, password: string, confirm: string) {
+    if (!email.trim()) return 'Please enter an email address.';
+    const atIndex = email.indexOf('@');
+    if (atIndex <= 0 || atIndex !== email.lastIndexOf('@') || atIndex === email.length - 1) {
+        return 'Please enter a valid email address.';// only one @, not at start/end
+    }
+    if (password.length < MIN_LEN) return `Password must be at least ${MIN_LEN} characters.`;
+    if (password.length > MAX_LEN) return `Password must not exceed ${MAX_LEN} characters.`;
+    if (password !== confirm) return 'Passwords do not match.';
+    return '';
+}
 
 const SignupForm = ({ btnClass = 'btn-second' }: { btnClass?: string }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [msg, setMsg] = useState('');
-    const [disabledSubmission, setDisabledSubmission] = useState(false);
-
+    const [serverMsg, setServerMsg] = useState('');
     const { signUp } = useAuth();
 
-    useEffect(() => {
-        // Simple checks to show messages / disable submission
-        if (!email.includes('@')) {
-            setMsg('Please enter a valid email address.');
-            setDisabledSubmission(true);
-        } else if (password.length < 8) {
-            setMsg('Password must be at least 8 characters long.');
-            setDisabledSubmission(true);
-        } else if (password !== confirmPassword) {
-            setMsg('Passwords do not match.');
-            setDisabledSubmission(true);
-        } else {
-            setMsg('');
-            setDisabledSubmission(false);
-        }
-    }, [email, password, confirmPassword]);
+    const msg = useMemo(
+        () => validate(email, password, confirmPassword),
+        [email, password, confirmPassword]
+    );
+    const disabledSubmission = Boolean(msg);
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (disabledSubmission) return;
-
         try {
             await signUp({ email, password });
-            // signUp does the redirection for you.
+            // signUp handles redirects
         } catch (error: any) {
-            setMsg(error.response?.data?.detail || 'Signup failed');
-            console.error(error);
+            setServerMsg(error?.response?.data?.detail || 'Signup failed. Please try again.');
+            console.error(error); // ensure server never logs raw passwords
         }
     };
 
     return (
         <div>
-            <form onSubmit={onSubmit} className="flex flex-col space-y-2">
+            <form onSubmit={onSubmit} className="flex flex-col space-y-2" noValidate>
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <label htmlFor="signup-email" className="block text-sm font-medium text-gray-700">
+                        Email
+                    </label>
                     <MyEmailInput
+                        id="signup-email"
+                        name="email"
                         state={email}
                         setState={setEmail}
                         inputClass="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                        autoComplete="email"
                     />
                 </div>
+
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Password</label>
+                    <label htmlFor="signup-password" className="block text-sm font-medium text-gray-700">
+                        Password
+                    </label>
                     <MyPasswordInput
+                        id="signup-password"
+                        name="password"
                         state={password}
                         setState={setPassword}
                         inputClass="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                        autoCompleteMode="new-password"
+                        minLength={MIN_LEN}
+                        maxLength={MAX_LEN}
+                        describedById="pw-help"
                     />
+                    <p id="pw-help" className="text-xs text-gray-500 mt-1">
+                        Use at least {MIN_LEN} characters. Passphrases are great (you can include spaces).
+                    </p>
                 </div>
+
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                    <label htmlFor="signup-password-confirm" className="block text-sm font-medium text-gray-700">
+                        Confirm Password
+                    </label>
                     <MyPasswordInput
+                        id="signup-password-confirm"
+                        name="passwordConfirm"
                         state={confirmPassword}
                         setState={setConfirmPassword}
                         inputClass="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                        autoCompleteMode="new-password"
+                        minLength={MIN_LEN}
+                        maxLength={MAX_LEN}
                     />
                 </div>
-                {msg && <p className="text-sm text-red-500">{msg}</p>}
+
+                {(msg || serverMsg) && (
+                    <p className="text-sm text-red-500" aria-live="polite">
+                        {msg || serverMsg}
+                    </p>
+                )}
+
                 <button type="submit" className={`${btnClass} mt-2`} disabled={disabledSubmission}>
                     Sign Up
                 </button>
