@@ -1,18 +1,19 @@
 import React, { useState, forwardRef } from 'react';
+import type { InputHTMLAttributes, Dispatch, SetStateAction } from 'react';
 
 type AutocompleteMode = 'new-password' | 'current-password';
 
-interface MyPasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface MyPasswordInputProps extends InputHTMLAttributes<HTMLInputElement> {
     state: string;
-    setState: React.Dispatch<React.SetStateAction<string>>;
+    setState: Dispatch<SetStateAction<string>>;
     inputClass?: string;
     id?: string;
     name?: string;
-    describedById?: string;         // hook this to helper/error text
+    describedById?: string;
     autoCompleteMode?: AutocompleteMode; // default: 'new-password'
-    showToggle?: boolean;           // default: true
-    minLength?: number;             // default: 12 (passphrases encouraged)
-    maxLength?: number;             // default: 128
+    showToggle?: boolean;                // default: true
+    minLength?: number;                  // default: 12
+    maxLength?: number;                  // default: 128
 }
 
 const defaultClass = 'password-input';
@@ -37,7 +38,7 @@ const MyPasswordInput = forwardRef<HTMLInputElement, MyPasswordInputProps>(
         const [revealed, setRevealed] = useState(false);
 
         const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-            // Allow spaces & Unicode; don’t trim here (users might want leading spaces)
+            // Allow spaces & Unicode; don't trim here
             setState(e.target.value);
         };
 
@@ -52,7 +53,6 @@ const MyPasswordInput = forwardRef<HTMLInputElement, MyPasswordInputProps>(
                     value={state}
                     onChange={handleChange}
                     autoComplete={autoCompleteMode}
-                    // keep password managers happy; and mobile keyboards neutral
                     inputMode="text"
                     autoCorrect="off"
                     autoCapitalize="none"
@@ -80,4 +80,5 @@ const MyPasswordInput = forwardRef<HTMLInputElement, MyPasswordInputProps>(
     }
 );
 
+MyPasswordInput.displayName = 'MyPasswordInput';
 export default MyPasswordInput;

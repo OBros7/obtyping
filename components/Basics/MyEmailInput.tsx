@@ -1,12 +1,13 @@
 import React, { forwardRef } from 'react';
+import type { InputHTMLAttributes, Dispatch, SetStateAction } from 'react';
 
-interface MyEmailInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface MyEmailInputProps extends InputHTMLAttributes<HTMLInputElement> {
     state: string;
-    setState: React.Dispatch<React.SetStateAction<string>>;
+    setState: Dispatch<SetStateAction<string>>;
     inputClass?: string;
-    id?: string;           // so <label htmlFor> can target it
-    name?: string;         // so the form posts the field
-    describedById?: string; // connect to error/help text for a11y
+    id?: string;
+    name?: string;
+    describedById?: string;
 }
 
 const defaultClass = 'email-input';
@@ -20,7 +21,7 @@ const MyEmailInput = forwardRef<HTMLInputElement, MyEmailInputProps>(
             id = 'email',
             name = 'email',
             describedById,
-            autoComplete = 'email', // or 'username' if you prefer
+            autoComplete = 'email',
             ...rest
         },
         ref
@@ -30,7 +31,7 @@ const MyEmailInput = forwardRef<HTMLInputElement, MyEmailInputProps>(
         };
 
         const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-            // Trim accidental leading/trailing whitespace only
+            // Trim accidental whitespace only
             const trimmed = e.target.value.trim();
             if (trimmed !== state) setState(trimmed);
             rest.onBlur?.(e);
@@ -59,4 +60,5 @@ const MyEmailInput = forwardRef<HTMLInputElement, MyEmailInputProps>(
     }
 );
 
+MyEmailInput.displayName = 'MyEmailInput';
 export default MyEmailInput;
