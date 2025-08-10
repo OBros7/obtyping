@@ -157,4 +157,6 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   '！': { display: '!', accept: ['!'] },
   '？': { display: '?', accept: ['?'] },
   ー: { display: '-', accept: ['-'] },
+  '「': { display: '[', accept: ['['] },
+  '」': { display: ']', accept: [']'] },
 }

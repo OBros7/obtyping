@@ -19,6 +19,14 @@ interface TypingJapaneseProps {
     mode?: '1m' | '2m' | '3m' | '5m';
 }
 
+const SEP = '=separator5784209847=';
+
+const splitBySep = (s: string): string[] =>
+    (s ?? '')
+        .split(SEP)
+        .map((x) => x.trim())
+        .filter((x) => x.length > 0);
+
 export default function TypingJapanese(props: TypingJapaneseProps) {
     const {
         textList,
@@ -32,14 +40,36 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
         setMostMistakenKeys,
     } = props;
 
-    /* -------------------------------------------------- */
+    /* どのテキストか */
     const [textIdx, setTextIdx] = useState(0);
-    const kanaSentence = textList[textIdx].text11;
-    const jpSentence = textList[textIdx].text12;
 
-    const matcher = useMemo(() => new RomajiMatcher(kanaSentence), [kanaSentence]);
+    /* テキストをセクション分割 */
+    const kanaSegments = useMemo(
+        () => splitBySep(textList[textIdx]?.text11 || ''),
+        [textIdx, textList]
+    );
+    const jpSegments = useMemo(
+        () => splitBySep(textList[textIdx]?.text12 || ''),
+        [textIdx, textList]
+    );
 
-    /* 進捗管理 */
+    /* どのセクションか */
+    const [segIdx, setSegIdx] = useState(0);
+
+    /* 現在の表示・判定対象 */
+    const currentKana = kanaSegments[segIdx] ?? '';
+    const currentJP = jpSegments[segIdx] ?? '';
+
+    /* セクションが切り替わったら進捗をリセット */
+    useEffect(() => {
+        setTypedPos(0);
+        correctnessRef.current = [];
+    }, [textIdx, segIdx]);
+
+    /* RomajiMatcher は “現在セクションのかな” に対して作る */
+    const matcher = useMemo(() => new RomajiMatcher(currentKana), [currentKana]);
+
+    /* 進捗管理（ローマ字表示の色分け用）*/
     const [typedPos, setTypedPos] = useState(0);
     const [currentMistake, setCurrentMistake] = useState(false);
     const correctnessRef = useRef<boolean[]>([]);
@@ -54,7 +84,7 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
         errorKeysRef.current[exp] = (errorKeysRef.current[exp] || 0) + 1;
     };
 
-    /* helper: 動的ローマ字列 */
+    /* 動的ローマ字列（typed + 現在表示 + 以降の display） */
     const getDynamicDisplay = () => {
         const typed = matcher.getTypedString();
         const currentWord = matcher.getCurrentDisplayWord();
@@ -68,7 +98,6 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
             if (status !== 'running') return;
             if (e.key.length !== 1 || !/^[ -~]$/.test(e.key)) return;
             e.preventDefault();
-            console.log("key info:", matcher.getTypedString(), matcher.getCurrentCandidateWord(), matcher.getRemainingTokensDisplay())
 
             const ch = e.key.toLowerCase();
             const res = matcher.feed(ch);
@@ -89,16 +118,22 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
             setTypedPos((p) => p + 1);
 
             if (res.finishedAll) {
-                setTextIdx((idx) => (idx + 1) % textList.length);
-                setTypedPos(0);
-                correctnessRef.current = [];
+                // いまのセクションを打ち切った
+                if (segIdx < kanaSegments.length - 1) {
+                    setSegIdx((i) => i + 1);
+                } else {
+                    // セクションを全て終えた → 次のテキストへ
+                    setTextIdx((idx) => (idx + 1) % textList.length);
+                    setSegIdx(0);
+                }
+                // 次セクション/次テキストの初期化は useEffect で行う
             }
 
             const rep = matcher.getPreferredNextKey() ?? null;
             setNextKey(rep);
             setPressKey(rep);
         },
-        [status, matcher, typedPos, setMistake, setScore]
+        [status, matcher, typedPos, setMistake, setScore, segIdx, kanaSegments.length, textList.length]
     );
 
     useEffect(() => {
@@ -106,7 +141,7 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
 
-    /* matcher 更新時 (文切替) */
+    /* matcher 更新時 (セクション切替/文切替) → 次キー初期化 */
     useEffect(() => {
         const rep = matcher.getPreferredNextKey() ?? null;
         setNextKey(rep);
@@ -153,13 +188,18 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
                     <span>Score: {score}</span>
                     <span className="ml-4">Mistakes: {mistake}</span>
                 </div>
+
+                {/* 原文（現在セクションのみ） */}
                 <div className="text-3xl mt-2 mb-1 px-24 underline decoration-2 underline-offset-8 whitespace-pre-wrap">
-                    {jpSentence}
+                    {currentJP}
                 </div>
-                <div className="text-4xl mt-1 text-left w-full py-2 px-24 font-mono whitespace-pre-wrap">
+
+                {/* ローマ字（動的） */}
+                <div className="text-4xl mt-1 text-left w-full py-2 px-24 font-mono whitespace-pre-wrap break-words">
                     {romanSpans}
                 </div>
             </div>
+
             <Keyboard nextKey={pressKey} />
             <div className="container flex flex-col justify-end">
                 <Fingers nextKey={nextKey} />

@@ -22,12 +22,14 @@ interface ReceivedText {
     deck_id?: number,
 }
 
+// 過去のもの。いずれ消すかも
 interface ReceivedDeck {
     deck_id: number,
     title: string,
     description?: string,
     visibility_int?: number,
     shuffle?: boolean,
+    lang?: string,
     lang1_int: number,
     lang2_int?: number,
     // If your API returns category/subcategory/level as plain strings,
@@ -127,6 +129,8 @@ interface CreateDeckWithTextsArgs {
     defaultTextVisibility?: number;
 }
 
+type UpdateDeckPayload = Partial<PostDeck> & { deck_id: number };
+type UpdateTextPayload = Partial<PostText> & { text_id: number };
 
 /** クエリ文字列生成 */
 const qs = (o: Record<string, any>) =>
@@ -205,11 +209,9 @@ export const createDeckWithTexts = async ({
     deck,
     texts,
 }: CreateDeckWithTextsArgs): Promise<ReceivedDeck> => {
-    console.log("Creating deck :", deck);
     // 1. デッキ作成
     const createdDeck = await createDeck(deck);
-    console.log("deck created");
-    console.log("Created text:", texts);
+
     // 2. テキスト一括登録
     await Promise.all(
         texts.map((t) =>
@@ -219,23 +221,37 @@ export const createDeckWithTexts = async ({
             }),
         ),
     );
-    console.log("Texts created for deck:", createdDeck.deck_id);
     return createdDeck;
 };
 
-export const updateText = (textID: number, data: Partial<PostText>) =>
-    apiFetch(`${BACKEND}/api/typing/update_text/${textID}`, {
-        method: 'POST',
+export const updateText = (data: UpdateTextPayload) =>
+    apiFetch(`${BACKEND}/api/typing/update_text`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
 
-export const updateDeck = (deckID: number, data: Partial<PostDeck>) =>
-    apiFetch(`${BACKEND}/api/typing/update_deck/${deckID}`, {
-        method: 'POST',
+export const updateDeck = (data: UpdateDeckPayload) =>
+    apiFetch(`${BACKEND}/api/typing/update_deck`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
+
+export const deleteDeck = (deckID: number) =>
+    apiFetch(`${BACKEND}/api/typing/delete_deck`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deck_id: deckID }),
+    });
+
+export const deleteText = (textID: number) =>
+    apiFetch(`${BACKEND}/api/typing/delete_text`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text_id: textID }),
+    });
+
 
 export type {
     ReceivedText,
@@ -245,4 +261,6 @@ export type {
     PostDeck,
     NewTextForDeck,
     CreateDeckWithTextsArgs,
+    UpdateDeckPayload,
+    UpdateTextPayload,
 };

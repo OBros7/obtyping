@@ -122,58 +122,58 @@ export default function DeckSelectCustom() {
 
   const queryClient = useQueryClient();
 
-  const saveMutation = useMutation({
-    /* ❶ リクエスト本体 */
-    mutationFn: async () => {
-      if (!title) throw new ApiError('Please fill in the title', 400);
+  // const saveMutation = useMutation({
+  //   /* ❶ リクエスト本体 */
+  //   mutationFn: async () => {
+  //     if (!title) throw new ApiError('Please fill in the title', 400);
 
-      const lang1_int = lang2int(lang1) as number;
-      const lang2_int = !isLangLearn ? lang2int(lang2) : null;
+  //     const lang1_int = lang2int(lang1) as number;
+  //     const lang2_int = !isLangLearn ? lang2int(lang2) : null;
 
-      const postData: PostDeck = {
-        title,
-        description,
-        lang: lang1,
-        visibility: "private",
-        typing_mode: "custom", // ここは適宜変更
-        category_id: null,
-        subcategory_id: null,
-        level_id: null,
-        shuffle: true, // デフォルトは true とする
-      };
-      return createDeck(postData);
-    },
+  //     const postData: PostDeck = {
+  //       title,
+  //       description,
+  //       lang: lang1,
+  //       visibility: "private",
+  //       typing_mode: "TOPIC", // ここは適宜変更
+  //       category_id: null,
+  //       subcategory_id: null,
+  //       level_id: null,
+  //       shuffle: true, // デフォルトは true とする
+  //     };
+  //     return createDeck(postData);
+  //   },
 
-    /* ❷ 成功時 */
-    onSuccess: (json) => {
-      showSuccess('デッキを保存しました');
-      queryClient.invalidateQueries({ queryKey: ['decks', userID] });
-    },
+  //   /* ❷ 成功時 */
+  //   onSuccess: (json) => {
+  //     showSuccess('デッキを保存しました');
+  //     queryClient.invalidateQueries({ queryKey: ['decks', userID] });
+  //   },
 
-    /* ❸ 失敗時 */
-    onError: (e) => {
-      const err = e as ApiError;
-      showError(`${err.message} (status ${err.status ?? '??'})`);
-    },
-  });
+  //   /* ❸ 失敗時 */
+  //   onError: (e) => {
+  //     const err = e as ApiError;
+  //     showError(`${err.message} (status ${err.status ?? '??'})`);
+  //   },
+  // });
 
-  /* ---------- DeckUploadForm 呼び出し ---------- */
-  const handleSave = useCallback(
-    (payload: any) => saveMutation.mutate(payload),
-    [saveMutation],
-  );
+  // /* ---------- DeckUploadForm 呼び出し ---------- */
+  // const handleSave = useCallback(
+  //   (payload: any) => saveMutation.mutate(payload),
+  //   [saveMutation],
+  // );
 
-  // 保存ロジック (handleSave) のあとに追記
-  const handleTest = useCallback(
-    (payload: { deckName: string; texts: { name: string; content: string }[] }) => {
-      // ① sessionStorage に保存
-      sessionStorage.setItem('typingDraft', JSON.stringify(payload));
+  // // 保存ロジック (handleSave) のあとに追記
+  // const handleTest = useCallback(
+  //   (payload: { deckName: string; texts: { name: string; content: string }[] }) => {
+  //     // ① sessionStorage に保存
+  //     sessionStorage.setItem('typingDraft', JSON.stringify(payload));
 
-      // ② 新しいタブ (or ウィンドウ) で練習画面を開く
-      window.open('/typing/practice', '_blank');
-    },
-    [],
-  );
+  //     // ② 新しいタブ (or ウィンドウ) で練習画面を開く
+  //     window.open('/typing/practice', '_blank');
+  //   },
+  //   [],
+  // );
 
   /* ---------- JSX ---------- */
   return (
@@ -188,16 +188,9 @@ export default function DeckSelectCustom() {
           />
 
           {pageType === 'EditMode' ? (
-            /* --- 画面上部のモード選択 --- */
-            <DeckUploadForm
-              deckOptions={fetchedDecks.map((d) => d.title ?? d.title ?? '')}
-            />
+            <DeckUploadForm />
           ) : pageType === 'Practice' ? (
-            /* Your Deck 一覧表示 */
-            (<DeckListButton
-              deckList={fetchedDecks}
-              setLanguage={() => { }}
-            />)
+            <DeckListButton deckList={fetchedDecks} setLanguage={() => { }} />
           ) : null}
         </div>
       </MainContainer>
