@@ -11,6 +11,10 @@ const langDict = {
         ja: '保存しました',
         en: 'Saved',
     },
+    saveError: {
+        ja: '保存に失敗しました',
+        en: 'Failed to save',
+    },
     descriptionTextArea: {
         ja: '保存する文章を書いてください',
         en: 'Please write the text to save',
@@ -24,11 +28,11 @@ const langDict = {
         en: 'Title of the text',
     },
     enterTextTitle: {
-        ja: '文章の名前を入力してください',
+        ja: 'テキストの名前を入力してください',
         en: 'Please enter the name of the text',
     },
     textDescription: {
-        ja: '文章の説明',
+        ja: 'テキストの説明',
         en: 'Description of the text',
     },
     enterTextDescription: {
@@ -36,7 +40,7 @@ const langDict = {
         en: 'Please enter description of the text',
     },
     text: {
-        ja: '文章',
+        ja: 'テキスト',
         en: 'Text',
     },
     deckNothing: {
@@ -82,6 +86,54 @@ const langDict = {
     loading: {
         ja: '読み込み中…',
         en: 'Loading…',
+    },
+    language: {
+        ja: '言語',
+        en: 'Language',
+    },
+    displayOrderRandom: {
+        ja: '表示順をランダムにするか',
+        en: 'Whether to randomize the display order',
+    },
+    addMoreTexts: {
+        ja: 'テキストを追加する',
+        en: 'Add more texts',
+    },
+    tryTypingPractice: {
+        ja: 'タイピング練習を試す',
+        en: 'Try Typing Practice',
+    },
+    editDeck: {
+        ja: '編集するデッキ',
+        en: 'Deck to edit',
+    },
+    editText: {
+        ja: '編集するテキスト',
+        en: 'Text to edit',
+    },
+    delete: {
+        ja: '削除',
+        en: 'Delete',
+    },
+    askRestoreBackup: {
+        ja: '前回の編集中デッキがあります。復元しますか？',
+        en: 'There is a previous deck being edited. Would you like to restore it?',
+    },
+    createNewDeck: {
+        ja: 'デッキを新規作成',
+        en: 'Create a new deck',
+    },
+    editDeckAndText: {
+        ja: 'デッキとテキストを編集',
+        en: 'Edit deck and text',
+    },
+    selectShuffle: {
+        ja: 'ランダム',
+        en: 'random',
+    },
+    selectNotShuffle: {
+        ja: 'ランダムにしない',
+        en: 'not random',
     },
 
 }

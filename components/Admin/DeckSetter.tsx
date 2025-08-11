@@ -81,13 +81,25 @@ export default function DeckSetter(props: DeckSetterProps) {
                 user_id: userID,
                 title,
                 description,
-                category,
-                subcategory,
-                level,
-                lang1_int,
-                lang2_int,
-                visibility_int: visibilityInt,
+                lang: lang1,
+                visibility: 'public',
+                typing_mode: 'topic',
+                category_id: null,
+                subcategory_id: null,
+                level_id: null,
+                shuffle: true, // デフォルトでシャッフル
             };
+            // const payload = {
+            //     user_id: userID,
+            //     title,
+            //     description,
+            //     category,
+            //     subcategory,
+            //     level,
+            //     lang1_int,
+            //     lang2_int,
+            //     visibility_int: visibilityInt,
+            // };
             return createDeck(payload);
         },
 

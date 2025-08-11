@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import {
     TypingEnglish,
     TypingJapanese,
@@ -10,6 +10,7 @@ import { hms2ms, ms2hms } from '@/MyLib/TimeLib'
 import { TimerBase, StopWatchBase } from '@/Timer'
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
 
+type LanguageType = 'english' | 'japanese' | 'free'
 
 interface TypingPageBaseProps {
     textList: ReceivedText[]
@@ -19,8 +20,8 @@ interface TypingPageBaseProps {
     setScore: React.Dispatch<React.SetStateAction<number>>
     mistake: number
     setMistake: React.Dispatch<React.SetStateAction<number>>
-    languageType?: 'english' | 'japanese' | 'free'
-    setLanguageType?: React.Dispatch<React.SetStateAction<'english' | 'japanese' | 'free'>>
+    languageType?: LanguageType
+    setLanguageType?: React.Dispatch<React.SetStateAction<LanguageType>>
     mode?: '1m' | '2m' | '3m' | '5m'
     mostMistakenKeys: { key: string; count: number }[]
     setMostMistakenKeys: React.Dispatch<React.SetStateAction<{ key: string; count: number }[]>>
@@ -59,12 +60,25 @@ export default function TypingPageBase({
         5: hms2ms(0, 0, 5, 0),
     }
 
-    const languageTypeDic: { [key: number]: 'english' | 'japanese' | 'free' | undefined } = {
-        1: 'english',
-        2: 'japanese',
-        0: 'free'
+    const languageTypeMap: Record<string, LanguageType> = {
+        en: 'english',
+        ja: 'japanese',
+        other: 'free',
+        '1': 'english',
+        '2': 'japanese',
+        '0': 'free',
     }
 
+    const isJapaneseEntry = (
+        t: ReceivedText
+    ): t is ReceivedText & { text11: string; text12: string } =>
+        typeof t.text11 === 'string' && t.text11.trim().length > 0 &&
+        typeof t.text12 === 'string' && t.text12.trim().length > 0;
+
+    const jpList = useMemo(
+        () => textList.filter(isJapaneseEntry),
+        [textList]
+    );
 
     const getQueryParameter = (param: string): string | null => {
         const url = new URL(window.location.href);
@@ -76,7 +90,9 @@ export default function TypingPageBase({
         const language = getQueryParameter('lang');
 
         setTimeLimit(timeLimitDic[Number(minutes)])
-        const resolvedLanguageType = language ? languageTypeDic[Number(language)] : undefined;
+
+        const langKey = language?.toString().trim().toLowerCase()
+        const resolvedLanguageType = langKey ? languageTypeMap[langKey] : undefined
         if (setLanguageType && resolvedLanguageType) {
             setLanguageType(resolvedLanguageType);
         }
@@ -166,7 +182,20 @@ export default function TypingPageBase({
                             />
                         )
                             : languageType === 'japanese' ? (
-                                <TypingJapanese />
+                                <TypingJapanese
+                                    textList={jpList}
+                                    status={status}
+                                    setStatus={setStatus}
+                                    score={score}
+                                    setScore={setScore}
+                                    mistake={mistake}
+                                    setMistake={setMistake}
+                                    languageType={languageType}
+                                    mode={mode}
+                                    remainingTime={remainingTime}
+                                    mostMistakenKeys={mostMistakenKeys}
+                                    setMostMistakenKeys={setMostMistakenKeys}
+                                />
                             ) : (
                                 <TypingFree
                                     textList={textList}

@@ -54,7 +54,7 @@ export default function HomeMain() {
               recomendedFor={translater.recomendedFixedPhrase}
             ></AppCard>
           </PreparationCard>
-          <PreparationCard isReady={false} onclickMessage="この機能は現在開発中です。">
+          <PreparationCard isReady={true} onclickMessage="この機能は現在開発中です。">
             <AppCard
               href='./typing/custom_typing'
               title={translater.customTypingTitle}

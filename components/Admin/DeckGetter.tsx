@@ -15,7 +15,8 @@ import { ApiError } from '@/MyLib/apiError'
 
 /* ---------- 定数 ---------- */
 const visibilityOptions = Object.keys(visibility2int)
-const langOptions = Object.keys(_lang2int)
+// const langOptions = Object.keys(_lang2int)
+const langOptions = ['english', 'others']
 const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
 const classChildDivDefault = 'w-full'
 
@@ -83,7 +84,7 @@ export default function DeckGetter(props: DeckGetterProps) {
             if (url.includes('get_decklist_basic')) {
                 return getDeckListBasic(lang1, nSelect, orderBy)
             }
-            if (url.includes('get_decklist_private')) {
+            if (url.includes('get_decklist_custom_by_user')) {
                 return getDeckListPrivate(nSelect)
             }
             if (url.includes('get_decklist_by_category')) {
@@ -113,6 +114,10 @@ export default function DeckGetter(props: DeckGetterProps) {
     return (
         <div className={classParDiv}>
             <div className={classChildDiv}>
+                Language of the deck
+                <MySelect state={lang1} setState={setLang1} optionValues={langOptions} />
+            </div>
+            <div className={classChildDiv}>
                 New Deck Title:
                 <MyTextbox state={newDeckTitle} setState={setNewDeckTitle} />
             </div>
@@ -122,7 +127,7 @@ export default function DeckGetter(props: DeckGetterProps) {
                 <MyTextbox state={deckDescription} setState={setDeckDescription} />
             </div>
 
-            <div className={classChildDiv}>
+            {/* <div className={classChildDiv}>
                 Number of Select:
                 <MyInputNumber
                     state={nSelect}
@@ -132,17 +137,7 @@ export default function DeckGetter(props: DeckGetterProps) {
                     step={1}
                     defaultState={10}
                 />
-            </div>
-
-            <div className={classChildDiv}>
-                Language 1:
-                <MySelect state={lang1} setState={setLang1} optionValues={langOptions} />
-            </div>
-
-            <div className={classChildDiv}>
-                Language 2:
-                <MySelect state={lang2} setState={setLang2} optionValues={langOptions} />
-            </div>
+            </div> */}
 
             <FormatCategory
                 category={category}
