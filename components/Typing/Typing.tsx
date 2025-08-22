@@ -21,6 +21,7 @@ interface TypingProps {
 }
 
 type LanguageType = "english" | "japanese" | "free";
+type LanguageTypeOrNull = LanguageType | null;
 
 export default function Typing({ deckId, minutes }: TypingProps) {
     /* --- i18n --- */
@@ -55,26 +56,52 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     );
     const [score, setScore] = useState(0);
     const [mistake, setMistake] = useState(0);
-    const [languageType, setLanguageType] = useState<LanguageType>('english');
+    const [languageType, setLanguageType] = useState<LanguageTypeOrNull>(null);
     const [mode, setMode] = useState<'1m' | '2m' | '3m' | '5m'>('1m');
     const [cpm, setCpm] = useState(0);
     const [accuracy, setAccuracy] = useState(0);
     const [recordScore, setRecordScore] = useState(0);
     const [mostMistakenKeys, setMostMistakenKeys] = useState<{ key: string; count: number }[]>([]);
+    const languageTypeMap: Record<string, LanguageType> = {
+        en: 'english',
+        ja: 'japanese',
+        others: 'free',
+        '1': 'english',
+        '2': 'japanese',
+        '0': 'free',
+    }
+
+    const getQueryParameter = (param: string): string | null => {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(param);
+    }
 
     useEffect(() => {
         if (!router.isReady) return;
 
-        const langParam = Array.isArray(router.query.lang)
+        const raw = Array.isArray(router.query.lang)
             ? router.query.lang[0]
             : router.query.lang;
 
-        // 型ガード関数でチェック
-        const isLanguageType = (value: any): value is LanguageType =>
-            value === "english" || value === "japanese" || value === "free";
+        const key = (raw ?? '').toString().trim().toLowerCase();
 
-        if (langParam && isLanguageType(langParam)) {
-            setLanguageType(langParam); // 型が保証される
+        // en/ja/数字やフルスペルの両方をカバー
+        const map: Record<string, LanguageType> = {
+            en: 'english',
+            english: 'english',
+            '1': 'english',
+            ja: 'japanese',
+            japanese: 'japanese',
+            '2': 'japanese',
+            free: 'free',
+            '0': 'free',
+        };
+
+        if (key in map) {
+            setLanguageType(map[key]);
+        } else {
+            // 既定値を決めたいならここで
+            setLanguageType('free');
         }
     }, [router.isReady, router.query.lang]);
 
@@ -145,7 +172,7 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                         <ReadyScreen status={status} setStatus={setStatus} />
                     </div>
                 ) : status === 'running' ? (
-                    textList.length > 0 && (
+                    textList.length > 0 && languageType && (
                         <TypingPageBase
                             textList={textList}
                             status={status}
@@ -155,7 +182,6 @@ export default function Typing({ deckId, minutes }: TypingProps) {
                             mistake={mistake}
                             setMistake={setMistake}
                             languageType={languageType}
-                            setLanguageType={setLanguageType}
                             mode={mode}
                             mostMistakenKeys={mostMistakenKeys}
                             setMostMistakenKeys={setMostMistakenKeys}

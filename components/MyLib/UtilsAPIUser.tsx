@@ -37,11 +37,11 @@ export const loginUser = (data: LoginPayload) =>
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         },
-        { withAuth: false }, // ← 第 3 引数へ
+        { withAuth: false, parseJson: true }, // ← 第 3 引数へ
     );
 
 export const fetchCurrentUser = () =>
-    apiFetch<User>(`${BACKEND}/api/user/me`); // 例: /api/user/me が自分を返す想定
+    apiFetch<User>(`${BACKEND}/api/user/me`, undefined, { parseJson: true }); // 例: /api/user/me が自分を返す想定
 
 /* ---------- React Query フック ---------- */
 

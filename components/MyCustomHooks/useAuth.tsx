@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { useUserContext } from '@contexts/UserContext';
 // import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
 import { apiFetch } from '@/MyLib/apiFetch'
+import { parse } from 'path';
 
 interface AuthCredentials {
     email: string;
@@ -100,7 +101,7 @@ export default function useAuth() {
                         email: credentials.email,
                         password: credentials.password,
                     }),
-                });
+                }, { parseJson: true, });
 
                 await handleAuthResponse(resp, 'SignUp error');
                 router.push('/');
@@ -122,7 +123,7 @@ export default function useAuth() {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(credentials),
-                });
+                }, { parseJson: true });
 
                 await handleAuthResponse(resp, 'SignIn error');
                 router.push('/');
@@ -144,7 +145,7 @@ export default function useAuth() {
         try {
             const resp = await apiFetch(sessionURL, {
                 method: 'GET',
-            });
+            }, { parseJson: true });
             await handleAuthResponse(resp, 'Failed to get current user session.');
             // No redirect on error; we just console.error
         } catch (error) {
@@ -159,7 +160,7 @@ export default function useAuth() {
         try {
             const resp = await apiFetch(logoutURL, {
                 method: 'POST',
-            });
+            }, { parseJson: true });
             if (!resp.ok) {
                 console.error('Sign out failed:', resp.statusText);
             }

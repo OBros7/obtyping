@@ -46,7 +46,7 @@ export const createRecordTime = (data: PostRecordTime) =>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-    });
+    }, { parseJson: true });
 
 /** ↓↓↓ 旧 API（score ソート）は今後使わないなら削除して OK */
 export const getRecordTime = (deckId: number, nSelect = 10, orderBy = 'score') =>
@@ -56,6 +56,8 @@ export const getRecordTime = (deckId: number, nSelect = 10, orderBy = 'score') =
             n_select: nSelect,
             order_by: orderBy,
         })}`,
+        undefined,
+        { parseJson: true } // ← 追加
     );
 
 /* ---------- ★★ 追加: 「最近 n 件」用 fetch ---------- */
@@ -67,6 +69,8 @@ export const getRecentRecords = (deckId: number, n = 10) =>
             order_by: 'timestamp',
             desc: true,
         })}`,
+        undefined,
+        { parseJson: true }
     );
 
 /* ---------- ★★ 追加: 「自己ベスト topK」用 fetch ---------- */
@@ -78,6 +82,8 @@ export const getTopScoreRecords = (deckId: number, k = 5) =>
             order_by: 'score',
             desc: true,
         })}`,
+        undefined,
+        { parseJson: true }
     );
 
 /* ---------- React Query フック ---------- */
