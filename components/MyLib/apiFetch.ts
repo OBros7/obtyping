@@ -15,7 +15,7 @@ let refreshingPromise: Promise<string | null> | null = null
 export async function apiFetch<T = any>(
   input: RequestInfo | URL,
   init: RequestInit = {},
-  { withAuth = true, timeoutMs = 15_000, parseJson = true }: ApiFetchOptions = {}
+  { withAuth = true, timeoutMs = 15_000, parseJson = false }: ApiFetchOptions = {}
 ): Promise<T> {
   /* ---------- build request ---------- */
   const ctrl = new AbortController()

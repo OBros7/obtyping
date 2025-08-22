@@ -16,9 +16,9 @@ export default function ManagePortalButton({ className = 'btn-primary' }: Props)
         setLoading(true);
         const res = await apiFetch(`${BACKEND_URL}/api/stripe/create-portal-session`, {
             method: 'POST',
-        });
+        }, { parseJson: true });
         if (res.ok) {
-            const { portal_url } = (await res.json()) as { portal_url: string };
+            const { portal_url } = res;
             window.location.href = portal_url;
         } else {
             console.error('Unable to open billing portal', await res.text());

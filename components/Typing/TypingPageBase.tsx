@@ -20,8 +20,7 @@ interface TypingPageBaseProps {
     setScore: React.Dispatch<React.SetStateAction<number>>
     mistake: number
     setMistake: React.Dispatch<React.SetStateAction<number>>
-    languageType?: LanguageType
-    setLanguageType?: React.Dispatch<React.SetStateAction<LanguageType>>
+    languageType: LanguageType
     mode?: '1m' | '2m' | '3m' | '5m'
     mostMistakenKeys: { key: string; count: number }[]
     setMostMistakenKeys: React.Dispatch<React.SetStateAction<{ key: string; count: number }[]>>
@@ -36,7 +35,6 @@ export default function TypingPageBase({
     mistake,
     setMistake,
     languageType,
-    setLanguageType,
     mode = '1m',
     mostMistakenKeys,
     setMostMistakenKeys
@@ -53,6 +51,7 @@ export default function TypingPageBase({
     const [remainingTime, setRemainingTime] = useState(60)
     const attrsParentTimer = { className: 'flex flex-col items-center justify-center text-5xl' }
     const [timeLimit, setTimeLimit] = useState(hms2ms(0, 0, 1, 0))
+    const [langReady, setLangReady] = useState(false);
     const timeLimitDic: { [key: number]: number } = {
         1: hms2ms(0, 0, 1, 0),
         2: hms2ms(0, 0, 2, 0),
@@ -63,7 +62,7 @@ export default function TypingPageBase({
     const languageTypeMap: Record<string, LanguageType> = {
         en: 'english',
         ja: 'japanese',
-        other: 'free',
+        others: 'free',
         '1': 'english',
         '2': 'japanese',
         '0': 'free',
@@ -87,16 +86,22 @@ export default function TypingPageBase({
 
     useEffect(() => {
         const minutes = getQueryParameter('minutes');
-        const language = getQueryParameter('lang');
+        // const language = getQueryParameter('lang');
 
         setTimeLimit(timeLimitDic[Number(minutes)])
 
-        const langKey = language?.toString().trim().toLowerCase()
-        const resolvedLanguageType = langKey ? languageTypeMap[langKey] : undefined
-        if (setLanguageType && resolvedLanguageType) {
-            setLanguageType(resolvedLanguageType);
-        }
+        // const langKey = language?.toString().trim().toLowerCase()
+        // const resolvedLanguageType = langKey ? languageTypeMap[langKey] : undefined
+        // if (setLanguageType && resolvedLanguageType) {
+        //     setLanguageType(resolvedLanguageType);
+        // }
+        // ★ 初期化が終わったら「言語確定」にする
+        setLangReady(true);
     }, [])
+
+    useEffect(() => {
+        if (languageType) setLangReady(true);
+    }, [languageType]);
 
     useEffect(() => {
         const handleSpacePress = (event: KeyboardEvent) => {
@@ -167,6 +172,7 @@ export default function TypingPageBase({
                         </div>
                         {languageType === 'english' ? (
                             <TypingEnglish
+                                key="typing-english"
                                 textList={textList}
                                 status={status}
                                 setStatus={setStatus}
@@ -183,6 +189,7 @@ export default function TypingPageBase({
                         )
                             : languageType === 'japanese' ? (
                                 <TypingJapanese
+                                    key="typing-japanese"
                                     textList={jpList}
                                     status={status}
                                     setStatus={setStatus}
@@ -198,6 +205,7 @@ export default function TypingPageBase({
                                 />
                             ) : (
                                 <TypingFree
+                                    key="typing-free"
                                     textList={textList}
                                     setStatus={setStatus}
                                     score={score}

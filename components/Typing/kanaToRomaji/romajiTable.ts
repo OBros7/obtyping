@@ -47,9 +47,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   す: { display: 'su', accept: ['su'] },
   せ: { display: 'se', accept: ['se'] },
   そ: { display: 'so', accept: ['so'] },
-  しゃ: { display: 'sha', accept: ['sha', 'sya', 'shiya', 'sixya'] },
-  しゅ: { display: 'shu', accept: ['shu', 'syu', 'shiyu', 'sixyu'] },
-  しょ: { display: 'sho', accept: ['sho', 'syo', 'shiyo', 'sixyo'] },
+  しゃ: { display: 'sha', accept: ['sha', 'sya'] },
+  しゅ: { display: 'shu', accept: ['shu', 'syu'] },
+  しょ: { display: 'sho', accept: ['sho', 'syo'] },
 
   /* z 行（濁音） */
   ざ: { display: 'za', accept: ['za'] },
@@ -135,6 +135,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   や: { display: 'ya', accept: ['ya'] },
   ゆ: { display: 'yu', accept: ['yu'] },
   よ: { display: 'yo', accept: ['yo'] },
+  ゃ: { display: 'xya', accept: ['xya', 'lya'] }, // ゃ は拗音の一部として扱う
+  ゅ: { display: 'xyu', accept: ['xyu', 'lyu'] }, // ゅ は拗音の一部として扱う
+  ょ: { display: 'xyo', accept: ['xyo', 'lyo'] }, // ょ は拗音の一部として扱う
 
   /* r 行 */
   ら: { display: 'ra', accept: ['ra'] },

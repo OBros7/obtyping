@@ -145,6 +145,8 @@ const qs = (o: Record<string, any>) =>
 export const getDeckListByUser = (userID: number | null, nSelect = 10, orderBy = 'title') =>
     apiFetch<ReceivedDeck[]>(
         `${BACKEND}/api/typing/get_decklist_by_user?${qs({ user_id: userID, n_select: nSelect, order_by: orderBy })}`,
+        undefined,
+        { parseJson: true }
     );
 
 /** GET /api/typing/get_decklist_basic */
@@ -155,12 +157,16 @@ export const getDeckListBasic = (lang1: string, nSelect = 10, orderBy = 'title')
             n_select: nSelect,
             order_by: orderBy,
         })}`,
+        undefined,
+        { parseJson: true }
     );
 
 /** 以下同じパターンで… */
 export const getDeckListPrivate = (userID: number | null, nSelect = 10, orderBy = 'title') =>
     apiFetch<ReceivedDeck[]>(
         `${BACKEND}/api/typing/get_decklist_custom_by_user?${qs({ user_id: userID, n_select: nSelect, order_by: orderBy })}`,
+        undefined,
+        { parseJson: true }
     );
 
 export const getDeckListByCategory = (
@@ -172,15 +178,19 @@ export const getDeckListByCategory = (
 ) =>
     apiFetch<ReceivedDeck[]>(
         `${BACKEND}/api/typing/get_decklist_by_category?${qs({ category, subcategory, level, n_select: nSelect, order_by: orderBy })}`,
+        undefined,
+        { parseJson: true }
     );
 
 export const getTextListByDeck = (deckID: number, nSelect = 10, orderBy = 'title') =>
     apiFetch(
         `${BACKEND}/api/typing/get_textlist_by_deckid?${qs({ deck_id: deckID, n_select: nSelect, order_by: orderBy })}`,
+        undefined,
+        { parseJson: true }
     );
 
 export const getCategoriesSubcategoriesLevels = () =>
-    apiFetch(`${BACKEND}/api/typing/get_categories_subcategories_levels/`);
+    apiFetch(`${BACKEND}/api/typing/get_categories_subcategories_levels/`, undefined, { parseJson: true });
 
 /* ============ POST APIs ============ */
 
@@ -189,21 +199,21 @@ export const createText = (data: PostText) =>
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-    });
+    }, { parseJson: true });
 
 export const createTextDeck = (data: PostTextDeck) =>
     apiFetch(`${BACKEND}/api/typing/create_text_deck`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-    });
+    }, { parseJson: true });
 
 export const createDeck = (data: PostDeck) =>
     apiFetch(`${BACKEND}/api/typing/create_deck`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-    });
+    }, { parseJson: true });
 
 export const createDeckWithTexts = async ({
     deck,
@@ -229,28 +239,28 @@ export const updateText = (data: UpdateTextPayload) =>
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-    });
+    }, { parseJson: true });
 
 export const updateDeck = (data: UpdateDeckPayload) =>
     apiFetch(`${BACKEND}/api/typing/update_deck`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-    });
+    }, { parseJson: true });
 
 export const deleteDeck = (deckID: number) =>
     apiFetch(`${BACKEND}/api/typing/delete_deck`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ deck_id: deckID }),
-    });
+    }, { parseJson: true });
 
 export const deleteText = (textID: number) =>
     apiFetch(`${BACKEND}/api/typing/delete_text`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text_id: textID }),
-    });
+    }, { parseJson: true });
 
 
 export type {
