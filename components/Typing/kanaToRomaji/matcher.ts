@@ -11,6 +11,12 @@ export interface MatcherOptions {
 
 type Candidate = { word: string; pos: number } // pos = どこまで打ったか
 
+// 拗音（ゃ/ゅ/ょ）かどうか
+const SMALL_Y_SET = new Set(['ゃ', 'ゅ', 'ょ'])
+function isYouonText(text: string): boolean {
+  return text.length === 2 && SMALL_Y_SET.has(text[1]!)
+}
+
 export class RomajiMatcher {
   private tokens: KanaToken[]
   private tokenIdx = 0
@@ -90,8 +96,28 @@ export class RomajiMatcher {
       this.currentCandidate = this.candidates[0]
     } else {
       const entry = this.getRomajiEntry(token)
-      this.candidates = entry.accept.map((w) => ({ word: w, pos: 0 }))
-      // ★ display を優先して採用（例：shi / si の場合 shi）
+
+      // まずは ROMA_MAP にある合字側の候補（例: しゃ → ['sha', 'sya']）
+      const accepts: string[] = [...entry.accept]
+
+      // ★ 拗音なら「分割候補」を自動で合成して追加（例: し × ゃ → shi+xya, si+lya など）
+      if (isYouonText(token.text)) {
+        const base = ROMA_MAP[token.text[0]] // 例: 'し'
+        const small = ROMA_MAP[token.text[1]] // 例: 'ゃ'
+        if (base && small) {
+          for (const a of base.accept) {
+            for (const b of small.accept) {
+              accepts.push(a + b) // 例: 'shi' + 'xya' = 'shixya'
+            }
+          }
+        }
+      }
+
+      // 重複排除して候補に落とし込む
+      const uniq = Array.from(new Set(accepts))
+      this.candidates = uniq.map((w) => ({ word: w, pos: 0 }))
+
+      // display を優先（無ければ先頭）
       const disp = entry.display
       this.currentCandidate = this.candidates.find((c) => c.word === disp) ?? this.candidates[0]
     }
@@ -104,7 +130,7 @@ export class RomajiMatcher {
       if (c.pos < c.word.length) keys.push(c.word[c.pos]) // 未完了のみ
     }
 
-    // ★ んで n を1回押した直後は、次トークンの先頭子音も許可
+    // ★ n を1回押した直後は、次トークンの先頭子音も許可
     if (this.hasConsumedSingleNOnHatsuon()) {
       for (const ch of this.getNextTokenFirstChars()) keys.push(ch)
     }

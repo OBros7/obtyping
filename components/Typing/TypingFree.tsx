@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react'
 import Keyboard from './Keyboard'
 import Fingers from './Fingers';
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
@@ -40,6 +40,16 @@ const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number
   return potentialEndIndex;
 };
 
+// 先頭 lines 行ぶんを、単語途中で切らずに取り出す
+const getPreviewSlice = (str: string, charsPerLine: number, lines: number) => {
+  let startIdx = 0;
+  for (let i = 0; i < lines; i++) {
+    if (startIdx >= str.length) break;
+    startIdx = getEndOfLineIndex(str, startIdx, charsPerLine);
+  }
+  return str.slice(0, startIdx);
+};
+
 export default function TypingFree(
   {
     textList,
@@ -77,7 +87,7 @@ export default function TypingFree(
   const verySmallScrenWordNum = 10;
   // const missSound = new Audio('/sounds/beep-03.mp3');
 
-  let sentenceNum: number = 0
+  // let sentenceNum: number = 0
 
   // useEffect(() => {
   //   // Attach the event listener to the window to handle key press globally
@@ -106,19 +116,14 @@ export default function TypingFree(
 
   const scoreUpdate = (scoreArray: boolean[], shortage: number) => {
     if (scoreArray.length > 0) {
-      let addNum: number = 0
-      let missNum: number = 0
+      let addNum = 0, missNum = 0;
       for (let i = 0; i < scoreArray.length; i++) {
-        if (scoreArray[i]) {
-          addNum += 1
-        } else {
-          missNum += 1
-        }
+        if (scoreArray[i]) addNum += 1; else missNum += 1;
       }
-      setScore(score + addNum)
-      setMistake(mistake + missNum + shortage)
+      setScore((prev) => prev + addNum);
+      setMistake((prev) => prev + missNum + shortage);
     }
-  }
+  };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const inputSentence = event.target.value
@@ -128,12 +133,13 @@ export default function TypingFree(
     let textLength: number = Math.min(inputPositon, currentTextLength)
 
     if (inputSentence.charAt(inputPositon - 1) === '\n') {
-      let shortage: number = Math.abs(currentTextLength - (inputPositon - 1))
-      sentenceNum += 1
-      scoreUpdate(isCorrects.current, shortage)
-      setCurrentText(textList[sentenceNum].text11)
-      setCurrentTextLength(textList[sentenceNum].text11.length)
-      setInputText('')
+      const shortage = Math.abs(currentTextLength - (inputPositon - 1));
+      scoreUpdate(isCorrects.current, shortage);
+
+      // ★ 次のテキストへ進める（state をインクリメント）
+      setCountTextIndex((i) => (i + 1) % textListLength);
+
+      setInputText('');
     } else {
       isCorrects.current = []
       for (var i = 0; i < textLength; i++) {
@@ -144,6 +150,13 @@ export default function TypingFree(
     }
 
   };
+
+  const nextTextPreview = useMemo(() => {
+    if (!nextText) return '';
+    // ここでは固定で2行だけ覗かせる（画面幅連動にしたい時は英語版と同じように調整）
+    return getPreviewSlice(nextText, charsPerLine, 2);
+  }, [nextText, charsPerLine]);
+
 
   useEffect(() => {
     setCurrentText(textList[countTextIndex % textListLength].text11);
@@ -219,9 +232,20 @@ export default function TypingFree(
 
           </div>
 
-          <div className='text-sm text-gray-400 text-center'>
+          {/* <div className='text-sm text-gray-400 text-center'>
             {nextText}
-          </div>
+          </div> */}
+          {nextTextPreview && (
+            <div
+              className="mt-3 w-full px-6 text-center text-gray-400 text-sm leading-relaxed select-none"
+              style={{
+                WebkitMaskImage:
+                  'linear-gradient(180deg, rgba(0,0,0,0.9) 60%, rgba(0,0,0,0) 100%)'
+              }}
+            >
+              {nextTextPreview}
+            </div>
+          )}
         </div>
       </div>
       <div className="flex justify-center w-full mb-10">

@@ -10,7 +10,7 @@ type Category = { id: string; name: string }
 export function useCategories() {
   const query = useQuery<Category[], ApiError>({
     queryKey: ['categories'],
-    queryFn: () => apiFetch<Category[]>('/api/typing/typingGet'),
+    queryFn: () => apiFetch<Category[]>('/api/typing/typingGet', undefined, { parseJson: true }),
     // v5 でも retry は残っている
     retry: (count, err) => !!err.status && err.status >= 500 && count < 2,
   })

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import Keyboard from './Keyboard'
 import Fingers from './Fingers';
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
@@ -53,6 +53,20 @@ const normalizeKey = (key: string): string => {
   return quoteMap[key] || key;
 };
 
+// 先頭 `lines` 行ぶんのテキストを、単語途中で切らずに取得
+const getPreviewSlice = (
+  str: string,
+  charsPerLine: number,
+  lines: number
+) => {
+  let startIdx = 0;
+  for (let i = 0; i < lines; i++) {
+    if (startIdx >= str.length) break;
+    startIdx = getEndOfLineIndex(str, startIdx, charsPerLine);
+  }
+  return str.slice(0, startIdx);
+};
+
 export default function TypingEnglish(
   {
     textList,
@@ -92,6 +106,15 @@ export default function TypingEnglish(
   const verySmallScrenWordNum = 10;
   // const missSound = new Audio('/sounds/mistyped_sound.mp3');
 
+  // 画面幅に応じて1〜2行だけ覗かせる例
+  // const previewLines = useMemo(() => {
+  //   return window.innerWidth < 768 ? 1 : 2;
+  // }, []);
+  // const nextTextPreview = useMemo(() => {
+  //   if (!nextText) return '';
+  //   return getPreviewSlice(nextText, charsPerLine, previewLines);
+  // }, [nextText, charsPerLine, previewLines]);
+
   useEffect(() => {
     // Attach the event listener to the window to handle key press globally
     window.addEventListener('keydown', handleKeyDown);
@@ -100,6 +123,8 @@ export default function TypingEnglish(
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [nextKey, countCharWithin, currentTextLength, currentText]);
+
+  const normalizeSourceText = (s: string) => s.replace(/\r\n|\r|\n/g, ' ');
 
   const calculateEndIndices = () => {
     const localEndIndices = [];
@@ -112,18 +137,28 @@ export default function TypingEnglish(
     return localEndIndices;
   };
 
+  // 任意の文字列に対して、現在の charsPerLine を使って行末インデックス配列を作る
+  const calculateEndIndicesFor = (text: string) => {
+    const indices: number[] = [];
+    let startIdx = 0;
+    while (startIdx < text.length) {
+      const endIdx = getEndOfLineIndex(text, startIdx, charsPerLine);
+      indices.push(endIdx);
+      startIdx = endIdx;
+    }
+    return indices;
+  };
+
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       event.preventDefault();
       let inputKey = event.key;
-      const isPrintable = /^[ -~]+$/;
+      const isSingleChar = inputKey.length === 1 || inputKey === 'Enter';
 
       inputKey = normalizeKey(inputKey);
       const normalizedNextKey = normalizeKey(nextKey || '');
 
-      // console.log(`Key pressed: ${inputKey}, Expected: ${normalizedNextKey}`); // デバッグ用ログ
-
-      if (!isPrintable.test(inputKey)) return;
+      if (!isSingleChar) return;
 
       if (inputKey === 'Shift') {
         return;
@@ -174,9 +209,20 @@ export default function TypingEnglish(
   }, [handleKeyDown]);
 
   useEffect(() => {
-    setCurrentText(textList[countTextIndex % textListLength].text11);
-    setNextText(textList[(countTextIndex + 1) % textListLength].text11);
-  }, [countTextIndex]);
+    const curRaw = textList[countTextIndex % textListLength].text11;
+    const nxtRaw = textList[(countTextIndex + 1) % textListLength].text11;
+    const cur = normalizeSourceText(curRaw);
+    const nxt = normalizeSourceText(nxtRaw);
+    setCurrentText(cur);
+    setNextText(nxt);
+    setCurrentTextLength(cur.length);      // ★ 長さを更新
+    const first = cur[0] ?? null;          // ★ キーも更新
+    setNextKey(first);
+    setPressKey(first);
+    setCountCharWithin(0);
+    setCurrentLine(0);
+    isCorrects.current = [];
+  }, [countTextIndex, textList, textListLength]);
 
   // useEffect(() => {
   //   const first = currentText[0] ?? null;
@@ -251,19 +297,14 @@ export default function TypingEnglish(
         </div>
         <div className="text-4xl mt-8 text-left w-full py-4 px-24 outline rounded-lg">
           {currentText && endIndicesOfLines.map((endIdx, rowIndex) => {
-            if (rowIndex < currentLine) {
-              return null;
-            }
-
-            if (rowIndex >= currentLine + numberOfRows) {
-              return null;
-            }
+            if (rowIndex < currentLine) return null;
+            if (rowIndex >= currentLine + numberOfRows) return null;
 
             const startIdx = rowIndex === 0 ? 0 : endIndicesOfLines[rowIndex - 1];
             const displayText = currentText.slice(startIdx, endIdx);
 
             return (
-              <div key={rowIndex}>
+              <div key={`cur-${rowIndex}`}>
                 {displayText.split("").map((char, charIndex) => {
                   let className;
                   const relativeIndex = startIdx + charIndex;
@@ -275,17 +316,37 @@ export default function TypingEnglish(
                   } else {
                     className = "text-black";
                   }
-
-                  return (
-                    <span key={charIndex} className={className}>
-                      {char}
-                    </span>
-                  );
+                  return <span key={charIndex} className={className}>{char}</span>;
                 })}
               </div>
             );
           })}
+
+          {/* --- 次の文章を「残り行数」だけ続けて表示 --- */}
+          {(() => {
+            // 現在文で表示された行数
+            const shownCurrentRows = Math.min(
+              numberOfRows,
+              Math.max(0, endIndicesOfLines.length - currentLine)
+            );
+            const remainingRows = Math.max(0, numberOfRows - shownCurrentRows);
+            if (!nextText || remainingRows === 0) return null;
+
+            const nextEndIndices = calculateEndIndicesFor(nextText);
+
+            return Array.from({ length: Math.min(remainingRows, nextEndIndices.length) }, (_, i) => {
+              const startIdx = i === 0 ? 0 : nextEndIndices[i - 1];
+              const endIdx = nextEndIndices[i];
+              const slice = nextText.slice(startIdx, endIdx);
+              return (
+                <div key={`next-${i}`} className="text-black">
+                  {slice}
+                </div>
+              );
+            });
+          })()}
         </div>
+
       </div>
 
       <Keyboard nextKey={pressKey} />

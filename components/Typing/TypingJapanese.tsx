@@ -58,6 +58,7 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
 
     /* 現在の表示・判定対象 */
     const currentKana = kanaSegments[segIdx] ?? '';
+    const nextKana = kanaSegments[segIdx + 1] ?? '';
     const currentJP = jpSegments[segIdx] ?? '';
 
     /* セクションが切り替わったら進捗をリセット */
@@ -68,6 +69,26 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
 
     /* RomajiMatcher は “現在セクションのかな” に対して作る */
     const matcher = useMemo(() => new RomajiMatcher(currentKana), [currentKana]);
+
+    // 現在のコードの useMemo 群の下あたりに追加
+    const nextPreviewKana = useMemo(() => {
+        // 同じテキスト内に次セクションがある
+        if (segIdx + 1 < kanaSegments.length) {
+            return kanaSegments[segIdx + 1] ?? '';
+        }
+        // 無ければ「次のテキストの先頭セクション」
+        const nextTextIdx = (textIdx + 1) % textList.length;
+        const nextKanaSegs = splitBySep(textList[nextTextIdx]?.text11 || '');
+        return nextKanaSegs[0] ?? '';
+    }, [segIdx, kanaSegments, textIdx, textList]);
+
+    const nextPreviewMatcher = useMemo(
+        () => new RomajiMatcher(nextPreviewKana),
+        [nextPreviewKana]
+    );
+
+    // 次に来る文はまだ未入力なので display で十分
+    const nextPreviewRoman = nextPreviewMatcher.getDisplayString();
 
     /* 進捗管理（ローマ字表示の色分け用）*/
     const [typedPos, setTypedPos] = useState(0);
@@ -84,6 +105,14 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
         errorKeysRef.current[exp] = (errorKeysRef.current[exp] || 0) + 1;
     };
 
+    /* 次の文を漢字で表示ため */
+    const nextPreviewJP = useMemo(() => {
+        if (segIdx + 1 < jpSegments.length) return jpSegments[segIdx + 1] ?? '';
+        const nextTextIdx = (textIdx + 1) % textList.length;
+        const nextJpSegs = splitBySep(textList[nextTextIdx]?.text12 || '');
+        return nextJpSegs[0] ?? '';
+    }, [segIdx, jpSegments, textIdx, textList]);
+
     /* 動的ローマ字列（typed + 現在表示 + 以降の display） */
     const getDynamicDisplay = () => {
         const typed = matcher.getTypedString();
@@ -91,6 +120,8 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
         const rest = matcher.getRemainingTokensDisplay();
         return typed + currentWord + rest;
     };
+
+
 
     /* keydown */
     const handleKeyDown = useCallback(
@@ -183,8 +214,8 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
 
     return (
         <>
-            <div className="w-full flex flex-col items-start my-10 relative">
-                <div className="absolute top-0 right-0 text-xl">
+            <div className="w-full flex flex-col items-start my-10 pt-10 md:pt-12 relative">
+                <div className="w-full flex flex-col items-start my-10 pt-10 md:pt-12 relative">
                     <span>Score: {score}</span>
                     <span className="ml-4">Mistakes: {mistake}</span>
                 </div>
@@ -194,10 +225,34 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
                     {currentJP}
                 </div>
 
+                {/* ひらがな文（現在セクションのみ） */}
+                <div className="text-xl mt-2 mb-1 px-24 decoration-2 whitespace-pre-wrap">
+                    {currentKana}
+                </div>
+
                 {/* ローマ字（動的） */}
                 <div className="text-4xl mt-1 text-left w-full py-2 px-24 font-mono whitespace-pre-wrap break-words">
                     {romanSpans}
                 </div>
+
+                {/* next文（ローマ字） */}
+                {/* {nextPreviewRoman && (
+                    <div
+                        className="mt-4 px-24 font-mono text-left w-full text-lg text-gray-400/80 whitespace-pre-wrap break-words"
+                        aria-hidden="true"
+                    >
+                        <div className="inline-block text-black mr-1">NEXT→</div>{nextPreviewRoman}
+                    </div>
+                )} */}
+                {/* next文（漢字） */}
+                {nextPreviewJP && (
+                    <div
+                        className="mt-4 px-24 font-mono text-left w-full text-lg text-gray-400/80 whitespace-pre-wrap break-words"
+                        aria-hidden="true"
+                    >
+                        <div className="inline-block text-black mr-1">NEXT→</div>{nextPreviewJP}
+                    </div>
+                )}
             </div>
 
             <Keyboard nextKey={pressKey} />
