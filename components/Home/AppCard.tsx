@@ -1,8 +1,5 @@
 import Link from 'next/link'
 import React from 'react'
-import { FaQuestion } from 'react-icons/fa'
-import { langDict } from './'
-
 
 interface AppCardProps {
   href?: string

@@ -1,7 +1,7 @@
+// 不必要かも
+
 import React from 'react'
-import {
-    ReceivedDeck,
-} from '@/MyLib/UtilsAPITyping'
+import { ReceivedDeck } from '@/MyLib/UtilsAPITyping'
 interface DeckCardProps {
     deck: ReceivedDeck
 }

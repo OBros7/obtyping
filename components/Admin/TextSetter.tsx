@@ -1,3 +1,4 @@
+// デバッグ用 不必要かも？
 'use client';
 import React, { useEffect, useState } from 'react';
 import {
@@ -6,7 +7,6 @@ import {
     MyTextarea,
 } from '@/Basics';
 import {
-    visibility2int,
     lang2int,
 } from '@/MyLib/Mapper';
 import {

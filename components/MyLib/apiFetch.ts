@@ -2,9 +2,9 @@
 import { ApiError } from './apiError'
 
 type ApiFetchOptions = {
-  withAuth?: boolean // default true
-  timeoutMs?: number // default 15 000 ms
-  parseJson?: boolean // default true – if false we return the raw Response
+  withAuth?: boolean
+  timeoutMs?: number
+  parseJson?: boolean
 }
 
 let refreshingPromise: Promise<string | null> | null = null
@@ -49,7 +49,6 @@ export async function apiFetch<T = any>(
     }
 
     /* ----- non‑200s still count as failures ----- */
-    // if (!res.ok) throw new ApiError('Request failed', res.status, res)
     if (!res.ok) {
       let errorPayload: any = null
       try {
@@ -72,7 +71,6 @@ export async function apiFetch<T = any>(
       throw new ApiError('Request timed out', 408)
     }
     if (err instanceof TypeError) {
-      // Fetch throws TypeError for network failures / CORS etc.
       throw new ApiError('Network error or server unreachable', 503)
     }
     throw err

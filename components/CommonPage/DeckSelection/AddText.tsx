@@ -1,10 +1,11 @@
+// 使用箇所ない 不必要かも？
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { MySelect } from '@/Basics';
 import langDict from './langDict';
 import { useTranslation } from '@/MyCustomHooks';
-import { visibility2int, lang2int } from '@/MyLib/Mapper';
 import {
   ReceivedDeck,
   getDeckListByUser,
@@ -12,13 +13,10 @@ import {
   PostText,
 } from '@/MyLib/UtilsAPITyping';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { FormatCategory } from '@/CommonPage/DeckSelection';
 import { showError } from 'utils/toast';
 import { ApiError } from '@/MyLib/apiError';
 
 /* ---------- 定数 ---------- */
-const visibilityOptions = Object.keys(visibility2int);
-const langOptions = Object.keys(lang2int);
 const saveButtonClass = 'btn-second';
 
 /* ---------- Props ---------- */

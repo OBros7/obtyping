@@ -1,3 +1,4 @@
+import { hms2ms } from '@/MyLib/TimeLib'
 import React, { useEffect, useRef, useState, useMemo } from 'react'
 import {
     TypingEnglish,
@@ -6,9 +7,15 @@ import {
     langDict
 } from '.'
 import { useTranslation } from '@/MyCustomHooks'
-import { hms2ms, ms2hms } from '@/MyLib/TimeLib'
-import { TimerBase, StopWatchBase } from '@/Timer'
+import { TimerBase } from '@/Timer'
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
+
+const TIME_LIMIT_MS: Record<number, number> = {
+    1: hms2ms(0, 0, 1, 0),
+    2: hms2ms(0, 0, 2, 0),
+    3: hms2ms(0, 0, 3, 0),
+    5: hms2ms(0, 0, 5, 0),
+};
 
 type LanguageType = 'english' | 'japanese' | 'free'
 
@@ -43,8 +50,7 @@ export default function TypingPageBase({
     const [timePassed, setTimePassed] = useState(0)
 
     // for timer base
-    const totalTime = hms2ms(0, 10, 0, 0)
-    const wataingTime = hms2ms(999, 3, 0, 0)
+    const waitingTime = hms2ms(999, 3, 0, 0)
     const [finished, setFinished] = useState(false)
     const [ticking, setTicking] = useState(true)
     const [reset, setReset] = useState(true)
@@ -52,21 +58,12 @@ export default function TypingPageBase({
     const attrsParentTimer = { className: 'flex flex-col items-center justify-center text-5xl' }
     const [timeLimit, setTimeLimit] = useState(hms2ms(0, 0, 1, 0))
     const [langReady, setLangReady] = useState(false);
-    const timeLimitDic: { [key: number]: number } = {
-        1: hms2ms(0, 0, 1, 0),
-        2: hms2ms(0, 0, 2, 0),
-        3: hms2ms(0, 0, 3, 0),
-        5: hms2ms(0, 0, 5, 0),
-    }
-
-    const languageTypeMap: Record<string, LanguageType> = {
-        en: 'english',
-        ja: 'japanese',
-        others: 'free',
-        '1': 'english',
-        '2': 'japanese',
-        '0': 'free',
-    }
+    // const timeLimitDic: { [key: number]: number } = {
+    //     1: hms2ms(0, 0, 1, 0),
+    //     2: hms2ms(0, 0, 2, 0),
+    //     3: hms2ms(0, 0, 3, 0),
+    //     5: hms2ms(0, 0, 5, 0),
+    // }
 
     const isJapaneseEntry = (
         t: ReceivedText
@@ -79,25 +76,13 @@ export default function TypingPageBase({
         [textList]
     );
 
-    const getQueryParameter = (param: string): string | null => {
-        const url = new URL(window.location.href);
-        return url.searchParams.get(param);
-    }
-
     useEffect(() => {
-        const minutes = getQueryParameter('minutes');
-        // const language = getQueryParameter('lang');
-
-        setTimeLimit(timeLimitDic[Number(minutes)])
-
-        // const langKey = language?.toString().trim().toLowerCase()
-        // const resolvedLanguageType = langKey ? languageTypeMap[langKey] : undefined
-        // if (setLanguageType && resolvedLanguageType) {
-        //     setLanguageType(resolvedLanguageType);
-        // }
-        // ★ 初期化が終わったら「言語確定」にする
+        const url = new URL(window.location.href);
+        const minutesStr = url.searchParams.get('minutes');
+        const minutes = Number(minutesStr);
+        setTimeLimit(TIME_LIMIT_MS[minutes] ?? TIME_LIMIT_MS[1]); // デフォルト1分
         setLangReady(true);
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (languageType) setLangReady(true);
@@ -128,12 +113,6 @@ export default function TypingPageBase({
         setRemainingTime(timeLimit - timePassed);
     }, [timeLimit, timePassed]);
 
-    // useEffect(() => {
-    //     if (remainingTime <= 0) {
-    //         setStatus('result');
-    //     }
-    // }, [remainingTime])
-
     return (
         <>
             {
@@ -144,7 +123,7 @@ export default function TypingPageBase({
                 ) : status === 'ready' ? (
                     <div className="w-full text-center text-5xl mt-48 mb-48">
                         <TimerBase
-                            totalTime={wataingTime}
+                            totalTime={waitingTime}
                             timePassed={timePassed}
                             setTimePassed={setTimePassed}
                             ticking={ticking}

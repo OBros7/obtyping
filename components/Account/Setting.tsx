@@ -16,7 +16,6 @@ Show login status and subscription status based on the following userData struct
 
 export default function Setting() {
     const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
-
     const [isKeyboardAndHands, setIsKeyboardAndHands] = useState<boolean>();
     const [isHardMode, setIsHardMode] = useState<boolean>();
     const [isEnglishDisplay, setIsEnglishDisplay] = useState<boolean>();
@@ -44,11 +43,6 @@ export default function Setting() {
             setIsEnglishDisplay(true)
         }
     }, [])
-
-    // const handleClick = () => {
-    //     setIsKeyboardAndHands(!isKeyboardAndHands); // Switch the state between true and false
-    //     localStorage.setItem('isKeyboardAndHands', JSON.stringify(!isKeyboardAndHands))
-    // };
 
     return (
         <Layout>

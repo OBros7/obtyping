@@ -1,7 +1,6 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { MySelect } from '@/Basics'
-import { useRouter } from 'next/router'
 import { getCategoriesSubcategoriesLevels } from '@/MyLib/UtilsAPITyping'
 import { useQuery } from '@tanstack/react-query'
 import { showError } from 'utils/toast'
@@ -23,60 +22,61 @@ interface Props {
 export default function FormatCategory(props: Props) {
   const { category, setCategory, subcategory, setSubcategory, level, setLevel, classParent = minibox } = props
 
-  /* ---------- React Query で API 取得 ---------- */
-  // 新 (v5 スタイル)
+  // 1) 取得（常にトップレベルで呼ぶ）
   const { data, isError, error, isLoading } = useQuery({
     queryKey: ['catSubcatLevels'],
     queryFn: getCategoriesSubcategoriesLevels,
-    retry: 2,                    // retry は残っています
-    throwOnError: false,         // (デフォルト false) そのまま error に入る
-  });
+    retry: 2,
+    throwOnError: false,
+  })
 
-  // エラーになったら副作用でトースト
+  // 2) エラートースト（Hook 自体は無条件で呼ぶ）
   useEffect(() => {
     if (isError && error) {
-      const err = error as ApiError;
-      showError(`${err.message} (status ${err.status ?? '??'})`);
+      const err = error as ApiError
+      showError(`${err.message} (status ${err.status ?? '??'})`)
     }
-  }, [isError, error]);
+  }, [isError, error])
 
-  /* ---------- 取得後にサブカテゴリを更新 ---------- */
-  const categories = data ? Object.keys(data.cat_subcat) : []
-  const levelList = data?.levels ?? []
-  const subcategoryList = data ? data.cat_subcat[category] ?? [] : []
+  // 3) メモ化（Hook 自体は無条件で呼ぶ）
+  const categories = useMemo<string[]>(
+    () => (data ? Object.keys(data.cat_subcat) : []),
+    [data]
+  )
+  const levelList = useMemo<string[]>(
+    () => (data?.levels ?? []),
+    [data]
+  )
+  const subcategoryList = useMemo<string[]>(
+    () => (data && category ? (data.cat_subcat[category] ?? []) : []),
+    [data, category]
+  )
 
-  // ★ 1) API でデータが取れた瞬間に category を決める
+  // 4) 選択値の補正（Hook 自体は無条件で呼ぶ）
   useEffect(() => {
-    if (data && categories.length && category === '') {
-      setCategory(categories[0]);           // ← 最初のカテゴリを自動セット
+    if (!categories.length) return
+    if (category === '' || !categories.includes(category)) {
+      setCategory(categories[0])
     }
-  }, [data, categories, category]);
+  }, [categories, category, setCategory])
 
-  // ★ 2) category が決まった後に subcategory を決める
   useEffect(() => {
-    if (subcategoryList.length && subcategory === '') {
-      setSubcategory(subcategoryList[0]);   // ← 最初のサブカテゴリを自動セット
+    if (!subcategoryList.length) return
+    if (subcategory === '' || !subcategoryList.includes(subcategory)) {
+      setSubcategory(subcategoryList[0])
     }
-  }, [subcategoryList, subcategory]);
+  }, [subcategoryList, subcategory, setSubcategory])
 
-  // ★ 3) level も同様
   useEffect(() => {
-    if (levelList.length && level === '') {
-      setLevel(levelList[0]);               // ← 最初のレベルを自動セット
+    if (!levelList.length) return
+    if (level === '' || !levelList.includes(level)) {
+      setLevel(levelList[0])
     }
-  }, [levelList, level]);
+  }, [levelList, level, setLevel])
 
-  // category が変わったら subcategory リストをリセット
-  useEffect(() => { props.setSubcategory('') }, [category])
-
-  /* ---------- ローディング表示 ---------- */
+  // 5) レンダー時にだけローディング分岐
   if (isLoading) {
-    return (
-      <div className={classParent}>
-        {/* Skeleton だけ表示 */}
-        Loading...
-      </div>
-    )
+    return <div className={classParent}>Loading...</div>
   }
 
   return (
