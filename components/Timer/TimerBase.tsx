@@ -26,38 +26,84 @@ export default function TimerBase({
   timeInterval = 50,
   digit = 1,
 }: TimerBaseProps) {
-  const timePassedToLastStop = useRef(0)
-  const interval = useRef(0)
+  const accumulatedRef = useRef(0)
+  const startTimeRef = useRef<number | null>(null)
+  const intervalRef = useRef<number | null>(null)
 
+  // 開始/停止（ticking, finished などに追従）
   useEffect(() => {
-    const timerCycle = (startTime: number, timePassedToLastStop: any) => {
-      const tmp = Date.now() - startTime + timePassedToLastStop.current
-      if (totalTime > tmp) {
-        setTimePassed(tmp)
+    if (!ticking || finished) return
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+    startTimeRef.current = Date.now()
+
+    intervalRef.current = window.setInterval(() => {
+      if (startTimeRef.current == null) return
+      const elapsed = Date.now() - startTimeRef.current + accumulatedRef.current
+      if (elapsed < totalTime) {
+        setTimePassed(elapsed)
       } else {
         setTimePassed(totalTime)
-        // timePassedToLastStop.current = 0
         setFinished(true)
-        clearInterval(interval.current)
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
+        }
+        startTimeRef.current = null
       }
-    }
-    if (ticking && !finished) {
-      const startTime = Date.now()
-      interval.current = window.setInterval(timerCycle, timeInterval, startTime, timePassedToLastStop)
-      return () => {
-        clearInterval(interval.current)
-        timePassedToLastStop.current += Date.now() - startTime
-      }
-    }
-  }, [ticking])
+    }, timeInterval)
 
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      if (startTimeRef.current != null) {
+        accumulatedRef.current += Date.now() - startTimeRef.current
+        startTimeRef.current = null
+      }
+    }
+  }, [ticking, finished, timeInterval, totalTime, setTimePassed, setFinished])
+
+  // リセット：完全初期化 & ticking=true なら即再開
   useEffect(() => {
-    if (reset) {
-      timePassedToLastStop.current = 0
-      setTimePassed(0)
-      setFinished(false)
-    }
-  }, [reset])
+    if (!reset) return
 
-  return <span {...attrsParent}>{finished ? ms2hms(0, digit) : ms2hms(totalTime - timePassed, digit)}</span>
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+    accumulatedRef.current = 0
+    startTimeRef.current = null
+    setTimePassed(0)
+    setFinished(false)
+
+    if (ticking) {
+      startTimeRef.current = Date.now()
+      intervalRef.current = window.setInterval(() => {
+        if (startTimeRef.current == null) return
+        const elapsed = Date.now() - startTimeRef.current + accumulatedRef.current
+        if (elapsed < totalTime) {
+          setTimePassed(elapsed)
+        } else {
+          setTimePassed(totalTime)
+          setFinished(true)
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current)
+            intervalRef.current = null
+          }
+          startTimeRef.current = null
+        }
+      }, timeInterval)
+    }
+  }, [reset, ticking, timeInterval, totalTime, setTimePassed, setFinished])
+
+  return (
+    <span {...attrsParent}>
+      {finished ? ms2hms(0, digit) : ms2hms(Math.max(0, totalTime - timePassed), digit)}
+    </span>
+  )
 }

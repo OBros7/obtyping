@@ -13,7 +13,6 @@ interface SearchBoxProps {
     classParent?: string
 }
 
-
 export default function SearchBox(
     { category,
         setCategory,
@@ -25,8 +24,6 @@ export default function SearchBox(
 ) {
     const [searchType, setSearchType] = useState<'category' | 'text'>('category')
     const [searchText, setSearchText] = useState('')
-
-
 
     return (
         <div className={searchBoxClass}>
@@ -50,8 +47,6 @@ export default function SearchBox(
                     setState={setSearchText}
                 />
             }
-
-
         </div>
     )
 }

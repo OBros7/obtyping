@@ -1,14 +1,11 @@
 import React, { useState } from 'react'
-import {
-    ReceivedDeck,
-} from '@/MyLib/UtilsAPITyping'
+import { ReceivedDeck } from '@/MyLib/UtilsAPITyping'
+import { MySelect } from '@/Basics'
+
 interface DeckCardButtonProps {
     deck: ReceivedDeck
-    // setSelectedDeckId: React.Dispatch<React.SetStateAction<string>>
     setLanguage?: React.Dispatch<React.SetStateAction<'not selected' | 'japanese' | 'english' | 'free'>> | undefined
-
 }
-import { MySelect } from '@/Basics'
 
 
 const mainDivClass = 'flex flex-row items-center flex-wrap justify-center w-5/6 rounded-xl m-1 my-4 border-solid border-4 border-blue-200'
@@ -16,6 +13,7 @@ const divClass = 'flex flex-col flex-wrap justify-center w-8/12 rounded-xl p-8'
 const buttonClass = 'bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded h-fit w-fit'
 const titleClass = 'text-2xl font-bold'
 const descriptionClass = 'text-sm text-gray-500 pt-4'
+
 export default function DeckCardButton({ deck, setLanguage }: DeckCardButtonProps) {
     const [modeTime, setModeTime] = useState<1 | 2 | 3 | 5>(1)
 
@@ -28,7 +26,6 @@ export default function DeckCardButton({ deck, setLanguage }: DeckCardButtonProp
         <div className={mainDivClass}>
             <div key={deck.deck_id} className={divClass}>
                 <div className={titleClass}>{deck.title}</div>
-                {/* <hr className="my-0.5 border-t border-white" /> */}
                 <div className={descriptionClass}>{deck.description}</div>
             </div>
             <MySelect

@@ -62,19 +62,6 @@ export default function Typing({ deckId, minutes }: TypingProps) {
     const [accuracy, setAccuracy] = useState(0);
     const [recordScore, setRecordScore] = useState(0);
     const [mostMistakenKeys, setMostMistakenKeys] = useState<{ key: string; count: number }[]>([]);
-    const languageTypeMap: Record<string, LanguageType> = {
-        en: 'english',
-        ja: 'japanese',
-        others: 'free',
-        '1': 'english',
-        '2': 'japanese',
-        '0': 'free',
-    }
-
-    const getQueryParameter = (param: string): string | null => {
-        const url = new URL(window.location.href);
-        return url.searchParams.get(param);
-    }
 
     useEffect(() => {
         if (!router.isReady) return;

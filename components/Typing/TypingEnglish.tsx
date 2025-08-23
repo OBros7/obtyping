@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import Keyboard from './Keyboard'
 import Fingers from './Fingers';
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
-import { set } from 'react-hook-form';
 
 interface TypingEnglishProps {
   textList: ReceivedText[]
@@ -21,81 +20,56 @@ interface TypingEnglishProps {
 
 const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
   let potentialEndIndex = startIndex + charsPerLine;
+  if (potentialEndIndex >= str.length) return potentialEndIndex;
 
-  if (potentialEndIndex >= str.length) {
-    return potentialEndIndex;
-  }
-
-  // Move the potential end index back until we find a space or we've moved back 10 characters.
-  // This prevents the break in the middle of a word.
-  let searchLimit = 10; // Number of characters to look backward to find a space.
+  let searchLimit = 10;
   while (str[potentialEndIndex] !== " " && searchLimit > 0) {
     potentialEndIndex--;
     searchLimit--;
   }
-
-  // If we didn't find a space within the search limit, just split at the original end index.
-  if (searchLimit === 0) {
-    potentialEndIndex = startIndex + charsPerLine;
-  }
-
+  if (searchLimit === 0) potentialEndIndex = startIndex + charsPerLine;
   return potentialEndIndex;
 };
 
 // クォートを正規化する関数
 const normalizeKey = (key: string): string => {
-  const quoteMap: Record<string, string> = {
-    '’': "'",
-    '‘': "'",
-    '“': '"',
-    '”': '"',
-  };
+  const quoteMap: Record<string, string> = { '’': "'", '‘': "'", '“': '"', '”': '"' };
   return quoteMap[key] || key;
 };
 
-// 先頭 `lines` 行ぶんのテキストを、単語途中で切らずに取得
-const getPreviewSlice = (
-  str: string,
-  charsPerLine: number,
-  lines: number
-) => {
-  let startIdx = 0;
-  for (let i = 0; i < lines; i++) {
-    if (startIdx >= str.length) break;
-    startIdx = getEndOfLineIndex(str, startIdx, charsPerLine);
-  }
-  return str.slice(0, startIdx);
-};
-
-export default function TypingEnglish(
-  {
-    textList,
-    status,
-    setStatus,
-    score,
-    setScore,
-    mistake,
-    setMistake,
-    languageType,
-    mode = '1m',
-    remainingTime,
-    mostMistakenKeys,
-    setMostMistakenKeys
-  }: TypingEnglishProps
-) {
-  const [nextKey, setNextKey] = useState<string | null>(textList[0]?.text11[0].toUpperCase());
+export default function TypingEnglish({
+  textList,
+  status,
+  setStatus,
+  score,
+  setScore,
+  mistake,
+  setMistake,
+  languageType,
+  mode = '1m',
+  remainingTime,
+  mostMistakenKeys,
+  setMostMistakenKeys
+}: TypingEnglishProps) {
+  // -------- basic derived values / states --------
+  const textListLength = textList.length; // ← stateではなく派生値
+  const safeFirst = textList[0]?.text11 ?? '';
+  const [nextKey, setNextKey] = useState<string | null>(safeFirst[0]?.toUpperCase() ?? null);
   const [pressKey, setPressKey] = useState<string | null>(nextKey ? nextKey.toUpperCase() : null);
-  const [textListLength, setTextListLength] = useState<number>(textList.length)
-  const [countTextIndex, setCountTextIndex] = useState<number>(0)
-  const [countCharWithin, setCountCharWithin] = useState<number>(0)// count text within a text
-  const [currentText, setCurrentText] = useState<string>(textList[0].text11)
-  const [currentTextLength, setCurrentTextLength] = useState<number>(textList[0].text11.length)
-  const [nextText, setNextText] = useState<string>(textList[1 % textListLength].text11)
-  const isCorrects = useRef<boolean[]>([])
-  const [charsPerLine, setCharsPerLine] = useState<number>(80); // Starting default
+
+  const [countTextIndex, setCountTextIndex] = useState<number>(0);
+  const [countCharWithin, setCountCharWithin] = useState<number>(0); // count text within a text
+
+  const [currentText, setCurrentText] = useState<string>(safeFirst);
+  const currentTextLength = currentText.length;
+  const [nextText, setNextText] = useState<string>(textListLength > 1 ? textList[1 % textListLength].text11 : '');
+
+  const isCorrects = useRef<boolean[]>([]);
+
+  const [charsPerLine, setCharsPerLine] = useState<number>(80);
   const [currentLine, setCurrentLine] = useState<number>(0);
-  const [numberOfRows, setNumberOfRows] = useState<number>(5); // Default to 1 row.
-  const [endIndicesOfLines, setEndIndicesOfLines] = useState<number[]>([]);
+  const [numberOfRows, setNumberOfRows] = useState<number>(5);
+
   const [errorKeys, setErrorKeys] = useState<Record<string, number>>({});
 
   const twoXlScrenWordNum = 65;
@@ -104,41 +78,11 @@ export default function TypingEnglish(
   const mdScrenWordNum = 30;
   const smScrenWordNum = 15;
   const verySmallScrenWordNum = 10;
-  // const missSound = new Audio('/sounds/mistyped_sound.mp3');
-
-  // 画面幅に応じて1〜2行だけ覗かせる例
-  // const previewLines = useMemo(() => {
-  //   return window.innerWidth < 768 ? 1 : 2;
-  // }, []);
-  // const nextTextPreview = useMemo(() => {
-  //   if (!nextText) return '';
-  //   return getPreviewSlice(nextText, charsPerLine, previewLines);
-  // }, [nextText, charsPerLine, previewLines]);
-
-  useEffect(() => {
-    // Attach the event listener to the window to handle key press globally
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      // Cleanup listener when the component is unmounted
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [nextKey, countCharWithin, currentTextLength, currentText]);
 
   const normalizeSourceText = (s: string) => s.replace(/\r\n|\r|\n/g, ' ');
 
-  const calculateEndIndices = () => {
-    const localEndIndices = [];
-    let startIdx = 0;
-    while (startIdx < currentText.length) {
-      const endDisplayIndex = getEndOfLineIndex(currentText, startIdx, charsPerLine);
-      localEndIndices.push(endDisplayIndex);
-      startIdx = endDisplayIndex;
-    }
-    return localEndIndices;
-  };
-
   // 任意の文字列に対して、現在の charsPerLine を使って行末インデックス配列を作る
-  const calculateEndIndicesFor = (text: string) => {
+  const calculateEndIndicesFor = useCallback((text: string) => {
     const indices: number[] = [];
     let startIdx = 0;
     while (startIdx < text.length) {
@@ -147,8 +91,14 @@ export default function TypingEnglish(
       startIdx = endIdx;
     }
     return indices;
-  };
+  }, [charsPerLine]);
 
+  // 現在行の endIndices は useMemo（副作用不要）
+  const endIndicesOfLines = useMemo(() => {
+    return calculateEndIndicesFor(currentText);
+  }, [currentText, calculateEndIndicesFor]);
+
+  // ---- キーハンドラ（useCallbackで安定化） ----
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       event.preventDefault();
@@ -159,14 +109,11 @@ export default function TypingEnglish(
       const normalizedNextKey = normalizeKey(nextKey || '');
 
       if (!isSingleChar) return;
-
-      if (inputKey === 'Shift') {
-        return;
-      }
+      if (inputKey === 'Shift') return;
 
       if (inputKey === normalizedNextKey) {
         isCorrects.current[countCharWithin] = true;
-        setScore((prevScore) => prevScore + 1);
+        setScore((prev) => prev + 1);
 
         if (currentTextLength - 1 === countCharWithin) {
           setCountTextIndex((prevIndex) => prevIndex + 1);
@@ -176,7 +123,6 @@ export default function TypingEnglish(
           setCountCharWithin((prevIndex) => prevIndex + 1);
           const nextChar = currentText[countCharWithin + 1] || null;
           setNextKey(nextChar);
-          // setPressKey(nextChar ? nextChar.toUpperCase() : null);
           setPressKey(nextChar ? nextChar : null);
 
           // 行末でスペースが押された場合
@@ -187,36 +133,47 @@ export default function TypingEnglish(
       } else {
         isCorrects.current[countCharWithin] = false;
         setMistake((prevMistake) => prevMistake + 1);
-        // missSound.currentTime = 0;
-        // missSound.play();
 
         if (nextKey) {
-          setErrorKeys((prevErrorKeys) => ({
-            ...prevErrorKeys,
-            [nextKey.toLowerCase()]: (prevErrorKeys[nextKey.toLowerCase()] || 0) + 1,
+          setErrorKeys((prev) => ({
+            ...prev,
+            [nextKey.toLowerCase()]: (prev[nextKey.toLowerCase()] || 0) + 1,
           }));
         }
       }
     },
-    [nextKey, countCharWithin, currentTextLength, currentText, endIndicesOfLines, currentLine]
+    [
+      nextKey,
+      countCharWithin,
+      currentTextLength,
+      currentText,
+      endIndicesOfLines,
+      currentLine,
+      setScore,       // ← 追加
+      setMistake      // ← 追加
+    ]
   );
 
+  // リスナー登録は「handleKeyDown」依存の1か所だけ
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
+  // テキスト切替：countTextIndex / textList の変化に同期（重複Effectを統合）
   useEffect(() => {
+    if (textListLength === 0) return;
+
     const curRaw = textList[countTextIndex % textListLength].text11;
-    const nxtRaw = textList[(countTextIndex + 1) % textListLength].text11;
+    const nxtRaw = textList[(countTextIndex + 1) % textListLength]?.text11 ?? '';
+
     const cur = normalizeSourceText(curRaw);
     const nxt = normalizeSourceText(nxtRaw);
+
     setCurrentText(cur);
     setNextText(nxt);
-    setCurrentTextLength(cur.length);      // ★ 長さを更新
-    const first = cur[0] ?? null;          // ★ キーも更新
+
+    const first = cur[0] ?? null;
     setNextKey(first);
     setPressKey(first);
     setCountCharWithin(0);
@@ -224,69 +181,37 @@ export default function TypingEnglish(
     isCorrects.current = [];
   }, [countTextIndex, textList, textListLength]);
 
-  // useEffect(() => {
-  //   const first = currentText[0] ?? null;
-  //   setCurrentLine(0);  // Reset the current line
-  //   setCurrentTextLength(currentText.length);
-  //   setNextKey(currentText[0]);
-  //   setPressKey(first);
-  //   isCorrects.current = [];
-  // }, [currentText]);
-  useEffect(() => {
-    const first = textList[countTextIndex % textListLength].text11[0] ?? null;
-    setNextKey(first);
-    setPressKey(first);
-    setCountCharWithin(0);
-    setCurrentLine(0);
-    isCorrects.current = [];
-  }, [countTextIndex]);   // ← currentText ではなく countTextIndex を監視
-
+  // レスポンシブ：charsPerLine の更新
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-
-      if (width >= 1536) {
-        setCharsPerLine(twoXlScrenWordNum);
-      } else if (width >= 1280 && width < 1536) {
-        setCharsPerLine(xlScrenWordNum);
-      } else if (width >= 1024 && width < 1280) {
-        setCharsPerLine(lgScrenWordNum);
-      } else if (width >= 768 && width < 1024) {
-        setCharsPerLine(mdScrenWordNum);
-      } else if (width >= 640 && width < 768) {
-        setCharsPerLine(smScrenWordNum);
-      } else {
-        setCharsPerLine(verySmallScrenWordNum);
-      }
+      if (width >= 1536) setCharsPerLine(twoXlScrenWordNum);
+      else if (width >= 1280) setCharsPerLine(xlScrenWordNum);
+      else if (width >= 1024) setCharsPerLine(lgScrenWordNum);
+      else if (width >= 768) setCharsPerLine(mdScrenWordNum);
+      else if (width >= 640) setCharsPerLine(smScrenWordNum);
+      else setCharsPerLine(verySmallScrenWordNum);
     };
-
     window.addEventListener('resize', handleResize);
-    handleResize(); // Call it immediately to set the initial value
-
+    handleResize(); // 初期化
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // タイムアップ時の処理
   useEffect(() => {
-    const newEndIndices = calculateEndIndices();
-    setEndIndicesOfLines(newEndIndices);
-  }, [currentText, charsPerLine]);
+    if (remainingTime > 0) return;
 
-  useEffect(() => {
-    if (remainingTime <= 0) {
-      setStatus('result');
-      const getTopMistakenKeys = (limit: number = 3): { key: string; count: number }[] => {
-        const entries = Object.entries(errorKeys);
-        if (entries.length === 0) return [];
+    setStatus('result');
 
-        entries.sort((a, b) => b[1] - a[1]);
+    const getTopMistakenKeys = (limit: number = 3): { key: string; count: number }[] => {
+      const entries = Object.entries(errorKeys);
+      if (entries.length === 0) return [];
+      entries.sort((a, b) => b[1] - a[1]);
+      return entries.slice(0, limit).map(([key, count]) => ({ key, count }));
+    };
 
-        // 上位3つを取得
-        return entries.slice(0, limit).map(([key, count]) => ({ key, count }));
-      };
-
-      setMostMistakenKeys(getTopMistakenKeys());
-    }
-  }, [remainingTime, errorKeys]); // errorKeysも依存配列に追加
+    setMostMistakenKeys(getTopMistakenKeys());
+  }, [remainingTime, errorKeys, setStatus, setMostMistakenKeys]); // ← 依存を明示
 
   return (
     <>
@@ -295,6 +220,7 @@ export default function TypingEnglish(
           <span>Score: {score}</span>
           <span className="ml-4">Mistakes: {mistake}</span>
         </div>
+
         <div className="text-4xl mt-8 text-left w-full py-4 px-24 outline rounded-lg">
           {currentText && endIndicesOfLines.map((endIdx, rowIndex) => {
             if (rowIndex < currentLine) return null;
@@ -306,8 +232,8 @@ export default function TypingEnglish(
             return (
               <div key={`cur-${rowIndex}`}>
                 {displayText.split("").map((char, charIndex) => {
-                  let className;
                   const relativeIndex = startIdx + charIndex;
+                  let className: string;
 
                   if (relativeIndex < countCharWithin) {
                     className = isCorrects.current[relativeIndex] ? "text-green-500" : "text-red-500 underline";
@@ -322,9 +248,7 @@ export default function TypingEnglish(
             );
           })}
 
-          {/* --- 次の文章を「残り行数」だけ続けて表示 --- */}
           {(() => {
-            // 現在文で表示された行数
             const shownCurrentRows = Math.min(
               numberOfRows,
               Math.max(0, endIndicesOfLines.length - currentLine)
@@ -346,7 +270,6 @@ export default function TypingEnglish(
             });
           })()}
         </div>
-
       </div>
 
       <Keyboard nextKey={pressKey} />

@@ -1,17 +1,9 @@
+// 不必要かも
+
 import React, { useEffect, useState } from 'react'
-import { Layout, MainContainer } from '@/Layout'
 import langDict from './langDict'
 import { useTranslation } from '@/MyCustomHooks'
-import { MySelect } from '@/Basics'
-import {
-  DeckListButton,
-
-
-} from '.'
-import {
-  ReceivedDeck,
-  getDeckListByUser,
-} from '@/MyLib/UtilsAPITyping'
+import { ReceivedDeck } from '@/MyLib/UtilsAPITyping'
 
 interface CreateDeckProps {
   deckList: ReceivedDeck[]

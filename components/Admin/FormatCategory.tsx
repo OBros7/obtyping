@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { MySelect, MyTextbox, MyTextarea } from '@/Basics'
-import { visibility2int, lang2int } from '@/MyLib/Mapper'
+import React, { useEffect, useMemo } from 'react'
+import { MySelect } from '@/Basics'
 import {
     ICategory,
     ISubcategory,
@@ -11,8 +10,7 @@ import {
 } from '@/MyLib/UtilsTyping'
 import { useRouter } from 'next/router'
 
-
-const minibox = 'flex flex-col  justify-center items-center'
+const minibox = 'flex flex-col justify-center items-center'
 
 interface FormatCategoryProps {
     category: string
@@ -24,7 +22,6 @@ interface FormatCategoryProps {
     classParent?: string
 }
 
-
 export default function FormatCategory({
     category,
     setCategory,
@@ -32,84 +29,65 @@ export default function FormatCategory({
     setSubcategory,
     level,
     setLevel,
-    classParent = minibox
+    classParent = minibox,
 }: FormatCategoryProps) {
     const { locale } = useRouter()
-    // const [categoryIDList, setCategoryIDList] = useState<number[]>([])
-    // const [subcategoryIDList, setSubcategoryIDList] = useState<number[]>([])
-    // const [levelIDList, setLevelIDList] = useState<number[]>([])
-    const [categoryList, setCategoryList] = useState<string[]>([])
-    const [subcategoryList, setSubcategoryList] = useState<string[]>([])
-    const [levelList, setLevelList] = useState<string[]>([])
 
-
-    useEffect(() => {
-        let _categoryIDs
-        let _categoryList
-        let _levelIDs
-        let _levelList
-        if (locale === 'ja') {
-            // _categoryIDs = subcategoryJsonJa.categories.map((category: ICategory) => category.id)
-            _categoryList = subcategoryJsonJa.categories.map((category: ICategory) => category.name)
-            // _levelIDs = levelListJa.map(level => level.id)
-            _levelList = levelListJa.map(level => level.name)
-
-        } else {
-            // _categoryIDs = subcategoryJsonEn.categories.map((category: ICategory) => category.id)
-            _categoryList = subcategoryJsonEn.categories.map((category: ICategory) => category.name)
-            // _levelIDs = levelListEn.map(level => level.id)
-            _levelList = levelListEn.map(level => level.name)
-        }
-        // setCategoryIDList(_categoryIDs)
-        setCategoryList(_categoryList)
-        // setLevelIDList(_levelIDs)
-        setLevelList(_levelList)
+    // ---- 派生リストは useMemo で安定化 ----
+    const categories = useMemo<string[]>(() => {
+        const src = locale === 'ja' ? subcategoryJsonJa : subcategoryJsonEn
+        return src.categories.map((c: ICategory) => c.name)
     }, [locale])
 
+    const levelList = useMemo<string[]>(() => {
+        const src = locale === 'ja' ? levelListJa : levelListEn
+        return src.map((l) => l.name)
+    }, [locale])
+
+    const subcategoryList = useMemo<string[]>(() => {
+        const catSrc = locale === 'ja' ? subcategoryJsonJa : subcategoryJsonEn
+        const selected = catSrc.categories.find((c: ICategory) => c.name === category)
+        if (!selected) return ['Choose a subcategory'] // カテゴリ未選択時はプレースホルダーを表示
+        const list = selected.subcategories.map((s: ISubcategory) => s.name)
+        return list.length ? list : ['Choose a subcategory']
+    }, [locale, category])
+
+    // ---- 選択値の整合性を保つ（空/不整合なら先頭に補正）----
     useEffect(() => {
-        let _subcategoryIDList = [-1]
-        let _subcategoryList = ['Choose a subcategory']
-        if (locale === 'ja') {
-            const selectedCategory = subcategoryJsonJa.categories.find(cat => cat.name === category);
-            if (selectedCategory) {
-                // _subcategoryIDList = selectedCategory.subcategories.map((subcategory: ISubcategory) => subcategory.id);
-                _subcategoryList = selectedCategory.subcategories.map((subcategory: ISubcategory) => subcategory.name);
-            }
-        } else {
-            const selectedCategory = subcategoryJsonEn.categories.find(cat => cat.name === category);
-            if (selectedCategory) {
-                // _subcategoryIDList = selectedCategory.subcategories.map((subcategory: ISubcategory) => subcategory.id);
-                _subcategoryList = selectedCategory.subcategories.map((subcategory: ISubcategory) => subcategory.name);
-            }
+        if (!categories.length) return
+        if (category === '' || !categories.includes(category)) {
+            setCategory(categories[0])
         }
-        // setSubcategoryIDList(_subcategoryIDList);
-        setSubcategoryList(_subcategoryList);
-    }, [category]);
+    }, [categories, category, setCategory])
+
+    useEffect(() => {
+        if (!subcategoryList.length) return
+        // 先頭がプレースホルダーなら自動補正はしない（空のまま）
+        const first = subcategoryList[0]
+        if (subcategory === '' || !subcategoryList.includes(subcategory)) {
+            if (first !== 'Choose a subcategory') setSubcategory(first)
+        }
+    }, [subcategoryList, subcategory, setSubcategory])
+
+    useEffect(() => {
+        if (!levelList.length) return
+        if (level === '' || !levelList.includes(level)) {
+            setLevel(levelList[0])
+        }
+    }, [levelList, level, setLevel])
 
     return (
         <div className={classParent}>
             <div className="flex items-center justify-center space-x-4">
                 category:
-                <MySelect
-                    state={category}
-                    setState={setCategory}
-                    optionValues={categoryList}
-                />
+                <MySelect state={category} setState={setCategory} optionValues={categories} />
                 <div className="text-xl pr-4">/</div>
                 subcategory:
-                <MySelect
-                    state={subcategory}
-                    setState={setSubcategory}
-                    optionValues={subcategoryList}
-                />
+                <MySelect state={subcategory} setState={setSubcategory} optionValues={subcategoryList} />
             </div>
             <div className="flex items-center justify-center space-x-4">
                 Level:
-                <MySelect
-                    state={level}
-                    setState={setLevel}
-                    optionValues={levelList}
-                />
+                <MySelect state={level} setState={setLevel} optionValues={levelList} />
             </div>
         </div>
     )

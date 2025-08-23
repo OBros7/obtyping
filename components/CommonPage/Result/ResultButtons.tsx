@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import { GlobalContext } from '@contexts/GlobalContext'
 import { useUserContext } from '@contexts/UserContext';
 
 interface ResultButtonsProps {
@@ -15,7 +14,6 @@ const playAgainButtonClass = buttonClassCommon + ' bg-blue-500 hover:bg-blue-700
 const backToStartButtonClass = buttonClassCommon + ' bg-red-500 hover:bg-red-700'
 
 export default function ResultButtons({ handleSave, handlePlayAgain, handleBackToHome, saved }: ResultButtonsProps) {
-  // const { session, userID } = useContext(GlobalContext)
   const { userData, setUserData } = useUserContext();
 
   return (

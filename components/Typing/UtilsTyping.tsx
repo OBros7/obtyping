@@ -18,6 +18,8 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
     // -2: random Numbers
     // -3: random Characters and Numbers
     // -4: random Words
+    // -10: draft in sessionStorage
+
 
     let randomDeck: ReceivedText[] = [
         {

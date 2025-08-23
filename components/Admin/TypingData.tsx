@@ -1,4 +1,5 @@
 // components/Admin/TypingData.tsx
+// デバッグ用？ 不必要かも？
 import React, { useEffect, useState } from 'react'
 import { TextGetter, TextSetter, DeckGetter, DeckSetter } from '@/Admin'
 import { Layout, MainContainer } from '@/Layout';

@@ -1,6 +1,8 @@
+// 不必要かも？
+
 'use client'
 import React, { useState } from 'react'
-import { MyInputNumber, MySelect, MyTextbox } from '@/Basics'
+import { MySelect, MyTextbox } from '@/Basics'
 import { FormatCategory } from '@/CommonPage/DeckSelection'
 import {
     getDeckListByUser,
@@ -8,14 +10,12 @@ import {
     getDeckListPrivate,
     getDeckListByCategory,
 } from '@/MyLib/UtilsAPITyping'
-import { visibility2int, _lang2int } from '@/MyLib/Mapper'
+import { _lang2int } from '@/MyLib/Mapper'
 import { useMutation } from '@tanstack/react-query'
 import { showError } from 'utils/toast'
 import { ApiError } from '@/MyLib/apiError'
 
 /* ---------- 定数 ---------- */
-const visibilityOptions = Object.keys(visibility2int)
-// const langOptions = Object.keys(_lang2int)
 const langOptions = ['english', 'others']
 const classParDivDefault = 'flex flex-col items-start space-y-4 w-full'
 const classChildDivDefault = 'w-full'
