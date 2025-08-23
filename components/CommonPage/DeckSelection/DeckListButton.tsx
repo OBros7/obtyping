@@ -1,14 +1,11 @@
 import React from 'react'
-import { langDict, DeckCardButton } from '.'
-import {
-    ReceivedDeck,
-} from '@/MyLib/UtilsAPITyping'
+import { DeckCardButton } from '.'
+import { ReceivedDeck } from '@/MyLib/UtilsAPITyping'
 
 
 interface DeckListProps {
     deckList: ReceivedDeck[]
     setLanguage?: React.Dispatch<React.SetStateAction<'not selected' | 'japanese' | 'english' | 'free'>>
-    // setSelectedDeckId: React.Dispatch<React.SetStateAction<string>>
 }
 
 export default function DeckList({ deckList, setLanguage }: DeckListProps) {

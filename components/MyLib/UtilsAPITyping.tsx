@@ -4,8 +4,7 @@
 // 残課題：複数の外部ファイルからインポートされる型を別ファイルに分けるか
 // -----------------------------------------------------
 
-import { visibility2int, lang2int } from '@/MyLib/Mapper'
-// import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
+import { lang2int } from '@/MyLib/Mapper'
 import { apiFetch } from '@/MyLib/apiFetch'
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';     // ★ フォールバック
@@ -32,39 +31,7 @@ interface ReceivedDeck {
     lang?: string,
     lang1_int: number,
     lang2_int?: number,
-    // If your API returns category/subcategory/level as plain strings,
-    // you can keep them here or remove if not needed.
-    // category?: string,
-    // subcategory?: string,
-    // level?: string,
 }
-
-// --------------- Utility function for GET query strings ---------------
-// export interface getDeckTextParams {
-//     user_id?: number | null,
-//     lang1_int?: number | null,
-//     lang2_int?: number | null,
-//     category?: string | null,
-//     subcategory?: string | null,
-//     level?: string | null,
-//     n_select?: number | null,
-//     order_by?: string | null,
-//     deck_id?: number | null,
-//     search_text?: string | null,
-// }
-
-// ---------------- Interfaces for responses ----------------
-// ---------------- API: POST routes ----------------
-// interface PostText {
-//     // user_id: number,
-//     title: string,
-//     text11: string,
-//     text12?: string | null,
-//     text21?: string | null,
-//     text22?: string | null,
-//     visibility_int: number,
-//     deck_id: number,
-// }
 
 // バックエンドに合わせる
 interface PostText {
@@ -80,7 +47,6 @@ interface PostTextDeck {
     text12?: string | null,
     text21?: string | null,
     text22?: string | null,
-    // deck property
     deck_title: string;
     deck_description: string | null;
     lang1_int: number;
@@ -91,19 +57,6 @@ interface PostTextDeck {
     shuffle: boolean;
     visibility_int: number;
 }
-
-// 元々
-// interface PostDeck {
-//     title: string,
-//     description?: string | null,
-//     category?: string | null,
-//     subcategory?: string | null,
-//     level?: string,
-//     lang1_int: number,
-//     lang2_int?: number | null,
-//     visibility_int: number,
-//     shuffle?: boolean,
-// }
 
 // バックエンドに合わせる
 interface PostDeck {
@@ -161,7 +114,6 @@ export const getDeckListBasic = (lang1: string, nSelect = 10, orderBy = 'title')
         { parseJson: true }
     );
 
-/** 以下同じパターンで… */
 export const getDeckListPrivate = (userID: number | null, nSelect = 10, orderBy = 'title') =>
     apiFetch<ReceivedDeck[]>(
         `${BACKEND}/api/typing/get_decklist_custom_by_user?${qs({ user_id: userID, n_select: nSelect, order_by: orderBy })}`,

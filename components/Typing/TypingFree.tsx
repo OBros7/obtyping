@@ -1,8 +1,5 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react'
-import Keyboard from './Keyboard'
-import Fingers from './Fingers';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
-import { set } from 'react-hook-form';
 
 interface TypingFreeProps {
   textList: ReceivedText[]
@@ -18,25 +15,15 @@ interface TypingFreeProps {
 
 const getEndOfLineIndex = (str: string, startIndex: number, charsPerLine: number): number => {
   let potentialEndIndex = startIndex + charsPerLine;
+  if (potentialEndIndex >= str.length) return potentialEndIndex;
 
-  // If the potential end index is beyond the string length, just return it.
-  if (potentialEndIndex >= str.length) {
-    return potentialEndIndex;
-  }
-
-  // Move the potential end index back until we find a space or we've moved back 10 characters.
-  // This prevents the break in the middle of a word.
-  let searchLimit = 10; // Number of characters to look backward to find a space.
+  // 単語の途中で折り返さないように後ろへ走査（最大10文字）
+  let searchLimit = 10;
   while (str[potentialEndIndex] !== " " && searchLimit > 0) {
     potentialEndIndex--;
     searchLimit--;
   }
-
-  // If we didn't find a space within the search limit, just split at the original end index.
-  if (searchLimit === 0) {
-    potentialEndIndex = startIndex + charsPerLine;
-  }
-
+  if (searchLimit === 0) potentialEndIndex = startIndex + charsPerLine;
   return potentialEndIndex;
 };
 
@@ -50,72 +37,50 @@ const getPreviewSlice = (str: string, charsPerLine: number, lines: number) => {
   return str.slice(0, startIdx);
 };
 
-export default function TypingFree(
-  {
-    textList,
-    setStatus,
-    score,
-    setScore,
-    mistake,
-    setMistake,
-    languageType,
-    mode = '1m',
-    remainingTime
-  }: TypingFreeProps
-) {
-  const [nextKey, setNextKey] = useState<string | null>(textList[0]?.text11[0].toUpperCase());
-  const [pressKey, setPressKey] = useState<string | null>(nextKey ? nextKey.toUpperCase() : null);
-  const [textListLength, setTextListLength] = useState<number>(textList.length)
-  const [countTextIndex, setCountTextIndex] = useState<number>(0)
-  const [countCharWithin, setCountCharWithin] = useState<number>(0)// count text within a text
-  const [currentText, setCurrentText] = useState<string>(textList[0].text11)
-  const [currentTextLength, setCurrentTextLength] = useState<number>(textList[0].text11.length)
-  const [nextText, setNextText] = useState<string>(textList[1 % textListLength].text11)
-  const isCorrects = useRef<boolean[]>([])
-  const [charsPerLine, setCharsPerLine] = useState<number>(80); // Starting default
-  const [currentLine, setCurrentLine] = useState<number>(0);
-  const [numberOfRows, setNumberOfRows] = useState<number>(5); // Default to 1 row.
-  const [endIndicesOfLines, setEndIndicesOfLines] = useState<number[]>([]);
-  const [inputText, setInputText] = useState<string>('')
-  const refTextBox = useRef<HTMLTextAreaElement>(null)
+export default function TypingFree({
+  textList,
+  setStatus,
+  score,
+  setScore,
+  mistake,
+  setMistake,
+  languageType,
+  mode = '1m',
+  remainingTime
+}: TypingFreeProps) {
 
+  // ===== 派生値 / 初期値 =====
+  const textListLength = textList.length;
+  const firstText = textList[0]?.text11 ?? '';
+
+  // ===== state =====
+  const [countTextIndex, setCountTextIndex] = useState<number>(0);
+  const [currentText, setCurrentText] = useState<string>(firstText);
+  const [currentTextLength, setCurrentTextLength] = useState<number>(firstText.length);
+  const [nextText, setNextText] = useState<string>(textListLength > 1 ? textList[1 % textListLength].text11 : '');
+
+  const [charsPerLine, setCharsPerLine] = useState<number>(80); // 表示幅に応じた1行あたり文字数
+  const [inputText, setInputText] = useState<string>('');
+  const isCorrects = useRef<boolean[]>([]);
+  const refTextBox = useRef<HTMLTextAreaElement>(null);
+  const finalizedRef = useRef(false);
+
+  // ===== レイアウト閾値 =====
   const twoXlScrenWordNum = 75;
   const xlScrenWordNum = 60;
   const lgScrenWordNum = 45;
   const mdScrenWordNum = 30;
   const smScrenWordNum = 15;
   const verySmallScrenWordNum = 10;
-  // const missSound = new Audio('/sounds/beep-03.mp3');
 
-  // let sentenceNum: number = 0
-
-  // useEffect(() => {
-  //   // Attach the event listener to the window to handle key press globally
-  //   window.addEventListener('keydown', handleKeyDown);
-  //   return () => {
-  //     // Cleanup listener when the component is unmounted
-  //     window.removeEventListener('keydown', handleKeyDown);
-  //   };
-  // }, [nextKey, countCharWithin, currentTextLength, currentText]);
-
+  // ===== 初回フォーカス =====
   useEffect(() => {
-    // テキストエリアにフォーカスを当てる
     refTextBox.current?.focus();
   }, []);
 
-  const calculateEndIndices = () => {
-    const localEndIndices = [];
-    let startIdx = 0;
-    while (startIdx < currentText.length) {
-      const endDisplayIndex = getEndOfLineIndex(currentText, startIdx, charsPerLine);
-      localEndIndices.push(endDisplayIndex);
-      startIdx = endDisplayIndex;
-    }
-    return localEndIndices;
-  };
-
-  const scoreUpdate = (scoreArray: boolean[], shortage: number) => {
-    if (scoreArray.length > 0) {
+  // ===== スコア更新（メモ化）=====
+  const scoreUpdate = useCallback((scoreArray: boolean[], shortage: number) => {
+    if (scoreArray.length > 0 || shortage > 0) {
       let addNum = 0, missNum = 0;
       for (let i = 0; i < scoreArray.length; i++) {
         if (scoreArray[i]) addNum += 1; else missNum += 1;
@@ -123,89 +88,89 @@ export default function TypingFree(
       setScore((prev) => prev + addNum);
       setMistake((prev) => prev + missNum + shortage);
     }
-  };
+  }, [setScore, setMistake]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const inputSentence = event.target.value
-    const inputPositon: number = inputSentence.length
+  // ===== 入力ハンドラ（メモ化）=====
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const inputSentence = event.target.value;
+    const inputPosition: number = inputSentence.length;
     setInputText(inputSentence);
 
-    let textLength: number = Math.min(inputPositon, currentTextLength)
+    const textLength: number = Math.min(inputPosition, currentTextLength);
 
-    if (inputSentence.charAt(inputPositon - 1) === '\n') {
-      const shortage = Math.abs(currentTextLength - (inputPositon - 1));
+    // Enter で確定して次テキストへ
+    if (inputSentence.charAt(inputPosition - 1) === '\n') {
+      const shortage = Math.abs(currentTextLength - (inputPosition - 1));
       scoreUpdate(isCorrects.current, shortage);
-
-      // ★ 次のテキストへ進める（state をインクリメント）
+      // 次のテキストへ進める
       setCountTextIndex((i) => (i + 1) % textListLength);
-
       setInputText('');
     } else {
-      isCorrects.current = []
-      for (var i = 0; i < textLength; i++) {
-        const charTarget = currentText.charAt(i)
-        const char = inputSentence.charAt(i)
-        isCorrects.current.push(charTarget === char)
+      isCorrects.current = [];
+      for (let i = 0; i < textLength; i++) {
+        const charTarget = currentText.charAt(i);
+        const char = inputSentence.charAt(i);
+        isCorrects.current.push(charTarget === char);
       }
     }
+  }, [currentText, currentTextLength, scoreUpdate, textListLength]);
 
-  };
-
+  // ===== 次テキストの先頭2行をプレビュー =====
   const nextTextPreview = useMemo(() => {
     if (!nextText) return '';
-    // ここでは固定で2行だけ覗かせる（画面幅連動にしたい時は英語版と同じように調整）
     return getPreviewSlice(nextText, charsPerLine, 2);
   }, [nextText, charsPerLine]);
 
-
+  // ===== テキスト切替：countTextIndex / textList の変化に同期 =====
   useEffect(() => {
-    setCurrentText(textList[countTextIndex % textListLength].text11);
-    setNextText(textList[(countTextIndex + 1) % textListLength].text11);
-  }, [countTextIndex]);
+    if (textListLength === 0) return;
+    const cur = textList[countTextIndex % textListLength].text11;
+    const nxt = textList[(countTextIndex + 1) % textListLength]?.text11 ?? '';
+    setCurrentText(cur);
+    setNextText(nxt);
+  }, [countTextIndex, textList, textListLength]);
 
+  // ===== currentText が変わったら各種初期化 =====
   useEffect(() => {
-    setCurrentLine(0);  // Reset the current line
-    setNextKey(currentText[0]);
+    setInputText('');
     setCurrentTextLength(currentText.length);
     isCorrects.current = [];
   }, [currentText]);
 
+  // ===== タイムアップ時に残スコアを集計 =====
   useEffect(() => {
     if (remainingTime === 0) {
-      scoreUpdate(isCorrects.current, 0)
+      scoreUpdate(isCorrects.current, 0);
     }
-  }, [remainingTime])
+  }, [remainingTime, scoreUpdate]);
 
+  // ===== レスポンシブ：charsPerLine の更新 =====
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-
-      if (width >= 1536) {
-        setCharsPerLine(twoXlScrenWordNum);
-      } else if (width >= 1280 && width < 1536) {
-        setCharsPerLine(xlScrenWordNum);
-      } else if (width >= 1024 && width < 1280) {
-        setCharsPerLine(lgScrenWordNum);
-      } else if (width >= 768 && width < 1024) {
-        setCharsPerLine(mdScrenWordNum);
-      } else if (width >= 640 && width < 768) {
-        setCharsPerLine(smScrenWordNum);
-      } else {
-        setCharsPerLine(verySmallScrenWordNum);
-      }
+      if (width >= 1536) setCharsPerLine(twoXlScrenWordNum);
+      else if (width >= 1280) setCharsPerLine(xlScrenWordNum);
+      else if (width >= 1024) setCharsPerLine(lgScrenWordNum);
+      else if (width >= 768) setCharsPerLine(mdScrenWordNum);
+      else if (width >= 640) setCharsPerLine(smScrenWordNum);
+      else setCharsPerLine(verySmallScrenWordNum);
     };
-
     window.addEventListener('resize', handleResize);
-    handleResize(); // Call it immediately to set the initial value
-
+    handleResize(); // 初期化
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
-    const newEndIndices = calculateEndIndices();
-    setEndIndicesOfLines(newEndIndices);
-  }, [currentText, charsPerLine]);
+    // remainingTime が未指定なら何もしない
+    if (remainingTime === undefined || remainingTime === null) return;
 
+    // 0以下でタイムアップ（==0 だとフレームの遅れで負になる可能性に対応）
+    if (remainingTime <= 0 && !finalizedRef.current) {
+      finalizedRef.current = true;     // 二重実行防止
+      scoreUpdate(isCorrects.current, 0); // 残り分の集計
+      setStatus('result');               // リザルトへ遷移
+    }
+  }, [remainingTime, scoreUpdate, setStatus]);
 
   return (
     <>
@@ -215,26 +180,21 @@ export default function TypingFree(
             <span className="ml-4">Score: {score}</span>
             <span className="ml-4">Mistakes: {mistake}</span>
           </div>
-          <div className='text-3xl text-center px-6'>
+
+          <div className="text-3xl text-center px-6">
             {currentText.split('').map((c, i) => {
               let className = '';
               if (i < inputText.length) {
-                // i文字目までの処理：入力された文字とお題の文字を比較
                 className = isCorrects.current[i] ? 'bg-green-500' : 'bg-red-500';
               }
-
               return (
                 <span key={i} className={className}>
-                  {c === ' ' ? '\u00A0' : c} {/* スペースの場合は表示用のスペースを使う */}
+                  {c === ' ' ? '\u00A0' : c}
                 </span>
               );
             })}
-
           </div>
 
-          {/* <div className='text-sm text-gray-400 text-center'>
-            {nextText}
-          </div> */}
           {nextTextPreview && (
             <div
               className="mt-3 w-full px-6 text-center text-gray-400 text-sm leading-relaxed select-none"
@@ -248,6 +208,7 @@ export default function TypingFree(
           )}
         </div>
       </div>
+
       <div className="flex justify-center w-full mb-10">
         <textarea
           className="outline outline-2 select-none"
@@ -256,23 +217,22 @@ export default function TypingFree(
           autoComplete="off"
           autoCorrect="off"
           spellCheck="false"
-          onChange={(e) => handleInputChange(e)}
+          onChange={handleInputChange}
           rows={5}
           cols={100}
           onMouseDown={(e) => {
-            e.preventDefault()
-            refTextBox.current?.focus()
-            return false
+            e.preventDefault();
+            refTextBox.current?.focus();
+            return false;
           }}
           onKeyDown={(e) => {
             if ([33, 34, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-              e.preventDefault()
+              e.preventDefault();
             }
-            return false
+            return false;
           }}
         ></textarea>
       </div>
     </>
   );
 }
-

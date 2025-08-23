@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from '@/MyCustomHooks'
 import { langDict } from '.'
-import { hms2ms, ms2hms } from '@/MyLib/TimeLib'
-import { TimerBase, StopWatchBase } from '@/Timer'
+import { hms2ms } from '@/MyLib/TimeLib'
+import { TimerBase } from '@/Timer'
 
 interface ReadyScreenProps {
   status: 'waiting' | 'ready' | 'setting' | 'running' | 'result'
@@ -10,9 +10,7 @@ interface ReadyScreenProps {
 }
 
 export default function WaitingScreen({ status, setStatus }: ReadyScreenProps) {
-  const [translater] = useTranslation(langDict) as [{ [key in keyof typeof langDict]: string }, string]
   const [timePassed, setTimePassed] = useState(0)
-  // for timer base
   const wataingTime = hms2ms(999, 3, 0, 0)
   const [finished, setFinished] = useState(false)
   const [ticking, setTicking] = useState(true)
