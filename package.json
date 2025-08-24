@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "yarn lint --fix",
-    "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json}'"
+    "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json}'",
+    "setup:https": "bash ./scripts/setup-dev-https.sh || powershell -ExecutionPolicy Bypass -File ./scripts/setup-dev-https.ps1",
+    "dev:https": "npm run setup:https && concurrently \"next dev\" \"caddy run --config Caddyfile.dev\""
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.0.1",
@@ -47,6 +49,7 @@
     "@typescript-eslint/eslint-plugin": "^8.34.0",
     "@typescript-eslint/parser": "^8.34.0",
     "autoprefixer": "^10",
+    "concurrently": "^9.2.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.26",
     "eslint-config-prettier": "^8.5.0",

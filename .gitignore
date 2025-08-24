@@ -37,3 +37,8 @@ next-env.d.ts
 
 # my personal note
 memo.md
+
+# certs (SSL証明書)
+certs/*
+!certs/.keep
+*.key
