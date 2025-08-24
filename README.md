@@ -75,3 +75,48 @@ https://saruwakakun.com/html-css/basic/head
 - yarn add --dev g-sheets-api
 - https://www.npmjs.com/package/g-sheets-api
 - https://virment.com/enable-google-spreadsheet-api/
+
+## HTTPS でのアクセスしてください
+
+ローカル開発でも HTTPS を前提とします。理由: Service Worker / WebAuthn / SameSite=None; Secure Cookie / 一部のブラウザ API は セキュアコンテキスト（HTTPS）でのみ有効なため。
+
+### 前提ツール（未導入の場合はインストール）
+
+- mkcert（ローカル CA & 証明書生成）
+
+```
+mac: brew install mkcert nss
+Win: choco install mkcert
+Linux: sudo apt-get install -y libnss3-tools → mkcert を導入
+```
+
+※ yarn setup:https 内で mkcert -install を実行します。
+
+Caddy（TLS 終端のリバースプロキシ）
+
+```
+mac: brew install caddy
+Win: choco install caddy
+```
+
+### 最短手順（初回だけ & 毎回）
+
+- 初回のみ（ローカル CA 登録 & 証明書生成を自動化）
+
+```
+yarn setup:https
+```
+
+- 以降、開発サーバを HTTPS で起動
+
+```
+yarn dev:https
+```
+
+起動後は https://typing.localhost:8443 でアクセスしてください。
+http://localhost:3000 は開発内部向けのプレーン HTTP（鍵マークは出ません）。
+
+### レポジトリの運用ルール（証明書はコミット禁止）
+
+certs/ は ローカル生成専用。リポジトリには .keep のみを含めます。
+.gitignore により _.pem / _.key はグローバル無視されます。
