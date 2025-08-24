@@ -1,0 +1,5 @@
+# Next.js: http://localhost:3000 → HTTPS化
+typing.localhost:8443 {
+    tls ./certs/dev-cert.pem ./certs/dev-key.pem
+    reverse_proxy localhost:3000
+}
