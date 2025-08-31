@@ -113,7 +113,7 @@ yarn setup:https
 yarn dev:https
 ```
 
-起動後は https://typing.localhost:8443 でアクセスしてください。
+起動後は https://localhost:8443 でアクセスしてください。
 http://localhost:3000 は開発内部向けのプレーン HTTP（鍵マークは出ません）。
 
 ### レポジトリの運用ルール（証明書はコミット禁止）
