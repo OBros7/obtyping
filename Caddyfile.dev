@@ -1,5 +1,23 @@
-# Next.js: http://localhost:3000 → HTTPS化
-typing.localhost:8443 {
-    tls ./certs/dev-cert.pem ./certs/dev-key.pem
-    reverse_proxy localhost:3000
+localhost:8443 {
+  tls ./certs/localhost.pem ./certs/localhost.key
+  encode gzip zstd
+
+  # APIは 8000 側へ（例）
+  @api path /api/*
+  handle @api {
+    reverse_proxy 127.0.0.1:8000 {
+      header_up Host {host}
+      header_up X-Forwarded-Proto https
+      header_up X-Forwarded-Host {host}
+    }
+  }
+
+  # それ以外は Next.js 3000 へ
+  handle {
+    reverse_proxy 127.0.0.1:3000 {
+      header_up Host {host}
+      header_up X-Forwarded-Proto https
+      header_up X-Forwarded-Host {host}
+    }
+  }
 }

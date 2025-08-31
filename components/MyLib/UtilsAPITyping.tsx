@@ -76,6 +76,13 @@ type NewTextForDeck = Omit<PostText, 'deck_id' | 'visibility_int'> & {
     visibility_int?: number;
 };
 
+type DeckListResponse = {
+    items: ReceivedDeck[];
+    total: number;      // 合計件数
+    page: number;       // 現在ページ(1始まり)
+    per_page: number;   // 1ページ件数
+};
+
 interface CreateDeckWithTextsArgs {
     deck: PostDeck;
     texts: NewTextForDeck[];
@@ -143,6 +150,24 @@ export const getTextListByDeck = (deckID: number, nSelect = 10, orderBy = 'title
 
 export const getCategoriesSubcategoriesLevels = () =>
     apiFetch(`${BACKEND}/api/typing/get_categories_subcategories_levels/`, undefined, { parseJson: true });
+
+export const getDeckListByUserPaged = (
+    userID: number | null,
+    page = 1,
+    perPage = 10,
+    orderBy = 'title'
+) =>
+    apiFetch<DeckListResponse>(
+        `${BACKEND}/api/typing/get_decklist_by_user?${qs({
+            user_id: userID,
+            page,
+            n_select: perPage, // ← 1ページの件数
+            order_by: orderBy,
+        })}`,
+        undefined,
+        { parseJson: true }
+    );
+
 
 /* ============ POST APIs ============ */
 
@@ -225,4 +250,5 @@ export type {
     CreateDeckWithTextsArgs,
     UpdateDeckPayload,
     UpdateTextPayload,
+    DeckListResponse,
 };
