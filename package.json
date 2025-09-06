@@ -10,7 +10,8 @@
     "lint:fix": "yarn lint --fix",
     "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json}'",
     "setup:https": "bash ./scripts/setup-dev-https.sh || powershell -ExecutionPolicy Bypass -File ./scripts/setup-dev-https.ps1",
-    "dev:https": "npm run setup:https && concurrently \"next dev\" \"caddy run --config Caddyfile.dev\""
+    "predev:https": "yarn setup:https",
+    "dev:https": "concurrently \"next dev\" \"caddy run --config Caddyfile.dev\""
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.0.1",

@@ -99,8 +99,6 @@ mac: brew install caddy
 Win: choco install caddy
 ```
 
-### 最短手順（初回だけ & 毎回）
-
 - 初回のみ（ローカル CA 登録 & 証明書生成を自動化）
 
 ```
