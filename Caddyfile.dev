@@ -1,5 +1,5 @@
 localhost:8443 {
-  tls ./certs/localhost.pem ./certs/localhost.key
+  tls ./certs/dev-cert.pem ./certs/dev-key.pem
   encode gzip zstd
 
   # APIは 8000 側へ（例）
