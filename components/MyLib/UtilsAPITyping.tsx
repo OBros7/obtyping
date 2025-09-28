@@ -17,7 +17,7 @@ interface ReceivedText {
     text12?: string | null,
     text21?: string | null,
     text22?: string | null,
-    visibility_int?: number,
+    visibility?: 'public' | 'premium' | string | null,
     deck_id?: number,
 }
 
@@ -26,7 +26,7 @@ interface ReceivedDeck {
     deck_id: number,
     title: string,
     description?: string,
-    visibility_int?: number,
+    visibility?: 'public' | 'premium' | string | null,
     shuffle?: boolean,
     lang?: string,
     lang1_int: number,

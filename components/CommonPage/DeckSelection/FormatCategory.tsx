@@ -1,3 +1,4 @@
+// components/FormatCategory.tsx
 'use client'
 import React, { useEffect, useMemo } from 'react'
 import { MySelect } from '@/Basics'
@@ -10,19 +11,18 @@ const minibox = 'flex flex-row justify-center items-center'
 const formRowClass = 'flex flex-row items-center justify-start space-x-2'
 
 interface Props {
-  category: string
-  setCategory: React.Dispatch<React.SetStateAction<string>>
-  subcategory: string
-  setSubcategory: React.Dispatch<React.SetStateAction<string>>
-  level: string
-  setLevel: React.Dispatch<React.SetStateAction<string>>
+  category: string | null
+  setCategory: React.Dispatch<React.SetStateAction<string | null>>
+  subcategory: string | null
+  setSubcategory: React.Dispatch<React.SetStateAction<string | null>>
+  level: string | null
+  setLevel: React.Dispatch<React.SetStateAction<string | null>>
   classParent?: string
 }
 
 export default function FormatCategory(props: Props) {
   const { category, setCategory, subcategory, setSubcategory, level, setLevel, classParent = minibox } = props
 
-  // 1) 取得（常にトップレベルで呼ぶ）
   const { data, isError, error, isLoading } = useQuery({
     queryKey: ['catSubcatLevels'],
     queryFn: getCategoriesSubcategoriesLevels,
@@ -30,7 +30,6 @@ export default function FormatCategory(props: Props) {
     throwOnError: false,
   })
 
-  // 2) エラートースト（Hook 自体は無条件で呼ぶ）
   useEffect(() => {
     if (isError && error) {
       const err = error as ApiError
@@ -38,7 +37,6 @@ export default function FormatCategory(props: Props) {
     }
   }, [isError, error])
 
-  // 3) メモ化（Hook 自体は無条件で呼ぶ）
   const categories = useMemo<string[]>(
     () => (data ? Object.keys(data.cat_subcat) : []),
     [data]
@@ -52,48 +50,59 @@ export default function FormatCategory(props: Props) {
     [data, category]
   )
 
-  // 4) 選択値の補正（Hook 自体は無条件で呼ぶ）
+  // 補正：null をユーザーの明示的選択として尊重し、null の場合は何もしない
   useEffect(() => {
     if (!categories.length) return
-    if (category === '' || !categories.includes(category)) {
-      setCategory(categories[0])
+    if (category !== null && (category === '' || !categories.includes(category))) {
+      setCategory(categories[0] ?? null)
     }
   }, [categories, category, setCategory])
 
   useEffect(() => {
     if (!subcategoryList.length) return
-    if (subcategory === '' || !subcategoryList.includes(subcategory)) {
-      setSubcategory(subcategoryList[0])
+    if (subcategory !== null && (subcategory === '' || !subcategoryList.includes(subcategory))) {
+      setSubcategory(subcategoryList[0] ?? null)
     }
   }, [subcategoryList, subcategory, setSubcategory])
 
   useEffect(() => {
     if (!levelList.length) return
-    if (level === '' || !levelList.includes(level)) {
-      setLevel(levelList[0])
+    if (level !== null && (level === '' || !levelList.includes(level))) {
+      setLevel(levelList[0] ?? null)
     }
   }, [levelList, level, setLevel])
 
-  // 5) レンダー時にだけローディング分岐
-  if (isLoading) {
-    return <div className={classParent}>Loading...</div>
-  }
+  if (isLoading) return <div className={classParent}>Loading...</div>
 
+  console.log('categories:', categories)
+  console.log('subcategoryList:', subcategoryList)
+  console.log('levelList:', levelList)
+
+  const nullSelect = 'none'
+  // 先頭に null（未指定）を追加。表示テキストは '(Any)' など任意で。
+  const catValues: (string | null)[] = [...categories, null]
+  const catTexts = [...categories, nullSelect]
+
+  const subcatValues: (string | null)[] = [...subcategoryList, null]
+  const subcatTexts = [...subcategoryList, nullSelect]
+
+  const lvlValues: (string | null)[] = [...levelList, null]
+  const lvlTexts = [...levelList, nullSelect]
   return (
     <div className="flex flex-col space-y-4 py-2">
       <div className={formRowClass}>
         Category:
-        <MySelect state={category} setState={setCategory} optionValues={categories} />
+        <MySelect state={category} setState={setCategory} optionValues={catValues} optionTexts={catTexts} />
       </div>
 
       <div className={formRowClass}>
         Subcategory:
-        <MySelect state={subcategory} setState={setSubcategory} optionValues={subcategoryList} />
+        <MySelect state={subcategory} setState={setSubcategory} optionValues={subcatValues} optionTexts={subcatTexts} />
       </div>
 
       <div className={formRowClass}>
         Level:
-        <MySelect state={level} setState={setLevel} optionValues={levelList} />
+        <MySelect state={level} setState={setLevel} optionValues={lvlValues} optionTexts={lvlTexts} />
       </div>
     </div>
   )

@@ -190,8 +190,8 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
 
     return (
         <>
-            <div className="w-full flex flex-col items-start my-10 pt-10 md:pt-12 relative">
-                <div className="w-full flex flex-col items-start my-10 pt-10 md:pt-12 relative">
+            <div className="relative w-full mt-2 md:mt-4 pt-8">
+                <div className="absolute top-0 right-6 md:right-24 flex items-center gap-6 text-sm md:text-base">
                     <span>Score: {score}</span>
                     <span className="ml-4">Mistakes: {mistake}</span>
                 </div>
