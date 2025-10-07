@@ -18,6 +18,7 @@ interface ReceivedText {
     text21?: string | null,
     text22?: string | null,
     visibility?: 'public' | 'premium' | string | null,
+    visibility_int?: number,
     deck_id?: number,
 }
 
