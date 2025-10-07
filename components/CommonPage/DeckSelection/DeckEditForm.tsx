@@ -113,6 +113,12 @@ export default function DeckEditForm() {
     setSelectedTextContent('');
   };
 
+  const handleShuffleSet: React.Dispatch<React.SetStateAction<string>> = (next) => {
+    const current = editShuffleBool ? '1' : '0';
+    const nextStr = typeof next === 'function' ? next(current) : next;
+    setEditShuffleBool(nextStr === '1');
+  };
+
   return (
     <div className="flex flex-col space-y-6">
       {/* デッキ選択 */}
@@ -129,7 +135,7 @@ export default function DeckEditForm() {
         <label className="col-span-2">{translater.displayOrderRandom}</label>
         <MySelect
           state={editShuffleBool ? '1' : '0'}
-          setState={(v: string) => setEditShuffleBool(v === '1')}
+          setState={handleShuffleSet}
           optionValues={['0', '1']}
           optionTexts={[translater.selectNotShuffle, translater.selectShuffle]}
           attrs={{ className: `col-span-4 ${selectCls}` }}
