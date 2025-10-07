@@ -49,11 +49,11 @@ interface TextGetterProps {
 	lang2: string;
 	setLang2: React.Dispatch<React.SetStateAction<string>>;
 	category: string;
-	setCategory: React.Dispatch<React.SetStateAction<string>>;
+	setCategory: React.Dispatch<React.SetStateAction<string | null>>
 	subcategory: string;
-	setSubcategory: React.Dispatch<React.SetStateAction<string>>;
+	setSubcategory: React.Dispatch<React.SetStateAction<string | null>>
 	level: string;
-	setLevel: React.Dispatch<React.SetStateAction<string>>;
+	setLevel: React.Dispatch<React.SetStateAction<string | null>>
 	nSelect: number;
 	setNSelect: React.Dispatch<React.SetStateAction<number>>;
 	setReturnedData: React.Dispatch<React.SetStateAction<any>>;
