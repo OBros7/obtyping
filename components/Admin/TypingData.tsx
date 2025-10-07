@@ -59,9 +59,9 @@ export default function TypingData() {
     /////////// Common ///////////
     const [lang1, setLang1] = useState(langOptions[0])
     const [lang2, setLang2] = useState(langOptions[-1])
-    const [category, setCategory] = useState('')
-    const [subcategory, setSubcategory] = useState('')
-    const [level, setLevel] = useState('')
+    const [category, setCategory] = useState<string | null>(null);
+    const [subcategory, setSubcategory] = useState<string | null>(null);
+    const [level, setLevel] = useState<string | null>(null);
 
     /////////// Getter ///////////
     const [nSelect, setNSelect] = useState(10)

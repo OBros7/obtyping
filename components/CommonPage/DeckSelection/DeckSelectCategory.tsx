@@ -2,7 +2,7 @@
 'use client'
 import React, { useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
-import { SearchBox, DeckListButton } from './'
+import { SearchBox, DeckListPager } from './'
 import { getDeckListByCategory, ReceivedDeck } from '@/MyLib/UtilsAPITyping'
 import { useMutation } from '@tanstack/react-query'
 import { showError } from 'utils/toast'
@@ -13,10 +13,10 @@ const buttonClass = 'btn-primary rounded-md m-4 mt-8'
 
 export default function DeckSelectCategory() {
     /* -------- 検索条件（フォーム状態） -------- */
-    const [category, setCategory] = useState('')
-    const [subcategory, setSubcategory] = useState('')
-    const [level, setLevel] = useState('')
-    const [nSelect, setNSelect] = useState(10)
+    const [category, setCategory] = useState<string | null>(null)
+    const [subcategory, setSubcategory] = useState<string | null>(null)
+    const [level, setLevel] = useState<string | null>(null)
+    const [nSelect, setNSelect] = useState(1000)
     const [orderBy, setOrderBy] = useState('title')
 
     /* -------- 検索結果 -------- */
@@ -24,26 +24,23 @@ export default function DeckSelectCategory() {
 
     /* -------- React Query mutation -------- */
     const deckSearch = useMutation({
-        // 1. 叩きたい API を mutationFn に
         mutationFn: (p: {
-            category: string
-            subcategory: string
-            level: string
+            category: string | null
+            subcategory: string | null
+            level: string | null
             nSelect: number
             orderBy: string
         }) =>
+            // API 側は string を受ける想定なので null は '' に変換
             getDeckListByCategory(
-                p.category,
-                p.subcategory,
-                p.level,
+                p.category ?? '',
+                p.subcategory ?? '',
+                p.level ?? '',
                 p.nSelect,
                 p.orderBy,
             ),
 
-        // 2. 成功時はステートに結果をセット
         onSuccess: (data) => setDeckList(data),
-
-        // 3. 失敗時はトースト表示
         onError: (e) => {
             const err = e as unknown
             if (err instanceof ApiError)
@@ -51,21 +48,16 @@ export default function DeckSelectCategory() {
             else showError('通信に失敗しました')
         },
     })
+    console.log('deckList:', deckList)
 
-    const onSearch = async () => {
-        try {
-            deckSearch.mutate({ category, subcategory, level, nSelect, orderBy })
-        } catch (e) {
-            // ここに来るとしたら mutateAsync を使っているか provider が無い
-            console.error('unhandled!!!', e)
-        }
+    const onSearch = () => {
+        deckSearch.mutate({ category, subcategory, level, nSelect, orderBy })
     }
 
     return (
         <Layout>
             <MainContainer addClass='p-4'>
                 <div className={parentClass}>
-                    {/* 入力フォーム */}
                     <SearchBox
                         category={category}
                         setCategory={setCategory}
@@ -75,7 +67,6 @@ export default function DeckSelectCategory() {
                         setLevel={setLevel}
                     />
 
-                    {/* 検索ボタン */}
                     <button
                         className={buttonClass}
                         onClick={onSearch}
@@ -84,7 +75,12 @@ export default function DeckSelectCategory() {
                         {deckSearch.isPending ? 'Loading…' : 'Search'}
                     </button>
 
-                    <DeckListButton deckList={deckList} />
+                    <DeckListPager
+                        mode="byData"
+                        deckList={deckList}
+                        perPage={10}
+                        showPremiumBadge={true}
+                    />
                 </div>
             </MainContainer>
         </Layout>

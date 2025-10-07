@@ -1,21 +1,26 @@
+// Basics/MySelect.tsx
 import React, { useEffect, useState } from 'react'
+
 // Helper function to infer the type
-function inferType(state: any): 'string' | 'number' | 'boolean' | '' {
-  const type = typeof state;
-  return type === 'string' || type === 'number' || type === 'boolean' ? type : '';
+function inferType(state: any): 'string' | 'number' | 'boolean' | 'null' | '' {
+  if (state === null) return 'null'
+  const type = typeof state
+  return type === 'string' || type === 'number' || type === 'boolean' ? type : ''
 }
 
-interface MySelectProps {
-  state: any
-  setState: React.Dispatch<React.SetStateAction<any>>
+const NULL_TOKEN = '__NULL__'
+
+interface MySelectProps<T = any> {
+  state: T
+  setState: React.Dispatch<React.SetStateAction<T>>
   stateIndex?: number
-  optionValues: Array<any>
+  optionValues: Array<T>
   optionTexts?: Array<string> | string
   attrs?: object
-  stateType?: 'string' | 'number' | 'boolean' | ''
+  stateType?: 'string' | 'number' | 'boolean' | 'null' | ''
 }
 
-export default function MySelect({
+export default function MySelect<T = any>({
   state,
   setState,
   stateIndex = 0,
@@ -23,49 +28,56 @@ export default function MySelect({
   optionTexts = '',
   attrs = { className: 'select m-2' },
   stateType = '',
-}: MySelectProps) {
+}: MySelectProps<T>) {
   const [selectedTexts, setSelectedTexts] = useState<Array<string>>([])
 
-  // Auto-detect stateType based on initial state value
-  stateType = inferType(state);
+  // Auto-detect stateType based on current state value
+  stateType = inferType(state)
 
   useEffect(() => {
     if (optionTexts === '') {
-      setSelectedTexts(optionValues.map((ov) => String(ov)))
+      setSelectedTexts(optionValues.map((ov) => ov === null ? '(Any)' : String(ov)))
     } else {
       setSelectedTexts(Array.isArray(optionTexts) ? optionTexts : [optionTexts])
     }
 
+    // 現在値がリストに無い場合のみ初期化（null は許容）
     if (!optionValues.includes(state)) {
-      setState(optionValues[0])
+      // optionValues[0] が存在すればそれへ
+      if (optionValues.length > 0) {
+        setState(optionValues[0] as T)
+      }
     }
   }, [state, setState, optionValues, optionTexts])
 
   const updateState = (value: any) => {
     if (Array.isArray(state)) {
-      setState(state.map((x, i) => (i == stateIndex ? value : x)))
+      setState(state.map((x, i) => (i === stateIndex ? value : x)) as T)
     } else {
-      setState(value)
+      setState(value as T)
     }
+  }
+
+  const fromDomValue = (raw: string) => {
+    if (raw === NULL_TOKEN) return null
+    if (stateType === 'number') return Number(raw)
+    if (stateType === 'boolean') return raw === 'true'
+    // 'null' 型でも raw が NULL_TOKEN で来るので上で処理済み。残りは string。
+    return raw
   }
 
   const changeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    let value;
-    if (stateType === 'number') {
-      value = Number(event.target.value)
-    } else if (stateType === 'boolean') {
-      value = event.target.value === 'true'
-    } else {
-      value = event.target.value
-    }
+    const value = fromDomValue(event.target.value)
     updateState(value)
   }
 
+  const toDomValue = (v: any) => (v === null ? NULL_TOKEN : v)
+
   return (
-    <select value={state} onChange={changeHandler} {...attrs}>
+    <select value={toDomValue(state)} onChange={changeHandler} {...attrs}>
       {optionValues.map((o, i) => {
         return (
-          <option key={i} value={o}>
+          <option key={i} value={toDomValue(o)}>
             {selectedTexts[i]}
           </option>
         )
@@ -73,4 +85,3 @@ export default function MySelect({
     </select>
   )
 }
-
