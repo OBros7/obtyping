@@ -1,6 +1,6 @@
 // components/FormatCategory.tsx
 'use client'
-import React, { useEffect, useMemo } from 'react'
+import React, { use, useEffect, useMemo, useState } from 'react'
 import { MySelect } from '@/Basics'
 import { getCategoriesSubcategoriesLevels } from '@/MyLib/UtilsAPITyping'
 import { useQuery } from '@tanstack/react-query'
@@ -9,6 +9,8 @@ import { ApiError } from '@/MyLib/apiError'
 
 const minibox = 'flex flex-row justify-center items-center'
 const formRowClass = 'flex flex-row items-center justify-start space-x-2'
+
+type LangCode = 'en' | 'ja'
 
 interface Props {
   category: string | null
@@ -22,10 +24,11 @@ interface Props {
 
 export default function FormatCategory(props: Props) {
   const { category, setCategory, subcategory, setSubcategory, level, setLevel, classParent = minibox } = props
+  const [lang, setLang] = useState<LangCode>('en')
 
   const { data, isError, error, isLoading } = useQuery({
-    queryKey: ['catSubcatLevels'],
-    queryFn: getCategoriesSubcategoriesLevels,
+    queryKey: ['catSubcatLevels', lang],
+    queryFn: () => getCategoriesSubcategoriesLevels(lang),
     retry: 2,
     throwOnError: false,
   })
@@ -88,8 +91,18 @@ export default function FormatCategory(props: Props) {
 
   const lvlValues: (string | null)[] = [...levelList, null]
   const lvlTexts = [...levelList, nullSelect]
+
   return (
     <div className="flex flex-col space-y-4 py-2">
+      <div className={formRowClass}>
+        Language:
+        <MySelect
+          state={lang}
+          setState={setLang}
+          optionValues={['en', 'ja']}
+          optionTexts={['English', 'Japanese']}
+        />
+      </div>
       <div className={formRowClass}>
         Category:
         <MySelect state={category} setState={setCategory} optionValues={catValues} optionTexts={catTexts} />
@@ -104,6 +117,8 @@ export default function FormatCategory(props: Props) {
         Level:
         <MySelect state={level} setState={setLevel} optionValues={lvlValues} optionTexts={lvlTexts} />
       </div>
+
+
     </div>
   )
 }

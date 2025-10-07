@@ -7,7 +7,7 @@ type ModeTime = 1 | 2 | 3 | 5
 
 interface DeckCardButtonProps {
     deck: ReceivedDeck
-    setLanguage?: React.Dispatch<React.SetStateAction<'not selected' | 'japanese' | 'english' | 'free'>> | undefined
+    // setLanguage?: React.Dispatch<React.SetStateAction<'not selected' | 'japanese' | 'english' | 'free'>> | undefined
     showMeta?: boolean
     showPremiumBadge?: boolean
     premiumLabel?: string
@@ -36,9 +36,8 @@ const buttonClass =
 
 export default function DeckCardButton({
     deck,
-    setLanguage,
     showMeta = false,
-    showPremiumBadge = true,
+    showPremiumBadge = false,
     premiumLabel = '有料限定',
 }: DeckCardButtonProps) {
     const d = deck as DeckMeta

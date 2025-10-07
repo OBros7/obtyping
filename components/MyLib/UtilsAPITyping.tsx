@@ -148,8 +148,8 @@ export const getTextListByDeck = (deckID: number, nSelect = 10, orderBy = 'title
         { parseJson: true }
     );
 
-export const getCategoriesSubcategoriesLevels = () =>
-    apiFetch(`${BACKEND}/api/typing/get_categories_subcategories_levels/`, undefined, { parseJson: true });
+export const getCategoriesSubcategoriesLevels = (lang: string) =>
+    apiFetch(`${BACKEND}/api/typing/get_categories_subcategories_levels/?lang=${lang}`, undefined, { parseJson: true });
 
 export const getDeckListByUserPaged = (
     userID: number | null,

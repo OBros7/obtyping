@@ -2,7 +2,7 @@
 'use client'
 import React, { useState } from 'react'
 import { Layout, MainContainer } from '@/Layout'
-import { SearchBox, DeckListButton } from './'
+import { SearchBox, DeckListPager } from './'
 import { getDeckListByCategory, ReceivedDeck } from '@/MyLib/UtilsAPITyping'
 import { useMutation } from '@tanstack/react-query'
 import { showError } from 'utils/toast'
@@ -16,7 +16,7 @@ export default function DeckSelectCategory() {
     const [category, setCategory] = useState<string | null>(null)
     const [subcategory, setSubcategory] = useState<string | null>(null)
     const [level, setLevel] = useState<string | null>(null)
-    const [nSelect, setNSelect] = useState(10)
+    const [nSelect, setNSelect] = useState(1000)
     const [orderBy, setOrderBy] = useState('title')
 
     /* -------- 検索結果 -------- */
@@ -75,7 +75,12 @@ export default function DeckSelectCategory() {
                         {deckSearch.isPending ? 'Loading…' : 'Search'}
                     </button>
 
-                    <DeckListButton deckList={deckList} />
+                    <DeckListPager
+                        mode="byData"
+                        deckList={deckList}
+                        perPage={10}
+                        showPremiumBadge={true}
+                    />
                 </div>
             </MainContainer>
         </Layout>

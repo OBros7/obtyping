@@ -50,10 +50,11 @@ export default function DeckSelectCustom() {
             <DeckUploadForm />
           ) : pageType === 'Practice' ? (
             <DeckListPager
+              mode="byUser"
               userID={userID}
               perPage={10}
               orderBy="title"
-              setLanguage={() => { }}
+              showPremiumBadge={false}
             />
           ) : null}
         </div>
