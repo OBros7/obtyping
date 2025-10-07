@@ -27,9 +27,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   く: { display: 'ku', accept: ['ku'] },
   け: { display: 'ke', accept: ['ke'] },
   こ: { display: 'ko', accept: ['ko'] },
-  きゃ: { display: 'kya', accept: ['kya'] },
-  きゅ: { display: 'kyu', accept: ['kyu'] },
-  きょ: { display: 'kyo', accept: ['kyo'] },
+  きゃ: { display: 'kya', accept: ['kya', 'kixya', 'kilya'] },
+  きゅ: { display: 'kyu', accept: ['kyu', 'kixyu', 'kilyu'] },
+  きょ: { display: 'kyo', accept: ['kyo', 'kixyo', 'kilyo'] },
 
   /* g 行（濁音） */
   が: { display: 'ga', accept: ['ga'] },
@@ -37,9 +37,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   ぐ: { display: 'gu', accept: ['gu'] },
   げ: { display: 'ge', accept: ['ge'] },
   ご: { display: 'go', accept: ['go'] },
-  ぎゃ: { display: 'gya', accept: ['gya'] },
-  ぎゅ: { display: 'gyu', accept: ['gyu'] },
-  ぎょ: { display: 'gyo', accept: ['gyo'] },
+  ぎゃ: { display: 'gya', accept: ['gya', 'gixya', 'gilya'] },
+  ぎゅ: { display: 'gyu', accept: ['gyu', 'gixyu', 'gilyu'] },
+  ぎょ: { display: 'gyo', accept: ['gyo', 'gixyo', 'gilyo'] },
 
   /* s 行 */
   さ: { display: 'sa', accept: ['sa'] },
@@ -47,9 +47,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   す: { display: 'su', accept: ['su'] },
   せ: { display: 'se', accept: ['se'] },
   そ: { display: 'so', accept: ['so'] },
-  しゃ: { display: 'sha', accept: ['sha', 'sya'] },
-  しゅ: { display: 'shu', accept: ['shu', 'syu'] },
-  しょ: { display: 'sho', accept: ['sho', 'syo'] },
+  しゃ: { display: 'sha', accept: ['sha', 'sya', 'shya', 'shixya', 'shilya', 'sixya', 'silya'] },
+  しゅ: { display: 'shu', accept: ['shu', 'syu', 'shyu', 'shixyu', 'shilyu', 'sixyu', 'silyu'] },
+  しょ: { display: 'sho', accept: ['sho', 'syo', 'shyo', 'shixyo', 'shilyo', 'sixyo', 'silyo'] },
 
   /* z 行（濁音） */
   ざ: { display: 'za', accept: ['za'] },
@@ -57,9 +57,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   ず: { display: 'zu', accept: ['zu'] },
   ぜ: { display: 'ze', accept: ['ze'] },
   ぞ: { display: 'zo', accept: ['zo'] },
-  じゃ: { display: 'ja', accept: ['ja', 'zya', 'jya'] },
-  じゅ: { display: 'ju', accept: ['ju', 'zyu', 'jyu'] },
-  じょ: { display: 'jo', accept: ['jo', 'zyo', 'jyo'] },
+  じゃ: { display: 'ja', accept: ['ja', 'zya', 'jya', 'jixya', 'jilya', 'zixya', 'zilya'] },
+  じゅ: { display: 'ju', accept: ['ju', 'zyu', 'jyu', 'jixyu', 'jilyu', 'zixyu', 'zilyu'] },
+  じょ: { display: 'jo', accept: ['jo', 'zyo', 'jyo', 'jixyo', 'jilyo', 'zixyo', 'zilyo'] },
 
   /* t 行 */
   た: { display: 'ta', accept: ['ta'] },
@@ -67,9 +67,18 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   つ: { display: 'tsu', accept: ['tsu', 'tu'] },
   て: { display: 'te', accept: ['te'] },
   と: { display: 'to', accept: ['to'] },
-  ちゃ: { display: 'cha', accept: ['cha', 'cya', 'chixya'] },
-  ちゅ: { display: 'chu', accept: ['chu', 'cyu'] },
-  ちょ: { display: 'cho', accept: ['cho', 'cyo'] },
+  ちゃ: {
+    display: 'cha',
+    accept: ['cha', 'cya', 'chya', 'tya', 'chixya', 'tixya', 'chilya', 'cilya', 'tilya'],
+  },
+  ちゅ: {
+    display: 'chu',
+    accept: ['chu', 'cyu', 'chyu', 'tyu', 'chixyu', 'tixyu', 'chilyu', 'cilyu', 'tilyu'],
+  },
+  ちょ: {
+    display: 'cho',
+    accept: ['cho', 'cyo', 'chyo', 'tyo', 'chixyo', 'tixyo', 'chilyo', 'cilyo', 'tilyo'],
+  },
 
   /* d 行（濁音） */
   だ: { display: 'da', accept: ['da'] },
@@ -77,9 +86,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   づ: { display: 'zu', accept: ['zu', 'dzu'] },
   で: { display: 'de', accept: ['de'] },
   ど: { display: 'do', accept: ['do'] },
-  ぢゃ: { display: 'ja', accept: ['ja', 'dya'] },
-  ぢゅ: { display: 'ju', accept: ['ju', 'dyu'] },
-  ぢょ: { display: 'jo', accept: ['jo', 'dyo'] },
+  ぢゃ: { display: 'ja', accept: ['ja', 'dya', 'dixya', 'dilya'] },
+  ぢゅ: { display: 'ju', accept: ['ju', 'dyu', 'dixyu', 'dilyu'] },
+  ぢょ: { display: 'jo', accept: ['jo', 'dyo', 'dixyo', 'dilyo'] },
 
   /* n 行 */
   な: { display: 'na', accept: ['na'] },
@@ -87,9 +96,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   ぬ: { display: 'nu', accept: ['nu'] },
   ね: { display: 'ne', accept: ['ne'] },
   の: { display: 'no', accept: ['no'] },
-  にゃ: { display: 'nya', accept: ['nya'] },
-  にゅ: { display: 'nyu', accept: ['nyu'] },
-  にょ: { display: 'nyo', accept: ['nyo'] },
+  にゃ: { display: 'nya', accept: ['nya', 'nixya', 'nilya'] },
+  にゅ: { display: 'nyu', accept: ['nyu', 'nixyu', 'nilyu'] },
+  にょ: { display: 'nyo', accept: ['nyo', 'nixyo', 'nilyo'] },
 
   /* h 行 */
   は: { display: 'ha', accept: ['ha'] },
@@ -97,9 +106,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   ふ: { display: 'fu', accept: ['fu', 'hu'] },
   へ: { display: 'he', accept: ['he'] },
   ほ: { display: 'ho', accept: ['ho'] },
-  ひゃ: { display: 'hya', accept: ['hya'] },
-  ひゅ: { display: 'hyu', accept: ['hyu'] },
-  ひょ: { display: 'hyo', accept: ['hyo'] },
+  ひゃ: { display: 'hya', accept: ['hya', 'hixya', 'hilya'] },
+  ひゅ: { display: 'hyu', accept: ['hyu', 'hixyu', 'hilyu'] },
+  ひょ: { display: 'hyo', accept: ['hyo', 'hixyo', 'hilyo'] },
 
   /* b 行（濁音） */
   ば: { display: 'ba', accept: ['ba'] },
@@ -107,9 +116,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   ぶ: { display: 'bu', accept: ['bu'] },
   べ: { display: 'be', accept: ['be'] },
   ぼ: { display: 'bo', accept: ['bo'] },
-  びゃ: { display: 'bya', accept: ['bya'] },
-  びゅ: { display: 'byu', accept: ['byu'] },
-  びょ: { display: 'byo', accept: ['byo'] },
+  びゃ: { display: 'bya', accept: ['bya', 'bixya', 'bilya'] },
+  びゅ: { display: 'byu', accept: ['byu', 'bixyu', 'bilyu'] },
+  びょ: { display: 'byo', accept: ['byo', 'bixyo', 'bilyo'] },
 
   /* p 行（半濁音） */
   ぱ: { display: 'pa', accept: ['pa'] },
@@ -117,9 +126,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   ぷ: { display: 'pu', accept: ['pu'] },
   ぺ: { display: 'pe', accept: ['pe'] },
   ぽ: { display: 'po', accept: ['po'] },
-  ぴゃ: { display: 'pya', accept: ['pya'] },
-  ぴゅ: { display: 'pyu', accept: ['pyu'] },
-  ぴょ: { display: 'pyo', accept: ['pyo'] },
+  ぴゃ: { display: 'pya', accept: ['pya', 'pixya', 'pilya'] },
+  ぴゅ: { display: 'pyu', accept: ['pyu', 'pixyu', 'pilyu'] },
+  ぴょ: { display: 'pyo', accept: ['pyo', 'pixyo', 'pilyo'] },
 
   /* m 行 */
   ま: { display: 'ma', accept: ['ma'] },
@@ -127,9 +136,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   む: { display: 'mu', accept: ['mu'] },
   め: { display: 'me', accept: ['me'] },
   も: { display: 'mo', accept: ['mo'] },
-  みゃ: { display: 'mya', accept: ['mya'] },
-  みゅ: { display: 'myu', accept: ['myu'] },
-  みょ: { display: 'myo', accept: ['myo'] },
+  みゃ: { display: 'mya', accept: ['mya', 'mixya', 'milya'] },
+  みゅ: { display: 'myu', accept: ['myu', 'mixyu', 'milyu'] },
+  みょ: { display: 'myo', accept: ['myo', 'mixyo', 'milyo'] },
 
   /* y 行 */
   や: { display: 'ya', accept: ['ya'] },
@@ -145,9 +154,9 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   る: { display: 'ru', accept: ['ru'] },
   れ: { display: 're', accept: ['re'] },
   ろ: { display: 'ro', accept: ['ro'] },
-  りゃ: { display: 'rya', accept: ['rya'] },
-  りゅ: { display: 'ryu', accept: ['ryu'] },
-  りょ: { display: 'ryo', accept: ['ryo'] },
+  りゃ: { display: 'rya', accept: ['rya', 'rixya', 'rilya'] },
+  りゅ: { display: 'ryu', accept: ['ryu', 'rixyu', 'rilyu'] },
+  りょ: { display: 'ryo', accept: ['ryo', 'rixyo', 'rilyo'] },
 
   /* わ行 */
   わ: { display: 'wa', accept: ['wa'] },

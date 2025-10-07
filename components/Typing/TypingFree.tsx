@@ -189,7 +189,8 @@ export default function TypingFree({
               }
               return (
                 <span key={i} className={className}>
-                  {c === ' ' ? '\u00A0' : c}
+                  {/* {c === ' ' ? '\u00A0' : c} */}
+                  {c}
                 </span>
               );
             })}
@@ -211,7 +212,7 @@ export default function TypingFree({
 
       <div className="flex justify-center w-full mb-10">
         <textarea
-          className="outline outline-2 select-none"
+          className="outline outline-2 select-none w-full max-w-4xl px-4 py-3"
           value={inputText}
           ref={refTextBox}
           autoComplete="off"

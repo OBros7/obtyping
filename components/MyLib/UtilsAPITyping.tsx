@@ -17,6 +17,7 @@ interface ReceivedText {
     text12?: string | null,
     text21?: string | null,
     text22?: string | null,
+    visibility?: 'public' | 'premium' | string | null,
     visibility_int?: number,
     deck_id?: number,
 }
@@ -26,7 +27,7 @@ interface ReceivedDeck {
     deck_id: number,
     title: string,
     description?: string,
-    visibility_int?: number,
+    visibility?: 'public' | 'premium' | string | null,
     shuffle?: boolean,
     lang?: string,
     lang1_int: number,
@@ -129,9 +130,9 @@ export const getDeckListPrivate = (userID: number | null, nSelect = 10, orderBy 
     );
 
 export const getDeckListByCategory = (
-    category: string,
-    subcategory: string,
-    level: string,
+    category: string | null,
+    subcategory: string | null,
+    level: string | null,
     nSelect = 10,
     orderBy = 'title',
 ) =>
@@ -148,8 +149,8 @@ export const getTextListByDeck = (deckID: number, nSelect = 10, orderBy = 'title
         { parseJson: true }
     );
 
-export const getCategoriesSubcategoriesLevels = () =>
-    apiFetch(`${BACKEND}/api/typing/get_categories_subcategories_levels/`, undefined, { parseJson: true });
+export const getCategoriesSubcategoriesLevels = (lang: string) =>
+    apiFetch(`${BACKEND}/api/typing/get_categories_subcategories_levels/?lang=${lang}`, undefined, { parseJson: true });
 
 export const getDeckListByUserPaged = (
     userID: number | null,

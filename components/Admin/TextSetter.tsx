@@ -41,12 +41,12 @@ interface TextSetterProps {
     setText1: React.Dispatch<React.SetStateAction<string>>
     text2: string
     setText2: React.Dispatch<React.SetStateAction<string>>
-    category: string
-    setCategory: React.Dispatch<React.SetStateAction<string>>
-    subcategory: string
-    setSubcategory: React.Dispatch<React.SetStateAction<string>>
-    level: string
-    setLevel: React.Dispatch<React.SetStateAction<string>>
+    category: string | null;
+    setCategory: React.Dispatch<React.SetStateAction<string | null>>
+    subcategory: string | null;
+    setSubcategory: React.Dispatch<React.SetStateAction<string | null>>
+    level: string | null;
+    setLevel: React.Dispatch<React.SetStateAction<string | null>>
     deck: string
     setDeck: React.Dispatch<React.SetStateAction<string>>
     classParDiv?: string
@@ -225,7 +225,8 @@ export default function TextSetter(props: TextSetterProps) {
                 <MySelect
                     state={isLangLearn}
                     setState={setIsLangLearn}
-                    optionValues={['true', 'false']}
+                    // optionValues={['true', 'false']}
+                    optionValues={[true, false]}
                 />
             </div>
 

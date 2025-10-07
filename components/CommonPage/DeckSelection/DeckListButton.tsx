@@ -5,17 +5,17 @@ import { ReceivedDeck } from '@/MyLib/UtilsAPITyping'
 
 interface DeckListProps {
     deckList: ReceivedDeck[]
-    setLanguage?: React.Dispatch<React.SetStateAction<'not selected' | 'japanese' | 'english' | 'free'>>
+    showPremiumBadge?: boolean
 }
 
-export default function DeckList({ deckList, setLanguage }: DeckListProps) {
+export default function DeckList({ deckList, showPremiumBadge = false }: DeckListProps) {
     return (
         <>
             {deckList.map(deck => (
                 <DeckCardButton
                     key={deck.deck_id} // key プロパティを追加
                     deck={deck}
-                    setLanguage={setLanguage} // setLanguage プロパティを渡す
+                    showPremiumBadge={showPremiumBadge}
                 />
             ))}
         </>
