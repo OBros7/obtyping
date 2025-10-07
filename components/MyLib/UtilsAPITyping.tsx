@@ -129,9 +129,9 @@ export const getDeckListPrivate = (userID: number | null, nSelect = 10, orderBy 
     );
 
 export const getDeckListByCategory = (
-    category: string,
-    subcategory: string,
-    level: string,
+    category: string | null,
+    subcategory: string | null,
+    level: string | null,
     nSelect = 10,
     orderBy = 'title',
 ) =>

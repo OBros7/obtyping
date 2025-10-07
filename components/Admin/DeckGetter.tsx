@@ -32,11 +32,11 @@ interface DeckGetterProps {
     setTitle: React.Dispatch<React.SetStateAction<string>>
     description: string
     setDescription: React.Dispatch<React.SetStateAction<string>>
-    category: string
+    category: string | null
     setCategory: React.Dispatch<React.SetStateAction<string | null>>
-    subcategory: string
+    subcategory: string | null
     setSubcategory: React.Dispatch<React.SetStateAction<string | null>>
-    level: string
+    level: string | null
     setLevel: React.Dispatch<React.SetStateAction<string | null>>
     nSelect: number
     setNSelect: React.Dispatch<React.SetStateAction<number>>
