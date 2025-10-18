@@ -1,33 +1,33 @@
 //components/Layout/Layout.tsx:
+//components/Layout/Layout.tsx:
 import Head from 'next/head'
 import Image from "next/legacy/image"
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useUserContext } from '@contexts/UserContext';
 import { HeaderLink, HamburgerMenu } from './'
 import useAuth from '@/MyCustomHooks/useAuth';
 
 const siteTitle = 'Obgames'
-const headerAttrs = {
-  className: 'bg-blue-600 text-white flex justify-between px-4'
-}
+const headerAttrs = { className: 'bg-blue-600 text-white flex justify-between px-4' }
 const footerAttrs = headerAttrs
-const headerBox = {
-  className: 'flex flex-row items-center mx-4'
-}
-
+const headerBox = { className: 'flex flex-row items-center mx-4' }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const locale = router.locale ?? 'ja';
   const { signOut, refreshUserSession } = useAuth();
   const { userData } = useUserContext();
-  useEffect(() => {
-    // ブラウザ再起動直後など、/session が 401 でも apiFetch が自動で /refresh して復帰します
-    refreshUserSession().catch(() => { });
-  }, []);
 
+  // ★ 一度きり実行（StrictMode でも二重実行させないガード）
+  const ranRef = useRef(false);
+  useEffect(() => {
+    if (ranRef.current) return;
+    ranRef.current = true;
+    // /session が 401 でも apiFetch が自動で /refresh → 復帰
+    refreshUserSession().catch(() => { });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 依存は空：参照安定化しているので問題なし
   return (
     // <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
     <div key={userData.loginStatus === true ? 'loggedIn' : 'loggedOut'} className='min-h-screen flex flex-col'>
