@@ -1,36 +1,22 @@
-// --- obtyping/components/Account/OAuthCallback.tsx ---
+// --- obtyping/components/Account/OAuthCallback.tsx（全置換） ---
 import React, { useEffect } from 'react';
-import { Loader2 } from 'lucide-react';          // アイコンライブラリ
-import { motion } from 'framer-motion';          // 簡単な呼吸アニメーション用
-import { useRouter } from 'next/router';
+import { Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import useAuth from '@/MyCustomHooks/useAuth';
 
 const OAuthCallback = () => {
     const { refreshUserSession } = useAuth();
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const cookies = document.cookie.split(';');
-            // debug
-            console.log('OAuthCallback cookies:', cookies);
-            const tokenCookie = cookies.find(c => c.trim().startsWith('access_token='));
-
-            if (tokenCookie) {
-                const localAccessToken = tokenCookie.split('=')[1];
-                localStorage.setItem('accessToken', localAccessToken);
-                // delete access_token cookie
-                // document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-                (async () => {
-                    try {
-                        await refreshUserSession();
-                        window.location.href = '/'; // or router.push('/')
-                    } catch (err) {
-                    }
-                })();
-            } else {
+        (async () => {
+            try {
+                await refreshUserSession(); // /session -> 401 -> /refresh -> OK
+                window.location.href = '/';
+            } catch (_) {
+                // 失敗時はサインインに戻すなどお好みで
+                window.location.href = '/account/signin';
             }
-        }
-
+        })();
     }, [refreshUserSession]);
 
     return (
