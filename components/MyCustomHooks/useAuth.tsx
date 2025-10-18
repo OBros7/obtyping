@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useUserContext } from '@contexts/UserContext';
 // import { fetchWithAuth } from '@/MyLib/UtilsAPIUser';
-import { apiFetch } from '@/MyLib/apiFetch'
+import { apiFetch, setAccessToken } from '@/MyLib/apiFetch'
 import { parse } from 'path';
 
 interface AuthCredentials {
@@ -46,29 +46,22 @@ export default function useAuth() {
      */
     const handleAuthResponse = useCallback(
         async (
-            raw: Response | AuthResponse,          // ➊ accept either shape
+            raw: Response | AuthResponse,
             defaultErrorMsg: string,
         ): Promise<AuthResponse> => {
             let data: AuthResponse;
 
-            // ----------- decide what we got -----------
             if (raw instanceof Response) {
-                // `raw` is a fetch Response –­ parse it ourselves
                 data = await raw.json();
-
                 if (!raw.ok) {
-                    // non-2xx → bubble up a helpful error
                     throw new Error(data.detail || defaultErrorMsg);
                 }
             } else {
-                // `raw` is already the plain object (apiFetch parsed it)
                 data = raw;
-                // apiFetch would have thrown on non-OK, so no status check needed
             }
 
-            // ----------- side-effects -----------
             if (data.access_token) {
-                localStorage.setItem('accessToken', data.access_token);
+                setAccessToken(data.access_token); // ★ localStorage を使わない
             }
 
             if (data.user) {
@@ -83,7 +76,7 @@ export default function useAuth() {
                 });
             }
 
-            return data; // so callers can still chain on it
+            return data;
         },
         [setUserData],
     );
@@ -158,18 +151,16 @@ export default function useAuth() {
      */
     const signOut = useCallback(async () => {
         try {
-            const resp = await apiFetch(logoutURL, {
-                method: 'POST',
-            }, { parseJson: true });
-            if (!resp.ok) {
-                console.error('Sign out failed:', resp.statusText);
+            const resp = await apiFetch(logoutURL, { method: 'POST' }, { parseJson: true });
+            if (!(resp as Response).ok) {
+                console.error('Sign out failed:', (resp as Response).statusText);
             }
         } catch (error) {
             console.error('Error signing out:', error);
         }
 
-        // Clear localStorage
-        localStorage.removeItem('accessToken');
+        // メモリ上のアクセストークンを破棄
+        setAccessToken(null);
 
         // Reset context
         setUserData({

@@ -21,8 +21,12 @@ const headerBox = {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const locale = router.locale ?? 'ja';
-  const { signOut } = useAuth();
+  const { signOut, refreshUserSession } = useAuth();
   const { userData } = useUserContext();
+  useEffect(() => {
+    // ブラウザ再起動直後など、/session が 401 でも apiFetch が自動で /refresh して復帰します
+    refreshUserSession().catch(() => { });
+  }, []);
 
   return (
     // <div key={user ? 'loggedIn' : 'loggedOut'} className='min-h-screen grid grid-rows-[auto_1fr_auto] gap-3'>
