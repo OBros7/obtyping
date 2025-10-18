@@ -1,4 +1,4 @@
-// components/MyLib/apiFetch.ts
+// --- components/MyLib/apiFetch.ts（ファイル全体を置き換え） ---
 import { ApiError } from './apiError'
 
 type ApiFetchOptions = {
@@ -7,10 +7,18 @@ type ApiFetchOptions = {
   parseJson?: boolean
 }
 
+// メモリ保持のアクセストークン（ブラウザ再起動で消える）
+let accessTokenMemo: string | null = null
+
+// 401 後の refresh を多重発火させないための共有 Promise
 let refreshingPromise: Promise<string | null> | null = null
 
+export function setAccessToken(token: string | null) {
+  accessTokenMemo = token
+}
+
 /**
- * apiFetch – your one‑stop replacement for window.fetch
+ * apiFetch – your one-stop replacement for window.fetch
  */
 export async function apiFetch<T = any>(
   input: RequestInfo | URL,
@@ -24,31 +32,30 @@ export async function apiFetch<T = any>(
   const finalInit: RequestInit = {
     ...init,
     signal: ctrl.signal,
-    credentials: 'include', // send cookies (refresh token) always
+    credentials: 'include', // refresh 用の HttpOnly Cookie を常に送る
     headers: new Headers(init.headers || {}),
   }
 
-  // Add API key from env to headers
+  // Add API key from env to headers (必要なら)
   const apiKey = process.env.NEXT_PUBLIC_API_KEY
   if (apiKey) {
     ;(finalInit.headers as Headers).set('X-API-Key', apiKey)
   }
 
-  if (withAuth) {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
-    if (token) (finalInit.headers as Headers).set('Authorization', `Bearer ${token}`)
+  if (withAuth && accessTokenMemo) {
+    (finalInit.headers as Headers).set('Authorization', `Bearer ${accessTokenMemo}`)
   }
 
   /* ---------- send request ---------- */
   try {
     let res = await fetch(input, finalInit)
 
-    /* ----- handle 401 (access token expired) ----- */
+    /* ----- handle 401 (access token expired / missing) ----- */
     if (withAuth && res.status === 401) {
       res = await retryAfterRefresh(input, finalInit)
     }
 
-    /* ----- non‑200s still count as failures ----- */
+    /* ----- non-200s still count as failures ----- */
     if (!res.ok) {
       let errorPayload: any = null
       try {
@@ -58,10 +65,7 @@ export async function apiFetch<T = any>(
         } else {
           errorPayload = await res.text()
         }
-      } catch (_) {
-        // 本文が空/読めない場合は無視
-      }
-      // ApiError のコンストラクタに body を渡せるなら渡す
+      } catch (_) {}
       throw new ApiError(`Request failed: ${res.status} ${res.statusText}`, res.status, errorPayload || res)
     }
 
@@ -87,7 +91,7 @@ async function retryAfterRefresh(input: RequestInfo | URL, init: RequestInit): P
 
   if (!newToken) throw new ApiError('Session expired', 401)
 
-  localStorage.setItem('accessToken', newToken)
+  setAccessToken(newToken)
 
   const retryInit = {
     ...init,
@@ -104,5 +108,5 @@ async function refreshToken(): Promise<string | null> {
   })
   if (!res.ok) return null
   const { access_token } = await res.json()
-  return access_token
+  return access_token ?? null
 }
