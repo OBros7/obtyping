@@ -48,7 +48,6 @@ export default function DeckSelectCategory() {
             else showError('通信に失敗しました')
         },
     })
-    console.log('deckList:', deckList)
 
     const onSearch = () => {
         deckSearch.mutate({ category, subcategory, level, nSelect, orderBy })

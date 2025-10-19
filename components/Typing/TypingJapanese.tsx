@@ -106,7 +106,8 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
             if (e.key.length !== 1 || !/^[ -~]$/.test(e.key)) return;
             e.preventDefault();
 
-            const ch = e.key.toLowerCase();
+            // const ch = e.key.toLowerCase();
+            const ch = e.key;
             const res = matcher.feed(ch);
 
             if (!res.accepted) {
