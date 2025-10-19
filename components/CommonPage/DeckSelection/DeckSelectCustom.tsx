@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Layout, MainContainer } from '@/Layout';
 import { MyInputNumber, MySelect } from '@/Basics';
 import { DeckListButton, DeckUploadForm, DeckListPager } from '.';
-import { ReceivedDeck, getDeckListByUser, } from '@/MyLib/UtilsAPITyping';
+import { ReceivedDeck, getDeckListPrivate, } from '@/MyLib/UtilsAPITyping';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { showError, showSuccess } from 'utils/toast';
 import { ApiError } from '@/MyLib/apiError';
@@ -24,7 +24,7 @@ export default function DeckSelectCustom() {
     error: deckErr,
   } = useQuery<ReceivedDeck[], ApiError>({
     queryKey: ['decks', userID],
-    queryFn: () => getDeckListByUser(userID),
+    queryFn: () => getDeckListPrivate(userID),
     staleTime: 5 * 60 * 1000,
   });
 

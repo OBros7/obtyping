@@ -77,9 +77,9 @@ export default function FormatCategory(props: Props) {
 
   if (isLoading) return <div className={classParent}>Loading...</div>
 
-  console.log('categories:', categories)
-  console.log('subcategoryList:', subcategoryList)
-  console.log('levelList:', levelList)
+  // console.log('categories:', categories)
+  // console.log('subcategoryList:', subcategoryList)
+  // console.log('levelList:', levelList)
 
   const nullSelect = 'none'
   // 先頭に null（未指定）を追加。表示テキストは '(Any)' など任意で。

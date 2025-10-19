@@ -47,6 +47,10 @@ const langDict = {
         ja: 'デッキがありません',
         en: 'You have not created your own decks yet.',
     },
+    deckNotFound: {
+        ja: 'デッキが見つかりません。検索条件を確認してください',
+        en: 'Deck not found. Please check your search criteria.',
+    },
     newDeckName: {
         ja: '新しいデッキの名前',
         en: 'Name of the new deck',

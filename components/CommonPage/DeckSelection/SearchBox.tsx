@@ -22,24 +22,14 @@ export default function SearchBox({
 
     return (
         <div className={searchBoxClass}>
-            <MySelect
-                state={searchType}
-                setState={setSearchType}
-                optionValues={['category', 'text']}
-                optionTexts={['Search by Category', 'Search by Text']}
+            <FormatCategory
+                category={category}
+                setCategory={setCategory}
+                subcategory={subcategory}
+                setSubcategory={setSubcategory}
+                level={level}
+                setLevel={setLevel}
             />
-            {searchType === 'category' ? (
-                <FormatCategory
-                    category={category}
-                    setCategory={setCategory}
-                    subcategory={subcategory}
-                    setSubcategory={setSubcategory}
-                    level={level}
-                    setLevel={setLevel}
-                />
-            ) : (
-                <MyTextbox state={searchText} setState={setSearchText} />
-            )}
         </div>
     )
 }

@@ -176,10 +176,10 @@ export default function TypingFree({
     <>
       <div className="w-full flex flex-col items-start my-10 relative">
         <div className="w-full flex flex-col items-center">
-          <div className="text-xl mb-4">
+          {/* <div className="text-xl mb-4">
             <span className="ml-4">Score: {score}</span>
             <span className="ml-4">Mistakes: {mistake}</span>
-          </div>
+          </div> */}
 
           <div className="text-3xl text-center px-6">
             {currentText.split('').map((c, i) => {
