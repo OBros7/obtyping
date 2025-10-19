@@ -12,7 +12,7 @@ export default function HomeMain() {
   const categoryTitleClass = 'mb-4 text-blue-500 text-4xl font-bold'
   const appBoxClass = 'flex flex-row flex-wrap justify-center'
   const tbDefault = ''
-  const trialUrl = '/typing/typing?deckid=-4&minutes=1';
+  const trialUrl = '/typing/typing?deckid=-4&minutes=1&lang=en';
 
   return (
     <Layout>

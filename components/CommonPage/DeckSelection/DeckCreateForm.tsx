@@ -172,7 +172,7 @@ export default function DeckCreateForm() {
           </div>
         ))}
         {canAddMoreText && (
-          <button onClick={addTextField} className="btn btn-outline w-fit self-end">
+          <button onClick={addTextField} className="btn btn-outline w-fit self-end underline text-green-600">
             {translater.addMoreTexts}
           </button>
         )}
@@ -181,7 +181,7 @@ export default function DeckCreateForm() {
       {/* 操作 */}
       <div className="flex justify-end space-x-4 items-center">
         <button
-          className="w-32 h-10 rounded-md text-white font-bold mx-1 text-lg bg-green-500 hover:bg-green-700 disabled:opacity-50"
+          className="w-64 h-10 rounded-md text-white font-bold mx-1 text-lg bg-green-500 hover:bg-green-700 disabled:opacity-50"
           onClick={handleTest}
           disabled={disabled}
         >
