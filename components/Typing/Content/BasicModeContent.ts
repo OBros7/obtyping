@@ -129,16 +129,23 @@ export const BASIC_DECKS: Record<number, ReceivedText[]> = {
   [BASIC_ID.NUMBER_HEAVY_SENTENCES]: [
     jt(
       -26101,
-      'にせんにじゅうよねんのはんばいすうは 1 2 , 5 4 0 だい 、ぜんねんひは プラス 8.4 パーセントでした。',
+      'にせんにじゅうよねんのはんばいすうは12,540だい、ぜんねんひはプラス8.4パーセントでした。',
       '2024年の販売数は12,540台、前年比は+8.4%でした。',
       '統計っぽい文'
     ),
     jt(
       -26102,
-      'てじゅん 1 : 10ふん よねつ。てじゅん 2 : 180どで 25ふん やく。',
+      'てじゅん1:10ふん よねつ。てじゅん2:180どで25ふんやく。',
       '手順1: 10分予熱。手順2: 180℃で25分焼く。',
       '手順書'
     ),
+  ],
+  [BASIC_ID.NUMBER_HEAVY_SENTENCES_EN]: [
+    t(-26301, 'I wake up at 7:10 and drink 1 glass of water.', 'Example 1'),
+    t(-26302, 'We have 2 cats, and they sleep for about 14 hours a day.', 'Example 2'),
+    t(-26303, 'Please read pages 3 to 5 and write 2 short notes.', 'Example 3'),
+    t(-26304, 'The bus comes at 8:30, so I leave home at 8:20.', 'Example 4'),
+    t(-26305, 'I practiced typing for 15 minutes and made 3 fewer mistakes today.', 'Example 5'),
   ],
   [BASIC_ID.SYMBOL_HEAVY_SENTENCES]: [
     t(-26201, 'Open https://example.com?lang=ja&ref=home#top', 'URL'),

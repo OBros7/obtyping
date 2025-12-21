@@ -32,6 +32,7 @@ export const BASIC_ID = {
 
   // 数字多め／記号多めの文
   NUMBER_HEAVY_SENTENCES: -261,
+  NUMBER_HEAVY_SENTENCES_EN: -263,
   SYMBOL_HEAVY_SENTENCES: -262,
 
   // 有名な文章（PD）
