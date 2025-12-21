@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react'
-import Keyboard from './Keyboard'
+import KeyboardUS from './KeyboardUS101Dual'
 import Fingers from './Fingers';
 import { ReceivedText } from '@/MyLib/UtilsAPITyping'
 
@@ -272,7 +272,7 @@ export default function TypingEnglish({
         </div>
       </div>
 
-      <Keyboard nextKey={pressKey} />
+      <KeyboardUS nextKey={pressKey} />
       <div className="container flex flex-col justify-end">
         <Fingers nextKey={nextKey} />
       </div>

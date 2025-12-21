@@ -1,6 +1,6 @@
 import { ReceivedText } from '@/MyLib/UtilsAPITyping';
-import { WordsEG } from './';
-
+import WordsEG from './Content/WordsEG';
+import { BASIC_DECKS } from './Content/BasicModeContent';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helper function to shuffle an array
@@ -37,6 +37,12 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
 
     const length = 100 * minutes; // Length of the random string/sequence
 
+    // ★ 先頭で：ベーシック用の静的デッキ対応
+    if (BASIC_DECKS[randomID]) {
+        // そのまま返す（minutes無視：易しい固定テキスト）
+        return BASIC_DECKS[randomID];
+    }
+
     if (randomID === -1) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         for (let i = 0; i < length; i++) {
@@ -52,7 +58,7 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
             randomDeck[0].text11 += characters.charAt(Math.floor(Math.random() * characters.length));
         }
     } else if (randomID === -4) {
-        randomDeck[0].text11 = shuffleArray(WordsEG).slice(0, length).join(' ');
+        randomDeck[0].text11 = shuffleArray([...WordsEG]).slice(0, length).join(' ');
         /* ---------------- 新規: -10 (deck in edit) ---------------- */
     } else if (randomID === -10) {
         randomDeck = [];

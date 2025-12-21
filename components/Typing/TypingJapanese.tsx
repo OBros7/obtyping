@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Keyboard from './Keyboard';
+import KeyboardJIS from './KeyboardJISDual'
 import Fingers from './Fingers';
 import { ReceivedText } from '@/MyLib/UtilsAPITyping';
 import { RomajiMatcher } from './kanaToRomaji';
@@ -222,7 +222,7 @@ export default function TypingJapanese(props: TypingJapaneseProps) {
                 )}
             </div>
 
-            <Keyboard nextKey={pressKey} />
+            <KeyboardJIS nextKey={pressKey} />
             <div className="container flex flex-col justify-end">
                 <Fingers nextKey={nextKey} />
             </div>

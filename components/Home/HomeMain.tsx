@@ -39,7 +39,7 @@ export default function HomeMain() {
         </div>
 
         <div className={appBoxClass}>
-          <PreparationCard isReady={false} onclickMessage="この機能は現在開発中です。">
+          <PreparationCard isReady={true} onclickMessage="この機能は現在開発中です。">
             <AppCard
               href='./typing/basic_typing'
               title={translater.basicTypingTitle}
