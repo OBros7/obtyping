@@ -1,7 +1,8 @@
-import { useTranslation } from '@/MyCustomHooks'
 import { langDict } from './'
 
 export type LangKey = keyof typeof langDict
+export type AppLocale = 'ja' | 'en'
+export type LocalizedHref = Partial<Record<AppLocale, string>>
 
 export type BasicItem = {
   id: string
@@ -132,7 +133,7 @@ export const basicSections: BasicSection[] = [
             id: 'sentence-with-number',
             titleKey: 'sentenceWithNumberTitle',
             descriptionKey: 'sentenceWithNumberDescription',
-            href: '/typing/typing?deckid=-263&minutes=1&lang=en',
+            href: '/typing/typing?deckid=-161&minutes=1&lang=en',
           },
           {
             id: 'sentence-with-symbol',
