@@ -185,13 +185,21 @@ const langDict = {
         ja: '実践に近い内容でタイピングを練習します。',
         en: 'Practice typing with content close to real use.',
     },
-    wordsTitle: {
-        ja: '単語',
-        en: 'Words',
+    wordsTitle_short: {
+        ja: '短めの単語',
+        en: 'Short words',
     },
-    wordsDescription: {
+    wordsTitle_long: {
+        ja: '長めの単語',
+        en: 'Long words',
+    },
+    wordsDescription_short: {
         ja: '短い単語を使って、リズムよくタイピングする感覚を養います。',
         en: 'Use short words to build a sense of rhythmic typing.',
+    },
+    wordsDescription_long: {
+        ja: '長い単語を使って、リズムよくタイピングする感覚を養います。',
+        en: 'Use long words to build a sense of rhythmic typing.',
     },
     sentenceWithNumberTitle: {
         ja: '数字入りの文',

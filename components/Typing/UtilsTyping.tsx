@@ -12,6 +12,15 @@ function shuffleArray(array: any[]) {
     return array;
 }
 
+function shuffleCopy<T>(arr: readonly T[]): T[] {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
 
 const creteRandomDeck = (randomID: number, minutes: number) => {
     // -1: random Characters
@@ -39,7 +48,11 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
 
     // ★ 先頭で：ベーシック用の静的デッキ対応
     if (BASIC_DECKS[randomID]) {
-        // そのまま返す（minutes無視：易しい固定テキスト）
+        // deckId <= -100 のときだけ順番をランダム化
+        if (randomID <= -100) {
+            return shuffleCopy(BASIC_DECKS[randomID]);
+        }
+        // それ以外は固定順のまま
         return BASIC_DECKS[randomID];
     }
 

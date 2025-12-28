@@ -100,8 +100,8 @@ export const BASIC_DECKS: Record<number, ReceivedText[]> = {
   ],
   //   日本語：必要なら JA_EASY_WORDS を増やす or 別のペア配列を用意して差し替え
   [BASIC_ID.LONG_WORDS_JA]: [
-    wordPairDrill(-231, JA_EASY_WORDS, '日本語ランダム基礎', 70, 1),
-    wordPairDrill(-232, JA_EASY_WORDS, '日本語ランダム基礎(連打)', 60, 2),
+    wordPairDrill(-231, JA_LONG_WORDS, '日本語ランダム基礎', 70, 1),
+    wordPairDrill(-232, JA_LONG_WORDS, '日本語ランダム基礎(連打)', 60, 2),
   ],
 
   // 7) 数字多め／記号多め（日本語文は jt、英URLは t）
