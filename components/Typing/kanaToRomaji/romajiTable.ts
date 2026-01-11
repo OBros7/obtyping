@@ -163,6 +163,155 @@ export const ROMA_MAP: Record<string, RomajiEntry> = {
   を: { display: 'wo', accept: ['wo'] },
   ん: { display: 'n', accept: ['n', 'nn', "n'"] },
 
+  /* 母音 */
+  ア: { display: 'a', accept: ['a'] },
+  イ: { display: 'i', accept: ['i'] },
+  ウ: { display: 'u', accept: ['u'] },
+  エ: { display: 'e', accept: ['e'] },
+  オ: { display: 'o', accept: ['o'] },
+
+  /* k 行 */
+  カ: { display: 'ka', accept: ['ka'] },
+  キ: { display: 'ki', accept: ['ki'] },
+  ク: { display: 'ku', accept: ['ku'] },
+  ケ: { display: 'ke', accept: ['ke'] },
+  コ: { display: 'ko', accept: ['ko'] },
+  キャ: { display: 'kya', accept: ['kya', 'kixya', 'kilya'] },
+  キュ: { display: 'kyu', accept: ['kyu', 'kixyu', 'kilyu'] },
+  キョ: { display: 'kyo', accept: ['kyo', 'kixyo', 'kilyo'] },
+
+  /* g 行（濁音） */
+  ガ: { display: 'ga', accept: ['ga'] },
+  ギ: { display: 'gi', accept: ['gi'] },
+  グ: { display: 'gu', accept: ['gu'] },
+  ゲ: { display: 'ge', accept: ['ge'] },
+  ゴ: { display: 'go', accept: ['go'] },
+  ギャ: { display: 'gya', accept: ['gya', 'gixya', 'gilya'] },
+  ギュ: { display: 'gyu', accept: ['gyu', 'gixyu', 'gilyu'] },
+  ギョ: { display: 'gyo', accept: ['gyo', 'gixyo', 'gilyo'] },
+
+  /* s 行 */
+  サ: { display: 'sa', accept: ['sa'] },
+  シ: { display: 'shi', accept: ['shi', 'si'] },
+  ス: { display: 'su', accept: ['su'] },
+  セ: { display: 'se', accept: ['se'] },
+  ソ: { display: 'so', accept: ['so'] },
+  シャ: { display: 'sha', accept: ['sha', 'sya', 'shya', 'shixya', 'shilya', 'sixya', 'silya'] },
+  シュ: { display: 'shu', accept: ['shu', 'syu', 'shyu', 'shixyu', 'shilyu', 'sixyu', 'silyu'] },
+  ショ: { display: 'sho', accept: ['sho', 'syo', 'shyo', 'shixyo', 'shilyo', 'sixyo', 'silyo'] },
+
+  /* z 行（濁音） */
+  ザ: { display: 'za', accept: ['za'] },
+  ジ: { display: 'ji', accept: ['ji', 'zi'] },
+  ズ: { display: 'zu', accept: ['zu'] },
+  ゼ: { display: 'ze', accept: ['ze'] },
+  ゾ: { display: 'zo', accept: ['zo'] },
+  ジャ: { display: 'ja', accept: ['ja', 'zya', 'jya', 'jixya', 'jilya', 'zixya', 'zilya'] },
+  ジュ: { display: 'ju', accept: ['ju', 'zyu', 'jyu', 'jixyu', 'jilyu', 'zixyu', 'zilyu'] },
+  ジョ: { display: 'jo', accept: ['jo', 'zyo', 'jyo', 'jixyo', 'jilyo', 'zixyo', 'zilyo'] },
+
+  /* t 行 */
+  タ: { display: 'ta', accept: ['ta'] },
+  チ: { display: 'chi', accept: ['chi', 'ti'] },
+  ツ: { display: 'tsu', accept: ['tsu', 'tu'] },
+  テ: { display: 'te', accept: ['te'] },
+  ト: { display: 'to', accept: ['to'] },
+  チャ: {
+    display: 'cha',
+    accept: ['cha', 'cya', 'chya', 'tya', 'chixya', 'tixya', 'chilya', 'cilya', 'tilya'],
+  },
+  チュ: {
+    display: 'chu',
+    accept: ['chu', 'cyu', 'chyu', 'tyu', 'chixyu', 'tixyu', 'chilyu', 'cilyu', 'tilyu'],
+  },
+  チョ: {
+    display: 'cho',
+    accept: ['cho', 'cyo', 'chyo', 'tyo', 'chixyo', 'tixyo', 'chilyo', 'cilyo', 'tilyo'],
+  },
+
+  /* d 行（濁音） */
+  ダ: { display: 'da', accept: ['da'] },
+  ヂ: { display: 'ji', accept: ['ji', 'di'] },
+  ヅ: { display: 'zu', accept: ['zu', 'dzu'] },
+  デ: { display: 'de', accept: ['de'] },
+  ド: { display: 'do', accept: ['do'] },
+  ヂャ: { display: 'ja', accept: ['ja', 'dya', 'dixya', 'dilya'] },
+  ヂュ: { display: 'ju', accept: ['ju', 'dyu', 'dixyu', 'dilyu'] },
+  ヂョ: { display: 'jo', accept: ['jo', 'dyo', 'dixyo', 'dilyo'] },
+
+  /* n 行 */
+  ナ: { display: 'na', accept: ['na'] },
+  ニ: { display: 'ni', accept: ['ni'] },
+  ヌ: { display: 'nu', accept: ['nu'] },
+  ネ: { display: 'ne', accept: ['ne'] },
+  ノ: { display: 'no', accept: ['no'] },
+  ニャ: { display: 'nya', accept: ['nya', 'nixya', 'nilya'] },
+  ニュ: { display: 'nyu', accept: ['nyu', 'nixyu', 'nilyu'] },
+  ニョ: { display: 'nyo', accept: ['nyo', 'nixyo', 'nilyo'] },
+
+  /* h 行 */
+  ハ: { display: 'ha', accept: ['ha'] },
+  ヒ: { display: 'hi', accept: ['hi'] },
+  フ: { display: 'fu', accept: ['fu', 'hu'] },
+  ヘ: { display: 'he', accept: ['he'] },
+  ホ: { display: 'ho', accept: ['ho'] },
+  ヒャ: { display: 'hya', accept: ['hya', 'hixya', 'hilya'] },
+  ヒュ: { display: 'hyu', accept: ['hyu', 'hixyu', 'hilyu'] },
+  ヒョ: { display: 'hyo', accept: ['hyo', 'hixyo', 'hilyo'] },
+
+  /* b 行（濁音） */
+  バ: { display: 'ba', accept: ['ba'] },
+  ビ: { display: 'bi', accept: ['bi'] },
+  ブ: { display: 'bu', accept: ['bu'] },
+  ベ: { display: 'be', accept: ['be'] },
+  ボ: { display: 'bo', accept: ['bo'] },
+  ビャ: { display: 'bya', accept: ['bya', 'bixya', 'bilya'] },
+  ビュ: { display: 'byu', accept: ['byu', 'bixyu', 'bilyu'] },
+  ビョ: { display: 'byo', accept: ['byo', 'bixyo', 'bilyo'] },
+
+  /* p 行（半濁音） */
+  パ: { display: 'pa', accept: ['pa'] },
+  ピ: { display: 'pi', accept: ['pi'] },
+  プ: { display: 'pu', accept: ['pu'] },
+  ペ: { display: 'pe', accept: ['pe'] },
+  ポ: { display: 'po', accept: ['po'] },
+  ピャ: { display: 'pya', accept: ['pya', 'pixya', 'pilya'] },
+  ピュ: { display: 'pyu', accept: ['pyu', 'pixyu', 'pilyu'] },
+  ピョ: { display: 'pyo', accept: ['pyo', 'pixyo', 'pilyo'] },
+
+  /* m 行 */
+  マ: { display: 'ma', accept: ['ma'] },
+  ミ: { display: 'mi', accept: ['mi'] },
+  ム: { display: 'mu', accept: ['mu'] },
+  メ: { display: 'me', accept: ['me'] },
+  モ: { display: 'mo', accept: ['mo'] },
+  ミャ: { display: 'mya', accept: ['mya', 'mixya', 'milya'] },
+  ミュ: { display: 'myu', accept: ['myu', 'mixyu', 'milyu'] },
+  ミョ: { display: 'myo', accept: ['myo', 'mixyo', 'milyo'] },
+
+  /* y 行 */
+  ヤ: { display: 'ya', accept: ['ya'] },
+  ユ: { display: 'yu', accept: ['yu'] },
+  ヨ: { display: 'yo', accept: ['yo'] },
+  ャ: { display: 'xya', accept: ['xya', 'lya'] },
+  ュ: { display: 'xyu', accept: ['xyu', 'lyu'] },
+  ョ: { display: 'xyo', accept: ['xyo', 'lyo'] },
+
+  /* r 行 */
+  ラ: { display: 'ra', accept: ['ra'] },
+  リ: { display: 'ri', accept: ['ri'] },
+  ル: { display: 'ru', accept: ['ru'] },
+  レ: { display: 're', accept: ['re'] },
+  ロ: { display: 'ro', accept: ['ro'] },
+  リャ: { display: 'rya', accept: ['rya', 'rixya', 'rilya'] },
+  リュ: { display: 'ryu', accept: ['ryu', 'rixyu', 'rilyu'] },
+  リョ: { display: 'ryo', accept: ['ryo', 'rixyo', 'rilyo'] },
+
+  /* わ行 */
+  ワ: { display: 'wa', accept: ['wa'] },
+  ヲ: { display: 'wo', accept: ['wo'] },
+  ン: { display: 'n', accept: ['n', 'nn', "n'"] },
+
   /* 句読点・長音 */
   '、': { display: ',', accept: [','] },
   '。': { display: '.', accept: ['.'] },

@@ -1,7 +1,7 @@
 import TypingEnglish from '../TypingEnglish'
 
 // components/Typing/Content/basicIds.ts
-// -1**: english
+// -1**: english mark & number
 // -2**: japanese
 
 export const BASIC_ID = {
@@ -19,25 +19,26 @@ export const BASIC_ID = {
   FINGER_RIGHT_PINKY: -110,
 
   // かんたん単語
-  EASY_EN_WORDS: -121,
-  EASY_JA_WORDS: -222,
+  SHORT_WORDS_EN: -121,
+  SHORT_WORDS_JA: -221,
 
-  // ランダム単語（固定セット）※“易しい語だけ”
-  RANDOM_EN_EASY: -131,
-  RANDOM_JA_EASY: -232,
+  // 長めの単語
+  LONG_WORDS_EN: -131,
+  LONG_WORDS_JA: -231,
 
   // 数字・記号
-  NUMBERS_EASY: -141,
-  SYMBOLS_EASY: -151,
+  // NUMBERS_EASY: -141,
+  // SYMBOLS_EASY: -151,
 
   // 数字多め／記号多めの文
-  NUMBER_HEAVY_SENTENCES: -261,
-  NUMBER_HEAVY_SENTENCES_EN: -263,
-  SYMBOL_HEAVY_SENTENCES: -262,
+  NUMBER_HEAVY_SENTENCES_EN: -161,
+  SYMBOL_HEAVY_SENTENCES_EN: -162,
+  NUMBER_HEAVY_SENTENCES_JP: -261,
+  SYMBOL_HEAVY_SENTENCES_JP: -262,
 
   // 有名な文章（PD）
   FAMOUS_EN_PD: -171,
-  FAMOUS_JA_PD: -272,
+  FAMOUS_JA_PD: -271,
 } as const
 
 export type BasicId = (typeof BASIC_ID)[keyof typeof BASIC_ID]
