@@ -124,7 +124,7 @@ export const basicSections: BasicSection[] = [
         descriptionKey: 'basicMainDescription',
         items: [
           {
-            id: 'words',
+            id: 'words_short',
             titleKey: 'wordsTitle_short',
             descriptionKey: 'wordsDescription_short',
             href: {
@@ -133,7 +133,7 @@ export const basicSections: BasicSection[] = [
             },
           },
           {
-            id: 'words',
+            id: 'words_long',
             titleKey: 'wordsTitle_long',
             descriptionKey: 'wordsDescription_long',
             href: {

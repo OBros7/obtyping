@@ -61,47 +61,72 @@ const wordPairDrill = (
   return jt(id, kana, jp, title)
 }
 
+const wordPairDeck = (
+  idBase: number, // text_id 用のベース（衝突しない値にする）
+  pairs: { jp: string; kana: string }[],
+  title: string,
+  total = 60,
+  wordsPerText = 30,
+  chunk = 1,
+  seed?: number
+): ReceivedText[] => {
+  const { kana, jp } = makeWordPairDrill(pairs, total, chunk, ' ', seed)
+
+  const kanaTokens = kana.split(' ').filter(Boolean)
+  const jpTokens = jp.split(' ').filter(Boolean)
+
+  const out: ReceivedText[] = []
+  let part = 0
+
+  for (let start = 0; start < kanaTokens.length; start += wordsPerText) {
+    const k = kanaTokens.slice(start, start + wordsPerText).join(' ')
+    const j = jpTokens.slice(start, start + wordsPerText).join(' ')
+
+    out.push(
+      jt(
+        idBase - part, // text_id（ユニークなら何でもOK）
+        k,
+        j,
+        `${title} ${part + 1}` // タイトルは任意
+      )
+    )
+    part++
+  }
+
+  return out
+}
+
 export const BASIC_DECKS: Record<number, ReceivedText[]> = {
   // 1) 左右分離（英字のみなので t() のまま）
-  [BASIC_ID.HAND_LEFT]: [
-    keyDrill(-20101, LEFT_HAND_LETTERS, '左手-基本1', 120, 1),
-    // keyDrill(-20102, LEFT_HAND_LETTERS, '左手-基本2', 160, 3),
-  ],
-  [BASIC_ID.HAND_RIGHT]: [
-    keyDrill(-20201, RIGHT_HAND_LETTERS, '右手-基本1', 120, 1),
-    // keyDrill(-20202, RIGHT_HAND_LETTERS, '右手-基本2', 160, 3),
-  ],
+  [BASIC_ID.HAND_LEFT]: [keyDrill(-101, LEFT_HAND_LETTERS, '指別タイピング（左手）', 120, 1)],
+  [BASIC_ID.HAND_RIGHT]: [keyDrill(-102, RIGHT_HAND_LETTERS, '指別タイピング（右手）', 120, 1)],
 
   // 各指（親指以外）
-  [BASIC_ID.FINGER_LEFT_PINKY]: [keyDrill(-103, LEFT_PINKY_LETTERS, '左小指', 120, 1)],
-  [BASIC_ID.FINGER_LEFT_INDEX]: [keyDrill(-104, LEFT_INDEX_LETTERS, '左人差し指', 180, 1)],
-  [BASIC_ID.FINGER_LEFT_MIDDLE]: [keyDrill(-105, LEFT_MIDDLE_LETTERS, '左中指', 170, 1)],
-  [BASIC_ID.FINGER_LEFT_RING]: [keyDrill(-106, LEFT_RING_LETTERS, '左薬指', 160, 1)],
+  [BASIC_ID.FINGER_LEFT_PINKY]: [keyDrill(-103, LEFT_PINKY_LETTERS, '指別タイピング（左小指）', 120, 1)],
+  [BASIC_ID.FINGER_LEFT_INDEX]: [keyDrill(-104, LEFT_INDEX_LETTERS, '指別タイピング（左人差し指）', 180, 1)],
+  [BASIC_ID.FINGER_LEFT_MIDDLE]: [keyDrill(-105, LEFT_MIDDLE_LETTERS, '指別タイピング（左中指）', 170, 1)],
+  [BASIC_ID.FINGER_LEFT_RING]: [keyDrill(-106, LEFT_RING_LETTERS, '指別タイピング（左薬指）', 160, 1)],
 
-  [BASIC_ID.FINGER_RIGHT_INDEX]: [keyDrill(-107, RIGHT_INDEX_LETTERS, '右人差し指', 180, 1)],
-  [BASIC_ID.FINGER_RIGHT_MIDDLE]: [keyDrill(-108, RIGHT_MIDDLE_LETTERS, '右中指', 170, 1)],
-  [BASIC_ID.FINGER_RIGHT_RING]: [keyDrill(-109, RIGHT_RING_LETTERS, '右薬指', 160, 1)],
-  [BASIC_ID.FINGER_RIGHT_PINKY]: [keyDrill(-110, RIGHT_PINKY_LETTERS, '右小指', 150, 1)],
+  [BASIC_ID.FINGER_RIGHT_INDEX]: [keyDrill(-107, RIGHT_INDEX_LETTERS, '指別タイピング（右人差し指）', 180, 1)],
+  [BASIC_ID.FINGER_RIGHT_MIDDLE]: [keyDrill(-108, RIGHT_MIDDLE_LETTERS, '指別タイピング（右中指）', 170, 1)],
+  [BASIC_ID.FINGER_RIGHT_RING]: [keyDrill(-109, RIGHT_RING_LETTERS, '指別タイピング（右薬指）', 160, 1)],
+  [BASIC_ID.FINGER_RIGHT_PINKY]: [keyDrill(-110, RIGHT_PINKY_LETTERS, '指別タイピング（右小指）', 150, 1)],
 
   // 3) かんたん単語（日本語は jt に変更）
   [BASIC_ID.SHORT_WORDS_EN]: [
-    wordDrill(-121, EN_EASY_WORDS, '英語2-3文字ドリル', 90, 1), // 短語・1回打ち
-    wordDrill(-122, EN_EASY_WORDS, '英語2-3文字ドリル(連打)', 80, 2), // 同語を2連打
+    wordDrill(-121, EN_EASY_WORDS, 'かんたん英単語', 90, 1), // 短語・1回打ち
   ],
   [BASIC_ID.SHORT_WORDS_JA]: [
-    wordPairDrill(-221, JA_EASY_WORDS, '日本語かんたん語ドリル', 60, 1),
-    wordPairDrill(-222, JA_EASY_WORDS, '日本語かんたん語ドリル(連打)', 50, 2),
+    // 60語を「30語×2テキスト」に分割
+    ...wordPairDeck(-221, JA_EASY_WORDS, '日本語かんたん語ドリル', 60, 20, 1, Date.now()),
   ],
 
   // 4) 長めの単語
-  [BASIC_ID.LONG_WORDS_EN]: [
-    wordDrill(-131, EN_LONG_WORDS, '英語長め単語', 120, 1),
-    wordDrill(-132, EN_LONG_WORDS, '英語長め単語(連打)', 100, 2),
-  ],
+  [BASIC_ID.LONG_WORDS_EN]: [wordDrill(-131, EN_LONG_WORDS, '長めの英単語', 120, 1)],
   //   日本語：必要なら JA_EASY_WORDS を増やす or 別のペア配列を用意して差し替え
   [BASIC_ID.LONG_WORDS_JA]: [
-    wordPairDrill(-231, JA_LONG_WORDS, '日本語ランダム基礎', 70, 1),
-    wordPairDrill(-232, JA_LONG_WORDS, '日本語ランダム基礎(連打)', 60, 2),
+    // 70語を「20語ごと」に分割（20/20/20/10）
+    ...wordPairDeck(-23100, JA_LONG_WORDS, '日本語ランダム基礎', 70, 10, 1, Date.now()),
   ],
 
   // 7) 数字多め／記号多め（日本語文は jt、英URLは t）

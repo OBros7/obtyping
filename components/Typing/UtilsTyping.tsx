@@ -49,10 +49,11 @@ const creteRandomDeck = (randomID: number, minutes: number) => {
     // ★ 先頭で：ベーシック用の静的デッキ対応
     if (BASIC_DECKS[randomID]) {
         // deckId <= -100 のときだけ順番をランダム化
-        if (randomID <= -100) {
-            return shuffleCopy(BASIC_DECKS[randomID]);
-        }
+        // if (randomID <= -100) {
+        //     return shuffleCopy(BASIC_DECKS[randomID]);
+        // }
         // それ以外は固定順のまま
+        // console.log('BASIC_DECKS hit', randomID, 'len=', BASIC_DECKS[randomID].length);
         return BASIC_DECKS[randomID];
     }
 
