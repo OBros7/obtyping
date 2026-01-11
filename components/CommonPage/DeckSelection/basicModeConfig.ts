@@ -1,13 +1,14 @@
-import { useTranslation } from '@/MyCustomHooks'
 import { langDict } from './'
 
 export type LangKey = keyof typeof langDict
+export type AppLocale = 'ja' | 'en'
+export type LocalizedHref = Partial<Record<AppLocale, string>>
 
 export type BasicItem = {
   id: string
   titleKey: LangKey
   descriptionKey: LangKey
-  href: string
+  href: string | LocalizedHref
 }
 
 export type BasicGroup = {
@@ -123,28 +124,49 @@ export const basicSections: BasicSection[] = [
         descriptionKey: 'basicMainDescription',
         items: [
           {
-            id: 'words',
-            titleKey: 'wordsTitle',
-            descriptionKey: 'wordsDescription',
-            href: '/typing/typing?deckid=-121&minutes=1&lang=en',
+            id: 'words_short',
+            titleKey: 'wordsTitle_short',
+            descriptionKey: 'wordsDescription_short',
+            href: {
+              en: '/typing/typing?deckid=-121&minutes=1&lang=en',
+              ja: '/typing/typing?deckid=-221&minutes=1&lang=ja',
+            },
+          },
+          {
+            id: 'words_long',
+            titleKey: 'wordsTitle_long',
+            descriptionKey: 'wordsDescription_long',
+            href: {
+              en: '/typing/typing?deckid=-131&minutes=1&lang=en',
+              ja: '/typing/typing?deckid=-231&minutes=1&lang=ja',
+            },
           },
           {
             id: 'sentence-with-number',
             titleKey: 'sentenceWithNumberTitle',
             descriptionKey: 'sentenceWithNumberDescription',
-            href: '/typing/typing?deckid=-263&minutes=1&lang=en',
+            href: {
+              en: '/typing/typing?deckid=-161&minutes=1&lang=en',
+              ja: '/typing/typing?deckid=-261&minutes=1&lang=ja',
+            },
           },
           {
             id: 'sentence-with-symbol',
             titleKey: 'sentenceWithSymbolTitle',
             descriptionKey: 'sentenceWithSymbolDescription',
-            href: '/typing/typing?deckid=-262&minutes=1&lang=en',
+            href: {
+              en: '/typing/typing?deckid=-162&minutes=1&lang=en',
+              ja: '/typing/typing?deckid=-262&minutes=1&lang=ja',
+            },
           },
           {
             id: 'easy-sentence',
             titleKey: 'easySentenceTitle',
             descriptionKey: 'easySentenceDescription',
-            href: '/typing/typing?deckid=-171&minutes=1&lang=en',
+            href: {
+              en: '/typing/typing?deckid=-171&minutes=1&lang=en',
+              ja: '/typing/typing?deckid=-271&minutes=1&lang=ja',
+            },
           },
         ],
       },

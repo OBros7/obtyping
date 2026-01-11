@@ -6,15 +6,16 @@ import { useTranslation } from '@/MyCustomHooks';
 import { langDict } from './';
 
 type Props = {
-  item: BasicItem;
-};
+  item: BasicItem
+  href: string
+}
 
-export const BasicCard: React.FC<Props> = ({ item }) => {
+export const BasicCard: React.FC<Props> = ({ item, href }) => {
   const [translater] = useTranslation(langDict);
 
   return (
     <Link
-      href={item.href}
+      href={href}
       className="
         group
         block

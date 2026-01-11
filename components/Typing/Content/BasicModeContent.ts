@@ -18,7 +18,7 @@ import {
   SYMBOLS,
   ALPHA_LOWER,
 } from './KeySets'
-import { EN_EASY_WORDS, EN_BASIC_WORDS, JA_EASY_PAIRS } from './WordsSets'
+import { EN_EASY_WORDS, EN_BASIC_WORDS, EN_LONG_WORDS, JA_EASY_WORDS, JA_LONG_WORDS } from './WordsSets'
 
 // 英数や記号など「text11 だけで良い」ケース用
 const t = (id: number, content: string, title = ''): ReceivedText => ({
@@ -61,95 +61,127 @@ const wordPairDrill = (
   return jt(id, kana, jp, title)
 }
 
+const wordPairDeck = (
+  idBase: number, // text_id 用のベース（衝突しない値にする）
+  pairs: { jp: string; kana: string }[],
+  title: string,
+  total = 60,
+  wordsPerText = 30,
+  chunk = 1,
+  seed?: number
+): ReceivedText[] => {
+  const { kana, jp } = makeWordPairDrill(pairs, total, chunk, ' ', seed)
+
+  const kanaTokens = kana.split(' ').filter(Boolean)
+  const jpTokens = jp.split(' ').filter(Boolean)
+
+  const out: ReceivedText[] = []
+  let part = 0
+
+  for (let start = 0; start < kanaTokens.length; start += wordsPerText) {
+    const k = kanaTokens.slice(start, start + wordsPerText).join(' ')
+    const j = jpTokens.slice(start, start + wordsPerText).join(' ')
+
+    out.push(
+      jt(
+        idBase - part, // text_id（ユニークなら何でもOK）
+        k,
+        j,
+        `${title} ${part + 1}` // タイトルは任意
+      )
+    )
+    part++
+  }
+
+  return out
+}
+
 export const BASIC_DECKS: Record<number, ReceivedText[]> = {
   // 1) 左右分離（英字のみなので t() のまま）
-  [BASIC_ID.HAND_LEFT]: [
-    keyDrill(-20101, LEFT_HAND_LETTERS, '左手-基本1', 120, 1),
-    // keyDrill(-20102, LEFT_HAND_LETTERS, '左手-基本2', 160, 3),
-  ],
-  [BASIC_ID.HAND_RIGHT]: [
-    keyDrill(-20201, RIGHT_HAND_LETTERS, '右手-基本1', 120, 1),
-    // keyDrill(-20202, RIGHT_HAND_LETTERS, '右手-基本2', 160, 3),
-  ],
+  [BASIC_ID.HAND_LEFT]: [keyDrill(-101, LEFT_HAND_LETTERS, '指別タイピング（左手）', 120, 1)],
+  [BASIC_ID.HAND_RIGHT]: [keyDrill(-102, RIGHT_HAND_LETTERS, '指別タイピング（右手）', 120, 1)],
 
   // 各指（親指以外）
-  [BASIC_ID.FINGER_LEFT_PINKY]: [keyDrill(-103, LEFT_PINKY_LETTERS, '左小指', 120, 1)],
-  [BASIC_ID.FINGER_LEFT_INDEX]: [keyDrill(-21101, LEFT_INDEX_LETTERS, '左人差し指', 180, 1)],
-  [BASIC_ID.FINGER_LEFT_MIDDLE]: [keyDrill(-21111, LEFT_MIDDLE_LETTERS, '左中指', 170, 1)],
-  [BASIC_ID.FINGER_LEFT_RING]: [keyDrill(-21121, LEFT_RING_LETTERS, '左薬指', 160, 1)],
+  [BASIC_ID.FINGER_LEFT_PINKY]: [keyDrill(-103, LEFT_PINKY_LETTERS, '指別タイピング（左小指）', 120, 1)],
+  [BASIC_ID.FINGER_LEFT_INDEX]: [keyDrill(-104, LEFT_INDEX_LETTERS, '指別タイピング（左人差し指）', 180, 1)],
+  [BASIC_ID.FINGER_LEFT_MIDDLE]: [keyDrill(-105, LEFT_MIDDLE_LETTERS, '指別タイピング（左中指）', 170, 1)],
+  [BASIC_ID.FINGER_LEFT_RING]: [keyDrill(-106, LEFT_RING_LETTERS, '指別タイピング（左薬指）', 160, 1)],
 
-  [BASIC_ID.FINGER_RIGHT_INDEX]: [keyDrill(-21201, RIGHT_INDEX_LETTERS, '右人差し指', 180, 1)],
-  [BASIC_ID.FINGER_RIGHT_MIDDLE]: [keyDrill(-21211, RIGHT_MIDDLE_LETTERS, '右中指', 170, 1)],
-  [BASIC_ID.FINGER_RIGHT_RING]: [keyDrill(-21221, RIGHT_RING_LETTERS, '右薬指', 160, 1)],
-  [BASIC_ID.FINGER_RIGHT_PINKY]: [keyDrill(-21231, RIGHT_PINKY_LETTERS, '右小指', 150, 1)],
+  [BASIC_ID.FINGER_RIGHT_INDEX]: [keyDrill(-107, RIGHT_INDEX_LETTERS, '指別タイピング（右人差し指）', 180, 1)],
+  [BASIC_ID.FINGER_RIGHT_MIDDLE]: [keyDrill(-108, RIGHT_MIDDLE_LETTERS, '指別タイピング（右中指）', 170, 1)],
+  [BASIC_ID.FINGER_RIGHT_RING]: [keyDrill(-109, RIGHT_RING_LETTERS, '指別タイピング（右薬指）', 160, 1)],
+  [BASIC_ID.FINGER_RIGHT_PINKY]: [keyDrill(-110, RIGHT_PINKY_LETTERS, '指別タイピング（右小指）', 150, 1)],
 
   // 3) かんたん単語（日本語は jt に変更）
-  [BASIC_ID.EASY_EN_WORDS]: [
-    wordDrill(-22101, EN_EASY_WORDS, '英語2-3文字ドリル', 90, 1), // 短語・1回打ち
-    wordDrill(-22102, EN_EASY_WORDS, '英語2-3文字ドリル(連打)', 80, 2), // 同語を2連打
+  [BASIC_ID.SHORT_WORDS_EN]: [
+    wordDrill(-121, EN_EASY_WORDS, 'かんたん英単語', 90, 1), // 短語・1回打ち
   ],
-  [BASIC_ID.EASY_JA_WORDS]: [
-    wordPairDrill(-22201, JA_EASY_PAIRS, '日本語かんたん語ドリル', 60, 1),
-    wordPairDrill(-22202, JA_EASY_PAIRS, '日本語かんたん語ドリル(連打)', 50, 2),
-  ],
-
-  // 4) ランダム“易しい語”（固定セット→ドリル化）
-  //   英語：WordsEG 全体から
-  [BASIC_ID.RANDOM_EN_EASY]: [
-    wordDrill(-23101, EN_BASIC_WORDS, '英語ランダム基礎', 120, 1),
-    wordDrill(-23102, EN_BASIC_WORDS, '英語ランダム基礎(連打)', 100, 2),
-  ],
-  //   日本語：必要なら JA_EASY_PAIRS を増やす or 別のペア配列を用意して差し替え
-  [BASIC_ID.RANDOM_JA_EASY]: [
-    wordPairDrill(-23201, JA_EASY_PAIRS, '日本語ランダム基礎', 70, 1),
-    wordPairDrill(-23202, JA_EASY_PAIRS, '日本語ランダム基礎(連打)', 60, 2),
+  [BASIC_ID.SHORT_WORDS_JA]: [
+    // 60語を「30語×2テキスト」に分割
+    ...wordPairDeck(-221, JA_EASY_WORDS, '日本語かんたん語ドリル', 60, 20, 1, Date.now()),
   ],
 
-  // 5) 数字（日本語文があるものは jt、英記号だけの行は t）
-  [BASIC_ID.NUMBERS_EASY]: [
-    t(-24101, '123 456 789 2468 1357 2025 0314 1000', '数字（易）'),
-    // 日付・時刻は表示だけなら t でも良いですが、読み上げ用に jt でかなを付けるならこちら
-    jt(
-      -24102,
-      'にせんにじゅうごねん/じゅうがつ/さんじゅういちにち ぜろなな:さんじゅう せんきゅうひゃくきゅうじゅうきゅう-じゅうに-さんじゅういち にじゅうさん:ごじゅうきゅう ぜろいち:ぜろご',
-      '2025/10/31 07:30 1999-12-31 23:59 01:05',
-      '日付・時刻'
-    ),
-    jt(-24103, 'えん1200 どる19.99 3680えん 15000 0.025', '¥1,200 $19.99 3,680円 15,000 0.025', '金額・小数'),
-  ],
-
-  // 6) 記号（英語系は t のまま）
-  [BASIC_ID.SYMBOLS_EASY]: [
-    t(-25101, '!!! ??? --- ___ *** ###', '記号連打'),
-    t(-25102, '() [] {} <> "" \'\' `` // \\\\ ||', '対記号'),
-    t(-25103, 'email@example.com path\\to\\file C:\\Users\\', '実用スニペット'),
+  // 4) 長めの単語
+  [BASIC_ID.LONG_WORDS_EN]: [wordDrill(-131, EN_LONG_WORDS, '長めの英単語', 120, 1)],
+  //   日本語：必要なら JA_EASY_WORDS を増やす or 別のペア配列を用意して差し替え
+  [BASIC_ID.LONG_WORDS_JA]: [
+    // 70語を「20語ごと」に分割（20/20/20/10）
+    ...wordPairDeck(-23100, JA_LONG_WORDS, '日本語ランダム基礎', 70, 10, 1, Date.now()),
   ],
 
   // 7) 数字多め／記号多め（日本語文は jt、英URLは t）
-  [BASIC_ID.NUMBER_HEAVY_SENTENCES]: [
+  [BASIC_ID.NUMBER_HEAVY_SENTENCES_JP]: [
     jt(
-      -26101,
-      'にせんにじゅうよねんのはんばいすうは12,540だい、ぜんねんひはプラス8.4パーセントでした。',
-      '2024年の販売数は12,540台、前年比は+8.4%でした。',
-      '統計っぽい文'
+      -2611,
+      '2024ねんのはんばいすうは12,540だい、ぜんねんひはプラス8.4パーセントでした。',
+      '2024年の販売数は12,540台、前年比はプラス8.4%でした。',
+      'text1'
     ),
     jt(
-      -26102,
-      'てじゅん1:10ふん よねつ。てじゅん2:180どで25ふんやく。',
-      '手順1: 10分予熱。手順2: 180℃で25分焼く。',
-      '手順書'
+      -2612,
+      'てじゅん1:10ふんよねつ。てじゅん2:180どで25ふんやく。',
+      '手順1:10分予熱。手順2: 180℃で25分焼く。',
+      'text2'
     ),
+    jt(
+      -2613,
+      'しゅくだいは6ぺーじあるので30ぷんでおわらせます。',
+      '宿題は6ページあるので、30分で終わらせます。',
+      'text3'
+    ),
+    jt(
+      -2614,
+      'のーとを5さつかったので1さつはいえにおきました。',
+      'ノートを5冊買ったので、1冊は家に置きました。',
+      'text4'
+    ),
+    jt(-2615, 'きょうは3かい10ぷんずつさんぽしました。', '今日は3回、10分ずつ散歩しました。', 'text5'),
   ],
   [BASIC_ID.NUMBER_HEAVY_SENTENCES_EN]: [
-    t(-26301, 'I wake up at 7:10 and drink 1 glass of water.', 'Example 1'),
-    t(-26302, 'We have 2 cats, and they sleep for about 14 hours a day.', 'Example 2'),
-    t(-26303, 'Please read pages 3 to 5 and write 2 short notes.', 'Example 3'),
-    t(-26304, 'The bus comes at 8:30, so I leave home at 8:20.', 'Example 4'),
-    t(-26305, 'I practiced typing for 15 minutes and made 3 fewer mistakes today.', 'Example 5'),
+    t(-1611, 'I wake up at 7:10 and drink 1 glass of water.', 'text1'),
+    t(-1612, 'We have 2 cats, and they sleep for about 14 hours a day.', 'text2'),
+    t(-1613, 'Please read pages 3 to 5 and write 2 short notes.', 'text3'),
+    t(-1614, 'The bus comes at 8:30, so I leave home at 8:20.', 'text4'),
+    t(-1615, 'I practiced typing for 15 minutes and made 3 fewer mistakes today.', 'text5'),
   ],
-  [BASIC_ID.SYMBOL_HEAVY_SENTENCES]: [
-    t(-26201, 'Open https://example.com?lang=ja&ref=home#top', 'URL'),
-    t(-26202, 'PATH=/usr/local/bin:$PATH NODE_ENV=production', '環境変数'),
+  [BASIC_ID.SYMBOL_HEAVY_SENTENCES_EN]: [
+    t(-1621, 'Open https://example.com?lang=ja&ref=home#top', 'text1'),
+    t(-1622, 'PATH=/usr/local/bin:$PATH NODE_ENV=production', 'text2'),
+    t(-1623, 'We have 2 cats (Luna & Leo), and they sleep ~14 hours a day.', 'text3'),
+    t(-1624, 'Meet me at 7:30 at the station (North Gate), OK?', 'text4'),
+    t(-1625, 'My password is "Study-2025!"--please keep it secret.', 'text5'),
+  ],
+  [BASIC_ID.SYMBOL_HEAVY_SENTENCES_JP]: [
+    jt(
+      -2621,
+      'きょうのよていは(1)そうじ、(2)べんきょう、(3)かいもの。',
+      '今日の予定は(1)掃除、(2)勉強、(3)買い物。',
+      'text1'
+    ),
+    jt(-2622, 'しゅうごうは7:30、ばしょはえきまえ(きたぐち)です。', '集合は7:30、場所は駅前(北口)です。', 'text2'),
+    jt(-2623, 'めも: ぎゅうにゅう2ほん/たまご10こ/ぱん1ふくろ。', 'メモ: 牛乳2本/卵10個/パン1袋。', 'text3'),
+    jt(-2624, 'このもんだい、とける? たぶん3ぷんでできる!', 'この問題、解ける? たぶん3分でできる!', 'text4'),
+    jt(-2625, 'https://example.com?page=1&ref=home#top', 'https://example.com?page=1&ref=home#top', 'text5'),
   ],
 
   // 8) 有名文（PD）— EN は t、JA は jt（変更点）
